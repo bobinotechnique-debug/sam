@@ -10,12 +10,14 @@
 - Formaliser critères d'acceptation et exigences de qualité (CI, sécurité, traçabilité).
 - **Livrables** : backlog priorisé pour le bootstrap, API cibles listées, règles de validation et modèle de données stabilisés.
 - **Sortie de phase** : documents `docs/*.md` synchronisés, journal `codex_log.md` mis à jour, validation du périmètre par les agents.
+- **Gates** : périmètre approuvé, ADR complètes pour les choix structurants (versionnage API, UTC, multi-org, erreurs).
 
 ## Phase 2 : Bootstrap technique
 - Squelette FastAPI avec routers/domains, services et configuration `.env` ; healthcheck opérationnel.
 - Squelette React/Vite/Tailwind avec layout, navigation et appels API mockés.
 - Docker Compose complet (backend, frontend, PostgreSQL) + `.env.example` cohérent.
 - CI GitHub Actions exécutant lint/type/tests sur backend et frontend.
+- **Gates** : commandes dev documentées dans `README.md`, pipeline CI verte, endpoints `/health` et CRUD référentiel opérationnels.
 
 ## Phase 3 : Core produit
 - CRUD organisations/sites/rôles/collaborateurs/missions/shifts avec validations métier.
@@ -23,6 +25,7 @@
 - Tests d'intégration (API + DB) et couverture front (Vitest) sur parcours critiques.
 - Premières vues planning (Jour/Semaine) avec drag-and-drop côté front.
 - **Gates** : CI verte avec lint/typage/tests, démos manuelles sur parcours référentiel + planning.
+- **Observabilité minimale** : logs JSON corrélés, traces d'erreur avec `trace_id`, métriques healthcheck surveillées.
 
 ## Phase 4 : Fiabilisation & Observabilité
 - Logs enrichis (trace-id), métriques et traces (OpenTelemetry envisagé).

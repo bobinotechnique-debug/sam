@@ -9,4 +9,8 @@ Ce répertoire centralise les informations de référence du projet. Lecture con
 - `roadmap.md` : jalons par phase (agents, documentation, bootstrap, core produit, observabilité).
 - `decisions.md` : décisions architecturales (ADR) maintenues à jour.
 
-Chaque évolution doit garder ces documents synchronisés avec le code et les responsabilités des agents.
+## Principes de maintenance documentaire
+- Chaque document liste explicitement ses hypothèses et critères d'acceptation pour aider les agents à valider une phase.
+- Toute évolution fonctionnelle doit d'abord se refléter dans `specs_functionnelles.md` puis `specs_techniques.md` avant d'impacter le code.
+- Les ADR de `decisions.md` priment en cas de conflit ; si une décision change, ajouter ou modifier l'ADR correspondante avant de coder.
+- Le journal `codex_log.md` trace chaque itération majeure (phase, date, justification) pour garder l'historique des validations.
