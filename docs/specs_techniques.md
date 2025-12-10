@@ -19,11 +19,19 @@
 - Normalisation des erreurs API via une enveloppe `{code, message, detail, trace_id}` et propagation du trace_id dans le header `X-Request-ID` pour l'audit.
 - Statut : livrables validés et prêts pour intégration front en Phase 4.2.
 
-### Avancement Phase 4.2 – UI CRUD basique (en cours)
+### Avancement Phase 4.2 – UI CRUD basique (validée)
 - Connexion du frontend aux endpoints REST existants via hooks d'appel API (URL issue de `VITE_API_BASE_URL`), gestion explicite des états de requête (chargement, succès, erreur) et affichage des erreurs normalisées.
 - Formulaires React/Tailwind pour organisations, sites, rôles/compétences, collaborateurs et missions/shifts, avec validations alignées sur les schémas API (horaires ordonnés, cohérence organisation/site/rôle, anti-chevauchement lors des confirmations de shift) et pré-remplissage des données lors des éditions.
 - Structure de navigation réutilisable (liste ➜ détail/édition) avec confirmations pour les opérations destructives et messages de feedback utilisateur.
 - Préparation à l'extraction de types front à partir d'OpenAPI ou de DTO communs pour réduire la divergence entre contrats front/back.
+
+### Préparation Phase 5 – Planning PRO
+- Architecture cible : services `shift_templates`, `shift_instances`, `assignments`, `availability`, `conflict_rules` et `auto_assign` exposés via API dédiées (`/planning/templates`, `/planning/instances`, `/planning/assignments`, `/planning/availability`, `/planning/conflicts`, `/planning/auto-assign`).
+- Stockage PostgreSQL : tables versionnées (brouillon/publié) et journal `planning_change` ; `assignment_lock` pour protéger l'édition et la publication ; index sur fenêtres temporelles (`tsrange`) pour conflits et capacités par site/team.
+- Validation multi-niveau : prévalidation front (snap, repos minimal, compétences) puis validation backend stricte (repos, capacité site/team, compétences obligatoires, collision blackout) avec sévérité (warning vs blocage) ; option "force" avec justification loggée.
+- Observabilité : métriques Prometheus dédiées (durée auto-assign, taux de couverture, nb conflits détectés, temps de rendu planning), logs structurés par `job_id` pour les jobs asynchrones, traces pour drag/resize côté front (event tracking futur).
+- Auto-assign v1 : tâche asynchrone idempotente (`job_id`) exécutant une heuristique gloutonne (tri par criticité, filtrage par compatibilité, scoring affinité/charge/continuité) et renvoyant des assignments en statut `proposé` avec score + justification ; API d'annulation du job prévue.
+- API de conflits : endpoint listant les conflits calculés (type de règle, sévérité, entités concernées) et export JSON/CSV ; déclenchement côté publication pour blocages et en sauvegarde pour warnings.
 
 ### Principes de conception
 - **Séparation stricte des couches** : API (routers) ➜ services ➜ repositories ; dépendances injectées.
@@ -65,15 +73,16 @@
   - 400/422 pour validation, 404 pour ressource absente, 409 pour conflit (chevauchement, doublon), 401/403 pour auth.
   - Structure : `{ "code": "<slug>", "message": "...", "detail": {}, "trace_id": "..." }` (générée par les handlers globaux qui exposent aussi `X-Request-ID`).
 
-## Modèle de données (prévisionnel)
-- `organizations` (id, nom, fuseau par défaut, metadata de facturation)
-- `sites` (id, organization_id, nom, fuseau, adresse, horaires d'ouverture)
-- `roles` (id, organization_id, libellé, description, compétences requises JSONB)
-- `collaborators` (id, organization_id, identité, coordonnées, statut, rôle principal)
-- `collaborator_skills` (collaborator_id, skill, niveau)
-- `missions` (id, site_id, rôle requis, date/heure début-fin, budget cible, statut)
-- `shifts` (id, mission_id, collaborator_id, horaire début-fin, statut)
-- `unavailabilities` (id, collaborator_id, début/fin, motif) — Phase 3+
+## Modèle de données cible (Phase 5)
+- `organizations`, `sites`, `roles`, `skills`, `teams` : référentiels multi-org avec couleurs et filtres pour la timeline.
+- `missions` : contexte métier (site, rôles requis, budget/plafond), liées à des `shift_templates` récurrents.
+- `shift_templates` : pattern récurrent (jour(s) de semaine, fenêtre horaire, durée, effectif attendu, team/site/role) générant des `shift_instances`.
+- `shift_instances` : instances planifiables (brouillon/publié, source template ou ad-hoc), porteuse des besoins en rôles/équipes et de la fenêtre temporelle ; historisées dans `publication`.
+- `assignments` : lien collaborateur ↔ shift_instance avec statut (`proposé`, `confirmé`, `annulé`), origine (auto-assign v1/manuelle), commentaire et timestamps ; `assignment_lock` pour réserver une plage lors d'une édition/publication.
+- `user_availabilities` / `leaves` : disponibilités déclarées et absences bloquantes ; `blackouts` pour interdits de site/org ; `capacity_overrides` pour surbooking explicite.
+- `hr_rules` : plafonds heures jour/semaine/mois, repos minimal, pauses obligatoires, interdits nocturnes/jours fériés, limites rôle/site.
+- `conflict_rules` : détection double booking, chevauchement sur même site/role/team, dépassement de capacité, compétence manquante, collision pause ; stockage des violations dans `notification_events`.
+- `planning_changes` : audit trail des modifications (avant/après, auteur, justification, forçage de règle soft) ; `publication` : versionnage brouillon/publié avec message de publication et liste des entités couvertes.
 
 ### Règles de cohérence technique
 - Index sur `organization_id`/`site_id` pour toutes les tables ; contraintes de clé étrangère avec suppression restreinte.
