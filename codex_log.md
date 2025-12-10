@@ -21,3 +21,4 @@
 2025-12-23 | Phase 4.U | support CORS frontend | Ajout de la configuration CORS backend paramétrable pour permettre les appels API du frontend containerisé.
 2025-12-10 | Phase 4.U | accueil API explicite | Ajout d'un endpoint racine renvoyant les liens vers la doc et le healthcheck pour éviter la page 404 par défaut.
 2025-12-24 | Phase 4.2 | référentiel rôles côté front | Ajout de l'UI CRUD rôles/compétences (types, appels API, navigation) pour permettre la création de missions sans 404 liées aux rôles manquants ; specs mises à jour.
+2025-12-27 | Phase 4 | clôture & préparation Phase 5 | Ajout du mémo `docs/notes/phase-04-closure.md` (objectifs atteints, tâches restantes, prompts Codex), mise à jour README/roadmap pour cadrer la fin de phase et le lancement de la Phase 5.
