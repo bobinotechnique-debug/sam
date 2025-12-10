@@ -81,7 +81,7 @@ Elle doit fluidifier la collaboration entre responsables planning, managers de s
 - Statut : livrables validés, feu vert pour engager l'UI CRUD basique de la phase 4.2.
 
 ### Avancement Phase 4.2 – UI CRUD basique (en cours)
-- Pages React dédiées pour lister et gérer organisations, sites, collaborateurs et missions/shifts avec formulaires simples (création, édition, suppression, annulation pour shifts) et validations alignées sur l'API.
+- Pages React dédiées pour lister et gérer organisations, sites, rôles/compétences, collaborateurs et missions/shifts avec formulaires simples (création, édition, suppression, annulation pour shifts) et validations alignées sur l'API.
 - Intégration des appels API réels (chargement, succès, erreurs) avec affichage d'états explicites et gestion des erreurs normalisées côté front.
 - Navigation cohérente via le layout existant (liste ➜ détail/édition), champs pré-remplis lors des éditions et messages de confirmation pour les opérations destructives.
 - Alignement avec la spécification visuelle maître (`docs/blueprint/03_ux_ui_planning.md`) pour les composants de base (boutons, inputs, badges de statut) avant toute extension UX.

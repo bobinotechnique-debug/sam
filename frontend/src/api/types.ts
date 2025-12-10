@@ -37,6 +37,21 @@ export interface CollaboratorPayload {
   email?: string | null;
 }
 
+export interface Role {
+  id: number;
+  organization_id: number;
+  name: string;
+  description: string | null;
+  tags: string[];
+}
+
+export interface RolePayload {
+  organization_id: number;
+  name: string;
+  description?: string | null;
+  tags?: string[];
+}
+
 export interface Site {
   id: number;
   organization_id: number;
