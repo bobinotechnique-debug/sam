@@ -4,6 +4,11 @@
 Plateforme SaaS de planning multi-sites pour organiser des missions et shifts d'équipes (intermittents, retail, exploitation multi-sites).
 Elle doit fluidifier la collaboration entre responsables planning, managers de site et collaborateurs, avec une traçabilité claire et des notifications futures.
 
+### Enjeux prioritaires
+- Unifier la donnée de planification (organisations, sites, référentiels de rôles) et éviter les doublons.
+- Garantir la cohérence horaire multi-fuseaux (saisie locale, stockage UTC) et la visibilité consolidée des affectations.
+- Préparer l'exposition d'API claires pour itérer rapidement sur le front et les intégrations futures.
+
 ## Personas et responsabilités
 - **Responsable planning** : structure les organisations et sites, définit les rôles/compétences, planifie à l'échelle multi-sites.
 - **Manager de site** : gère le staffing local (affectations, indisponibilités), valide les changements et suit les coûts/temps.
@@ -17,6 +22,14 @@ Elle doit fluidifier la collaboration entre responsables planning, managers de s
 - **Shifts / affectations** : créneaux attribués à un collaborateur sur une mission, avec état (brouillon, confirmé, annulé).
 - **Disponibilités/indisponibilités** : calendrier des contraintes collaborateur (prévu Phase 3+).
 
+### Attributs cibles par domaine (Phase 2-3)
+- **Organisation** : nom, fuseau horaire par défaut, paramètres de coût (monnaie, taux horaire moyen), contact administratif.
+- **Site** : organisation associée, nom, fuseau, adresse, horaires d'ouverture, capacité maximale par rôle (optionnel).
+- **Rôle/compétence** : libellé, description, tags de compétences requis, niveau minimum éventuel.
+- **Collaborateur** : identité, coordonnées, rôle principal, compétences, statut (actif/inactif), contrats/quotas hebdomadaires (optionnel).
+- **Mission** : site, rôle requis, période (début/fin), budget cible, état (`draft`/`published`), note interne.
+- **Shift** : mission, collaborateur, horaires début/fin, statut (`draft`/`confirmed`/`cancelled`), commentaire/raison d'annulation.
+
 ## Parcours utilisateur courts terme (Phase 2-3)
 - **Gestion du référentiel** : créer/éditer/supprimer organisations, sites, rôles/compétences, collaborateurs.
 - **Gestion des missions** : créer une mission avec rôle requis, date/heure et site associé ; lister/filtrer par site/période/statut.
@@ -29,11 +42,29 @@ Elle doit fluidifier la collaboration entre responsables planning, managers de s
 - Description des domaines métier prioritaires et des parcours cibles pour préparer le bootstrap technique.
 - Critères d'acceptation formalisés pour les futures livraisons (CI, sécurité, doc synchronisée).
 
+### Backlog priorisé pour le bootstrap (Phase 1 ➜ 2)
+1. **Référentiel organisations/sites** : CRUD + validation fuseaux horaires ; base pour filtrer tout le reste.
+2. **Rôles/compétences** : CRUD + tags ; utilisé par missions/shifts pour filtrer les affectations.
+3. **Collaborateurs** : CRUD + rattachement organisation ; recherche par rôle/compétence.
+4. **Missions** : création/listing/filtre ; bloque la planification tant que rôle ou site manquants.
+5. **Shifts** : affectation et gestion des statuts ; contrôle de chevauchement et compatibilité.
+
+### Résultats attendus pour sortie de Phase 1
+- Périmètre validé et partagé (documents synchronisés).
+- Règles métier structurées pour guider les schémas Pydantic/SQL et les validations front.
+- Parcours cibles listés pour alimenter les user stories du bootstrap.
+
 ## Règles métier clés (préparatoires)
 - Un shift appartient à une mission et à un site ; un collaborateur ne peut avoir deux shifts qui se chevauchent sur le même créneau.
 - Les horaires sont stockés en UTC et présentés dans le fuseau du site.
 - Les missions définissent un rôle/compétence requis ; seules les personnes compatibles peuvent être affectées (vérification côté service).
 - Statuts prévus : `draft`, `confirmed`, `cancelled`. Une annulation conserve l'historique (audit ultérieur).
+
+### Règles de validation initiales (Phase 2)
+- Horaires : `start < end` ; chevauchements interdits par collaborateur sur un même site et plage.
+- Référentiel : aucune suppression dure si entité référencée (prévoir soft-delete ou blocage).
+- Compatibilité : rôle requis d'une mission doit exister et être associé à l'organisation ; un collaborateur doit partager l'organisation et posséder le rôle/compétence.
+- Fuseaux : tout nouvel horaire saisit un fuseau explicite (du site) avant conversion UTC.
 
 ## Critères d'acceptation transverses
 - **Documentation** : chaque évolution de périmètre met à jour `docs/` et `agent.md` avant code.
