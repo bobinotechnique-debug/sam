@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Any
 from datetime import datetime
+from typing import Any
 
 from app.models.planning_pro import (
     Assignment,
