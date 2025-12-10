@@ -41,6 +41,27 @@ class ShiftTemplate(ShiftTemplateBase):
     model_config = {"extra": "forbid"}
 
 
+class ShiftTemplateUpdate(BaseModel):
+    mission_id: int | None = None
+    site_id: int | None = None
+    role_id: int | None = None
+    team_id: int | None = None
+    recurrence_rule: str | None = Field(default=None, max_length=255)
+    start_time_utc: datetime | None = None
+    end_time_utc: datetime | None = None
+    expected_headcount: int | None = Field(default=None, ge=1)
+    is_active: bool | None = None
+
+    @field_validator("start_time_utc", "end_time_utc")
+    @classmethod
+    def ensure_timezone(cls, value: datetime | None) -> datetime | None:
+        if value is None:
+            return None
+        if value.tzinfo is None:
+            raise ValueError("Datetime must include timezone information")
+        return value.astimezone(UTC)
+
+
 class ShiftInstanceBase(TimeWindow):
     mission_id: int
     template_id: int | None = None
@@ -60,6 +81,28 @@ class ShiftInstance(ShiftInstanceBase):
     id: int
 
     model_config = {"extra": "forbid"}
+
+
+class ShiftInstanceUpdate(BaseModel):
+    mission_id: int | None = None
+    template_id: int | None = None
+    site_id: int | None = None
+    role_id: int | None = None
+    team_id: int | None = None
+    start_utc: datetime | None = None
+    end_utc: datetime | None = None
+    status: str | None = Field(default=None, pattern="^(draft|published|cancelled)$")
+    source: str | None = Field(default=None, max_length=50)
+    capacity: int | None = Field(default=None, ge=1)
+
+    @field_validator("start_utc", "end_utc")
+    @classmethod
+    def ensure_timezone(cls, value: datetime | None) -> datetime | None:
+        if value is None:
+            return None
+        if value.tzinfo is None:
+            raise ValueError("Datetime must include timezone information")
+        return value.astimezone(UTC)
 
 
 class AssignmentBase(BaseModel):
@@ -82,6 +125,15 @@ class Assignment(AssignmentBase):
     updated_at: datetime | None = None
 
     model_config = {"extra": "forbid"}
+
+
+class AssignmentUpdate(BaseModel):
+    collaborator_id: int | None = None
+    role_id: int | None = None
+    status: str | None = Field(default=None, pattern="^(proposed|confirmed|rejected)$")
+    source: str | None = Field(default=None, max_length=50)
+    note: str | None = Field(default=None, max_length=500)
+    is_locked: bool | None = None
 
 
 class UserAvailabilityBase(TimeWindow):
@@ -145,3 +197,25 @@ class NotificationEvent(BaseModel):
     read_at: datetime | None = None
 
     model_config = {"extra": "forbid"}
+
+
+class ConflictEntry(BaseModel):
+    type: str = Field(pattern="^(hard|soft)$")
+    rule: str
+    details: dict[str, Any] = Field(default_factory=dict)
+
+
+class ShiftWithAssignments(BaseModel):
+    shift: ShiftInstance
+    assignments: list[Assignment] = Field(default_factory=list)
+    conflicts: list[ConflictEntry] = Field(default_factory=list)
+
+
+class ShiftWriteResponse(BaseModel):
+    shift: ShiftInstance
+    conflicts: list[ConflictEntry] = Field(default_factory=list)
+
+
+class AssignmentWriteResponse(BaseModel):
+    assignment: Assignment
+    conflicts: list[ConflictEntry] = Field(default_factory=list)

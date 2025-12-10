@@ -1,13 +1,27 @@
 import type { ReactNode } from "react";
 
+export interface TimelineAssignment {
+  id: number | string;
+  collaboratorId: number;
+  status: string;
+  source: string;
+}
+
+export interface TimelineConflict {
+  rule: string;
+  type: "hard" | "soft";
+}
+
 export interface TimelineItem {
   id: string;
   label: string;
   start: string;
   end: string;
   role: string;
-  status: "draft" | "published" | "warning" | "error";
+  status: "draft" | "published" | "cancelled";
   teamColor?: string;
+  assignments: TimelineAssignment[];
+  conflicts: TimelineConflict[];
 }
 
 export interface TimelineRow {
@@ -46,7 +60,10 @@ export function PlanningTimelineV2({ rows, headerSlot }: PlanningTimelineV2Props
               {row.items.map((item) => (
                 <div
                   key={item.id}
-                  className={`relative flex min-w-[180px] flex-col rounded-md border px-3 py-2 text-xs shadow-sm ${resolveStatus(item.status)}`}
+                  className={`relative flex min-w-[200px] flex-col rounded-md border px-3 py-2 text-xs shadow-sm ${resolveStatus(
+                    item.status,
+                    item.conflicts,
+                  )}`}
                   style={{ borderColor: item.teamColor ?? "#6366f1" }}
                 >
                   <div className="flex items-center justify-between gap-2">
@@ -60,10 +77,36 @@ export function PlanningTimelineV2({ rows, headerSlot }: PlanningTimelineV2Props
                     <span className="text-slate-500"> → </span>
                     <span className="font-mono text-[11px] text-indigo-200">{item.end}</span>
                   </div>
-                  <div className="mt-2 flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.teamColor ?? "#6366f1" }} />
-                    <p className="text-[11px] text-slate-300">{describeStatus(item.status)}</p>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {item.assignments.map((assignment) => (
+                      <span
+                        key={`${item.id}-${assignment.id}`}
+                        className="rounded bg-slate-800 px-2 py-0.5 text-[11px] text-indigo-100"
+                      >
+                        Collab {assignment.collaboratorId} · {assignment.status}
+                        {assignment.source === "auto-assign-v1" ? " · proposé" : ""}
+                      </span>
+                    ))}
+                    {item.assignments.length === 0 ? (
+                      <span className="rounded bg-slate-800 px-2 py-0.5 text-[11px] text-slate-300">Aucune assignment</span>
+                    ) : null}
                   </div>
+                  {item.conflicts.length > 0 ? (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {item.conflicts.map((conflict) => (
+                        <span
+                          key={`${item.id}-${conflict.rule}`}
+                          className={`rounded px-2 py-0.5 text-[11px] ${
+                            conflict.type === "hard"
+                              ? "bg-rose-500/20 text-rose-200"
+                              : "bg-amber-400/20 text-amber-100"
+                          }`}
+                        >
+                          {conflict.rule} ({conflict.type})
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -74,28 +117,19 @@ export function PlanningTimelineV2({ rows, headerSlot }: PlanningTimelineV2Props
   );
 }
 
-function resolveStatus(status: TimelineItem["status"]): string {
+function resolveStatus(status: TimelineItem["status"], conflicts: TimelineConflict[]): string {
+  if (conflicts.some((conflict) => conflict.type === "hard")) {
+    return "border-rose-500/80 bg-rose-500/10";
+  }
+  if (conflicts.some((conflict) => conflict.type === "soft")) {
+    return "border-amber-400/80 bg-amber-500/10";
+  }
   switch (status) {
     case "published":
       return "border-emerald-500/80 bg-emerald-500/10";
-    case "warning":
-      return "border-amber-400/80 bg-amber-500/10";
-    case "error":
-      return "border-rose-500/80 bg-rose-500/10";
+    case "cancelled":
+      return "border-slate-600 bg-slate-800/60";
     default:
       return "border-slate-700 bg-slate-800/80";
-  }
-}
-
-function describeStatus(status: TimelineItem["status"]): string {
-  switch (status) {
-    case "published":
-      return "Publié";
-    case "warning":
-      return "Avertissement (contrôle soft)";
-    case "error":
-      return "Erreur bloquante";
-    default:
-      return "Brouillon";
   }
 }

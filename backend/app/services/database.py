@@ -1,8 +1,19 @@
 from collections import defaultdict
+from typing import Any
 
 from app.models.collaborator import Collaborator
 from app.models.mission import Mission
 from app.models.organization import Organization
+from app.models.planning_pro import (
+    Assignment,
+    ConflictRule,
+    HrRule,
+    NotificationEvent,
+    Publication,
+    ShiftInstance,
+    ShiftTemplate,
+    UserAvailability,
+)
 from app.models.role import Role
 from app.models.shift import Shift
 from app.models.site import Site
@@ -17,6 +28,16 @@ class InMemoryDatabase:
         self.collaborators: dict[int, Collaborator] = {}
         self.missions: dict[int, Mission] = {}
         self.shifts: dict[int, Shift] = {}
+        self.shift_templates: dict[int, ShiftTemplate] = {}
+        self.shift_instances: dict[int, ShiftInstance] = {}
+        self.assignments: dict[int, Assignment] = {}
+        self.user_availabilities: dict[int, UserAvailability] = {}
+        self.hr_rules: dict[int, HrRule] = {}
+        self.conflict_rules: dict[int, ConflictRule] = {}
+        self.planning_changes: list[dict[str, Any]] = []
+        self.publications: dict[int, Publication] = {}
+        self.notification_events: dict[int, NotificationEvent] = {}
+        self.auto_assign_jobs: dict[str, dict[str, Any]] = {}
 
     def next_id(self, key: str) -> int:
         self._counters[key] += 1
@@ -30,3 +51,13 @@ class InMemoryDatabase:
         self.collaborators.clear()
         self.missions.clear()
         self.shifts.clear()
+        self.shift_templates.clear()
+        self.shift_instances.clear()
+        self.assignments.clear()
+        self.user_availabilities.clear()
+        self.hr_rules.clear()
+        self.conflict_rules.clear()
+        self.planning_changes.clear()
+        self.publications.clear()
+        self.notification_events.clear()
+        self.auto_assign_jobs.clear()

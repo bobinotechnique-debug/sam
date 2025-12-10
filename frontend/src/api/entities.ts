@@ -2,7 +2,9 @@ import { request } from "./client";
 import {
   Collaborator,
   CollaboratorPayload,
+  ConflictEntry,
   PlanningProConfig,
+  PlanningShift,
   Mission,
   MissionPayload,
   Organization,
@@ -12,7 +14,6 @@ import {
   RolePayload,
   Shift,
   ShiftPayload,
-  ShiftInstance,
   ShiftInstancePayload,
   ShiftTemplate,
   ShiftTemplatePayload,
@@ -20,6 +21,8 @@ import {
   SitePayload,
   Assignment,
   AssignmentPayload,
+  AssignmentWriteResponse,
+  ShiftWriteResponse,
 } from "./types";
 
 const defaultPage = 1;
@@ -190,46 +193,47 @@ export function deleteShift(id: number): Promise<void> {
 }
 
 export function getPlanningProConfig(): Promise<PlanningProConfig> {
-  return request(`/api/v1/planning/config`);
+  return request(`/api/v1/planning/rules`);
 }
 
-export function listShiftTemplates(
-  page?: number,
-  pageSize?: number,
-): Promise<PaginatedResponse<ShiftTemplate>> {
-  return request(withPagination(`/api/v1/planning/templates`, page, pageSize));
+export function listShiftTemplates(): Promise<ShiftTemplate[]> {
+  return request(`/api/v1/planning/shift-templates`);
 }
 
 export function createShiftTemplate(payload: ShiftTemplatePayload): Promise<ShiftTemplate> {
-  return request<ShiftTemplate>(`/api/v1/planning/templates`, {
+  return request<ShiftTemplate>(`/api/v1/planning/shift-templates`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
 }
 
-export function listShiftInstances(
-  page?: number,
-  pageSize?: number,
-): Promise<PaginatedResponse<ShiftInstance>> {
-  return request(withPagination(`/api/v1/planning/instances`, page, pageSize));
+export function listShiftInstances(): Promise<PlanningShift[]> {
+  return request(`/api/v1/planning/shifts`);
 }
 
-export function createShiftInstance(payload: ShiftInstancePayload): Promise<ShiftInstance> {
-  return request<ShiftInstance>(`/api/v1/planning/instances`, {
+export function createShiftInstance(payload: ShiftInstancePayload): Promise<ShiftWriteResponse> {
+  return request<ShiftWriteResponse>(`/api/v1/planning/shifts`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
 }
 
-export function listAssignments(
-  page?: number,
-  pageSize?: number,
-): Promise<PaginatedResponse<Assignment>> {
-  return request(withPagination(`/api/v1/planning/assignments`, page, pageSize));
+export function listAssignments(): Promise<Assignment[]> {
+  return request(`/api/v1/planning/assignments`);
 }
 
-export function createAssignment(payload: AssignmentPayload): Promise<Assignment> {
-  return request<Assignment>(`/api/v1/planning/assignments`, {
+export function createAssignment(payload: AssignmentPayload): Promise<AssignmentWriteResponse> {
+  return request<AssignmentWriteResponse>(`/api/v1/planning/assignments`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function previewPlanningConflicts(payload: {
+  shift?: ShiftInstancePayload;
+  assignments?: AssignmentPayload[];
+}): Promise<ConflictEntry[]> {
+  return request<ConflictEntry[]>(`/api/v1/planning/conflicts/preview`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
