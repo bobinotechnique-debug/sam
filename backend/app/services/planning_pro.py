@@ -550,7 +550,7 @@ class AutoAssignJobService:
 
     def start_job(self, *, shift_ids: list[int] | None = None) -> dict[str, Any]:
         job_id = f"job-{self._db.next_id('auto_assign_jobs')}"
-        created_assignments = []
+        created_assignments: list[dict[str, Any]] = []
         targets = (
             [
                 self._db.shift_instances[sid]
@@ -584,7 +584,7 @@ class AutoAssignJobService:
                 "assignment": assignment,
                 "conflicts": conflicts,
             })
-        job_payload = {
+        job_payload: dict[str, Any] = {
             "job_id": job_id,
             "status": "completed",
             "assignments_created": len(created_assignments),

@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi import APIRouter, Query, status
 from pydantic import BaseModel
 
@@ -7,6 +9,9 @@ from app.models.planning_pro import (
     AssignmentUpdate,
     AssignmentWriteResponse,
     ConflictEntry,
+    ConflictRule,
+    HrRule,
+    Publication,
     ShiftInstanceCreate,
     ShiftInstanceUpdate,
     ShiftTemplate,
@@ -200,11 +205,10 @@ def record_availability(payload: UserAvailabilityCreate) -> UserAvailability:
 
 
 @router.get("/rules")
-def list_rules(organization_id: int = Query(default=1)) -> dict[str, list]:
-    return {
-        "hr_rules": planning_rule_service.list_hr_rules(organization_id),
-        "conflict_rules": planning_rule_service.list_conflict_rules(organization_id),
-    }
+def list_rules(organization_id: int = Query(default=1)) -> dict[str, list[HrRule] | list[ConflictRule]]:
+    hr_rules = planning_rule_service.list_hr_rules(organization_id)
+    conflict_rules = planning_rule_service.list_conflict_rules(organization_id)
+    return {"hr_rules": hr_rules, "conflict_rules": conflict_rules}
 
 
 @router.post("/conflicts/preview", response_model=list[ConflictEntry])
@@ -217,25 +221,25 @@ def preview_conflicts(payload: ConflictPreviewPayload) -> list[ConflictEntry]:
     return conflicts
 
 
-@router.post("/publish", response_model=dict)
-def publish_planning(payload: PublishRequest) -> dict:
+@router.post("/publish", response_model=Publication)
+def publish_planning(payload: PublishRequest) -> Publication:
     publication = planning_publication_service.prepare_draft(
         organization_id=1, message=payload.message
     )
     published = planning_publication_service.publish(publication.id)
-    return published.model_dump()
+    return published
 
 
 @router.post("/auto-assign/start")
-def start_auto_assign(shift_ids: list[int] | None = None) -> dict:
+def start_auto_assign(shift_ids: list[int] | None = None) -> dict[str, Any]:
     return planning_auto_assign_service.start_job(shift_ids=shift_ids)
 
 
 @router.get("/auto-assign/status/{job_id}")
-def get_auto_assign_status(job_id: str) -> dict:
+def get_auto_assign_status(job_id: str) -> dict[str, Any]:
     return planning_auto_assign_service.get_status(job_id)
 
 
-@router.get("/audit", response_model=list[dict])
-def list_audit_trail() -> list[dict]:
+@router.get("/audit", response_model=list[dict[str, Any]])
+def list_audit_trail() -> list[dict[str, Any]]:
     return planning_audit_service.list_changes()

@@ -1,5 +1,5 @@
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Any, cast
 
 from fastapi.testclient import TestClient
 
@@ -7,49 +7,64 @@ from fastapi.testclient import TestClient
 def _setup_org_role_site(
     client: TestClient,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
-    org = client.post(
-        "/api/v1/organizations",
-        json={"name": "Org", "timezone": "UTC", "currency": "EUR"},
-    ).json()
-    role = client.post(
-        "/api/v1/roles",
-        json={"organization_id": org["id"], "name": "Tech"},
-    ).json()
-    site = client.post(
-        "/api/v1/sites",
-        json={"organization_id": org["id"], "name": "HQ", "address": "", "timezone": None},
-    ).json()
+    org = cast(
+        dict[str, Any],
+        client.post(
+            "/api/v1/organizations",
+            json={"name": "Org", "timezone": "UTC", "currency": "EUR"},
+        ).json(),
+    )
+    role = cast(
+        dict[str, Any],
+        client.post(
+            "/api/v1/roles",
+            json={"organization_id": org["id"], "name": "Tech"},
+        ).json(),
+    )
+    site = cast(
+        dict[str, Any],
+        client.post(
+            "/api/v1/sites",
+            json={"organization_id": org["id"], "name": "HQ", "address": "", "timezone": None},
+        ).json(),
+    )
     return org, role, site
 
 
 def _create_collaborator(
     client: TestClient, org: dict[str, Any], role: dict[str, Any]
 ) -> dict[str, Any]:
-    return client.post(
-        "/api/v1/collaborators",
-        json={
-            "organization_id": org["id"],
-            "full_name": "Alice",
-            "primary_role_id": role["id"],
-            "status": "active",
-            "email": "alice@example.com",
-        },
-    ).json()
+    return cast(
+        dict[str, Any],
+        client.post(
+            "/api/v1/collaborators",
+            json={
+                "organization_id": org["id"],
+                "full_name": "Alice",
+                "primary_role_id": role["id"],
+                "status": "active",
+                "email": "alice@example.com",
+            },
+        ).json(),
+    )
 
 
 def _create_mission(
     client: TestClient, site_id: int, role_id: int, start: datetime
 ) -> dict[str, Any]:
-    return client.post(
-        "/api/v1/missions",
-        json={
-            "site_id": site_id,
-            "role_id": role_id,
-            "status": "draft",
-            "start_utc": start.isoformat(),
-            "end_utc": (start + timedelta(hours=4)).isoformat(),
-        },
-    ).json()
+    return cast(
+        dict[str, Any],
+        client.post(
+            "/api/v1/missions",
+            json={
+                "site_id": site_id,
+                "role_id": role_id,
+                "status": "draft",
+                "start_utc": start.isoformat(),
+                "end_utc": (start + timedelta(hours=4)).isoformat(),
+            },
+        ).json(),
+    )
 
 
 def test_double_booking_detected_in_assignment_conflicts(client: TestClient) -> None:
