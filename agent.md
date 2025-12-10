@@ -15,6 +15,7 @@ Codex pilote le dépôt de bout en bout pour construire une application SaaS de 
   - Phase 2 – Bootstrap technique (backend, frontend, docker-compose, .env.example).
   - Phase 3 – CI/qualité (workflows, lint, tests backend/frontend).
   - Phase 4 – MVP (organisations, utilisateurs, collaborateurs, lieux, missions, planning de base).
+  - Phase 5 – Advanced Planning & Team Intelligence (steps 01 → 30) pilotée via `docs/roadmap/phase-05.md` + `docs/roadmap/phase5/step-XX.md`.
 - **Workflow de chaque évolution** : Analyse ➜ Mise à jour documentaire/agents si périmètre touché ➜ Validation explicite ➜ Implémentation (code + tests) ➜ Synchronisation (README, journal) ➜ Vérification CI.
 - Arrêt obligatoire en fin de chaque phase majeure avant de poursuivre.
 

@@ -46,3 +46,8 @@
 - Qualité et observabilité : objectif de couverture backend ≥ 85 %, scénarios e2e Playwright CRUD + planning simple, validation `/health` et `/metrics`, pré-configuration Prometheus/Grafana minimale.
 - Garde-fous agents & workflow : mise à jour des agents et prompts Codex consignés dans `docs/notes/phase-04-closure.md` ; scripts de garde à appliquer pour la Phase 5.
 - Phase 5 : lancer la roadmap avancée (steps 01 → 30) centrée sur le Planning PRO et la collaboration (voir section suivante).
+
+## Phase 5 : Advanced Planning & Team Intelligence (en cours)
+- Objectifs : Planning PRO (drag & drop avancé, redimensionnement, snap configurable, multi-jours), détection de conflits, modèles/récurrence, auto-assign basé sur disponibilités/compétences/charge, workflow brouillon → publication + notifications/audit, contraintes RH et disponibilité collaborateurs, UX/UI planning v2 (panels, filtres, couleurs équipe, responsive), observabilité et benchmarks dédiés.
+- Gouvernance : 30 étapes (`docs/roadmap/phase-05.md` + fichiers `docs/roadmap/phase5/step-XX.md`) à traiter séquentiellement avec garde-fous CI (ruff/mypy/pytest, npm lint/test/build, Playwright dès dispo) et mise à jour agents/blueprint/architecture.
+- Gates : non-régression Phase 4 (API/UX existantes), métriques planning exposées, documentation synchronisée (blueprint, architecture, agents, release notes), publication sécurisée sans demi-état, dashboards Prometheus/Grafana prêts.
