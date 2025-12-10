@@ -15,7 +15,8 @@ This FastAPI service exposes a versioned `/api/v1` surface with a healthcheck an
    ```bash
    uvicorn app.main:app --reload
    ```
-4. Open http://localhost:8000/docs for interactive docs.
+4. Open http://localhost:8000/ to confirm the service is running (links to docs and health check).
+5. Open http://localhost:8000/docs for interactive docs.
 
 ### Tests and Quality (CI parity)
 Les mêmes commandes sont exécutées dans la CI GitHub Actions :

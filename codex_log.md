@@ -19,3 +19,4 @@
 2025-12-20 | Phase 4.4 | tests & docs finalisation | Renforcement des tests backend/frontend (planning, CRUD, validations), documentation phase 4 centralisée et liens CI/agents alignés.
 2025-12-22 | Phase 4.U | ultimate stabilisation | Logs JSON, health/metrics enrichis, docs Phase 4 finalisées, CI frontend build ajoutée.
 2025-12-23 | Phase 4.U | support CORS frontend | Ajout de la configuration CORS backend paramétrable pour permettre les appels API du frontend containerisé.
+2025-12-10 | Phase 4.U | accueil API explicite | Ajout d'un endpoint racine renvoyant les liens vers la doc et le healthcheck pour éviter la page 404 par défaut.

@@ -27,6 +27,16 @@ def test_metrics_format(client: TestClient) -> None:
     assert "codex_app_info" in response.text
 
 
+def test_root_endpoint_gives_navigation(client: TestClient) -> None:
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {
+        "message": "Backend API is running.",
+        "docs_url": "/docs",
+        "health_url": "/api/v1/health",
+    }
+
+
 def test_create_organization_and_site_inherits_timezone(client: TestClient) -> None:
     organization = client.post(
         "/api/v1/organizations",
