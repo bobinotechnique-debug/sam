@@ -4,6 +4,7 @@ import Layout from "./components/Layout";
 import { CollaboratorCreatePage, CollaboratorEditPage, CollaboratorsPage } from "./pages/CollaboratorsPage";
 import { MissionCreatePage, MissionEditPage, MissionsPage } from "./pages/MissionsPage";
 import { PlanningPage } from "./pages/PlanningPage";
+import { PlanningProPage } from "./pages/PlanningProPage";
 import { OrganizationCreatePage, OrganizationEditPage, OrganizationsPage } from "./pages/OrganizationsPage";
 import { RoleCreatePage, RoleEditPage, RolesPage } from "./pages/RolesPage";
 import { SiteCreatePage, SiteEditPage, SitesPage } from "./pages/SitesPage";
@@ -35,6 +36,7 @@ function App() {
           <Route path="missions/:id/edit" element={<MissionEditPage />} />
 
           <Route path="planning" element={<PlanningPage />} />
+          <Route path="planning/pro" element={<PlanningProPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

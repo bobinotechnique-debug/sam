@@ -64,14 +64,18 @@
 - **Exigences techniques** : endpoint backend dédié (asynchrone) avec idempotence via `job_id`, logs structurés, métriques Prometheus (durée, couverture, conflits) et possibilité d’annuler un job.
 - **Limites connues** : pas de planification multi-objectif ni optimisation globale ; préférences avancées et contraintes contractuelles complexes repoussées à la v2.
 
-## Actions réalisées
-- Création de cette fiche `step-02` décrivant le modèle de données cible, les interactions UI V2, les règles de conflits/HR et l’auto-assign de base.
-- Alignement des exigences pour les futures étapes (architecture backend, API, UI) en identifiant les points de validation et d’observabilité.
+## Actions réalisées (Step 02)
+- **Backend** : ajout des modèles SQLAlchemy complets (missions, templates, instances, assignments, disponibilités, règles HR/conflits, audit/publications/notifications) avec migration Alembic « Planning PRO foundations » et schemas Pydantic alignés.
+- **Services** : création des squelettes de services (templates, instances, assignments, disponibilités, règles, audit/publications) pour préparer la logique métier et l’auto-assign v1.
+- **Frontend** : nouveaux types TypeScript et clients API placeholders (config planning, templates/instances/assignments) + page `PlanningProPage` avec timeline V2 mock, panneau filtres et zone conflits.
+- **Documentation** : blueprint Planning PRO synthétisée, architecture enrichie (flux UI ↔ API ↔ DB) et cette fiche mise à jour.
 
 ## Points de contrôle qualité
-- Toute implémentation backend devra dériver de ce modèle (tables/relations) et des règles listées ; les ADR/diagrams doivent être mis à jour en conséquence.
-- L’UI devra respecter les interactions décrites (drag/resize/snapping, surfacing des conflits, accessibilité) et rester alignée avec la blueprint UX maître.
-- L’auto-assign doit exposer métriques et logs dès la v1, et être rejouable sans effets de bord via `job_id`.
+- La migration Alembic doit rester la référence des tables Planning PRO ; tout changement ultérieur nécessite un nouvel incrément de version.
+- Les validations temporelles (start < end) et statuts (draft/published/cancelled, proposed/confirmed) doivent être conservées dans les services et API.
+- Les vues front doivent continuer à différencier brouillon/publié et surfaces de conflits (badges, panneau dédié) ; accessibilité clavier à maintenir dans les futures interactions.
 
-## Prochaines étapes
-- Step 03 : mettre à jour l’architecture backend (schéma DB, services et API) en appliquant cette spécification (shift_templates, availability, conflict_rules, auto-assign job).
+## Préparation Step 03
+- Exposer les endpoints `/api/v1/planning/*` en branchant les services squelettes (templates, instances, assignments, config règles, publications).
+- Débuter la logique de validation (règles dures/soft, collisions de disponibilité, locks d’assignments) et l’enregistrement d’audit `planning_change`.
+- Enrichir la timeline V2 avec de vrais fetch (React Query) et premiers retours de conflits/auto-assign (statut proposé + score).

@@ -2,6 +2,7 @@ import { request } from "./client";
 import {
   Collaborator,
   CollaboratorPayload,
+  PlanningProConfig,
   Mission,
   MissionPayload,
   Organization,
@@ -11,8 +12,14 @@ import {
   RolePayload,
   Shift,
   ShiftPayload,
+  ShiftInstance,
+  ShiftInstancePayload,
+  ShiftTemplate,
+  ShiftTemplatePayload,
   Site,
   SitePayload,
+  Assignment,
+  AssignmentPayload,
 } from "./types";
 
 const defaultPage = 1;
@@ -180,4 +187,50 @@ export function updateShift(id: number, payload: Partial<ShiftPayload>): Promise
 
 export function deleteShift(id: number): Promise<void> {
   return request(`/api/v1/shifts/${id}`, { method: "DELETE" });
+}
+
+export function getPlanningProConfig(): Promise<PlanningProConfig> {
+  return request(`/api/v1/planning/config`);
+}
+
+export function listShiftTemplates(
+  page?: number,
+  pageSize?: number,
+): Promise<PaginatedResponse<ShiftTemplate>> {
+  return request(withPagination(`/api/v1/planning/templates`, page, pageSize));
+}
+
+export function createShiftTemplate(payload: ShiftTemplatePayload): Promise<ShiftTemplate> {
+  return request<ShiftTemplate>(`/api/v1/planning/templates`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function listShiftInstances(
+  page?: number,
+  pageSize?: number,
+): Promise<PaginatedResponse<ShiftInstance>> {
+  return request(withPagination(`/api/v1/planning/instances`, page, pageSize));
+}
+
+export function createShiftInstance(payload: ShiftInstancePayload): Promise<ShiftInstance> {
+  return request<ShiftInstance>(`/api/v1/planning/instances`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function listAssignments(
+  page?: number,
+  pageSize?: number,
+): Promise<PaginatedResponse<Assignment>> {
+  return request(withPagination(`/api/v1/planning/assignments`, page, pageSize));
+}
+
+export function createAssignment(payload: AssignmentPayload): Promise<Assignment> {
+  return request<Assignment>(`/api/v1/planning/assignments`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
