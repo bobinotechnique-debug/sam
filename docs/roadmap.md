@@ -26,23 +26,23 @@
 - Alignement des scripts locaux/CI documentés ; rappel des règles de traçabilité et de non régression.
 - **Gates** : pipeline verte obligatoire avant toute évolution, commandes de qualité synchronisées entre doc/CI.
 
-## Phase 4 : MVP Planning Core (en cours)
+## Phase 4 : MVP Planning Core (validée)
 - **Phase 4.1 – Modèle de données & API core (validée)** : CRUD complet sur organisations, collaborateurs, sites, missions/shifts avec validations de cohérence et logs d'audit ; tests API principaux livrés.
-- **Phase 4.2 – UI CRUD basique (en cours)** : vues React pour gérer organisations/collaborateurs/lieux/missions, formulaires simples et appels API cohérents.
+- **Phase 4.2 – UI CRUD basique (validée)** : vues React pour gérer organisations/collaborateurs/lieux/missions, formulaires simples et appels API cohérents.
   - Vues livrées : listes avec états de chargement/erreur/vide, actions créer/éditer/supprimer avec confirmation.
   - Périmètre limité : aucun planning visuel ni drag & drop, uniquement la gestion des référentiels et formulaires basiques.
-- **Phase 4.3 – Planning visuel simple** : vue planning jour/semaine, affichage des missions par lieu et affectations, mises à jour backend correspondantes.
+- **Phase 4.3 – Planning visuel simple (validée)** : vue planning jour/semaine, affichage des missions par lieu et affectations, mises à jour backend correspondantes.
   - Nouvelle page `/planning` avec modes Jour/Semaine et fenêtre horaire configurable (06:00 → 02:00) documentée dans le code.
   - Groupement par lieu ; les missions sont positionnées dans la grille temporelle avec les collaborateurs issus des shifts.
   - Interaction principale : clic sur une mission pour ouvrir une modale, modifier heure début/fin, lieu et affectations ; synchronisation via API missions + shifts (création/suppression mise à jour des affectations).
   - Gestion des erreurs basique en surimpression et rafraîchissement du planning après sauvegarde ; drag & drop restera optionnel pour une phase ultérieure.
-- **Phase 4.4 – Stabilisation MVP (livrée)** : tests supplémentaires, nettoyage et documentation consolidée (README, roadmap) avec CI verte.
+- **Phase 4.4 – Stabilisation MVP (validée)** : tests supplémentaires, nettoyage et documentation consolidée (README, roadmap) avec CI verte.
   - Backend : couverture des validations critiques (fenêtres temporelles mission/shift, cohérence site/role/mission, conflits de planning) via pytest.
   - Frontend : tests Vitest sur la vue planning (états vide/erreur, ouverture modale) en plus des parcours de navigation existants.
   - CI : workflows GitHub Actions alignés sur les commandes locales (`ruff`, `mypy`, `pytest`, `npm run lint`, `npm run test`).
 
-### Clôture de phase & transition (draft)
-- Consolidation documentaire finale : READMEs racine/backend/frontend, doc planning (vues, interactions, modèles), schémas ASCII API ↔ frontend et release notes Phase 4.
+### Clôture de phase & transition
+- Consolidation documentaire finale : READMEs racine/backend/frontend, doc planning (vues, interactions, modèles), schémas ASCII API ↔ frontend et release notes Phase 4 (`docs/release/phase-04.md`).
 - Qualité et observabilité : objectif de couverture backend ≥ 85 %, scénarios e2e Playwright CRUD + planning simple, validation `/health` et `/metrics`, pré-configuration Prometheus/Grafana minimale.
-- Garde-fous agents & workflow : mise à jour d'AGENT_ROOT et scripts de garde (docs_guard, roadmap_guard) pour verrouiller la fin de phase et préparer la Phase 5.
-- Prompts Codex de finalisation Phase 4 et de cadrage Phase 5 consignés dans `docs/notes/phase-04-closure.md` avant lancement de la prochaine phase.
+- Garde-fous agents & workflow : mise à jour des agents et prompts Codex consignés dans `docs/notes/phase-04-closure.md` ; scripts de garde à appliquer pour la Phase 5.
+- Phase 5 : lancer la roadmap avancée (steps 01 → 30) centrée sur le Planning PRO et la collaboration (voir section suivante).

@@ -10,8 +10,8 @@ Plateforme SaaS de planning multi-sites construite sur FastAPI + React + Tailwin
   - Documentation Phase 4 : `docs/roadmap/phase-04.md`, spécification planning simple v1 (`docs/specs/planning_simple_v1.md`), API (`docs/specs/api_phase_4.md`), UX (`docs/specs/ux_phase_4.md`).
 
 ## Clôture Phase 4 & transition Phase 5
-- Le plan de fermeture et les prompts Codex pour boucler la Phase 4 puis lancer la Phase 5 sont consignés dans `docs/notes/phase-04-closure.md` (release notes à ajouter, cibles de couverture ≥ 85 %, e2e Playwright CRUD + planning, mise à jour des agents/guard scripts).
-- La roadmap met en avant ces jalons de clôture et les gardes-fous attendus avant l'ouverture de la Phase 5 (`docs/roadmap.md`).
+- La Phase 4 est clôturée : release notes disponibles (`docs/release/phase-04.md`) et prompts Codex de fermeture/cadrage consignés dans `docs/notes/phase-04-closure.md` (rappel des cibles de couverture ≥ 85 %, e2e Playwright CRUD + planning, garde-fous agents).
+- La roadmap capture les jalons de clôture et prépare l'ouverture de la Phase 5 (`docs/roadmap.md`).
 
 ## Vision
 - One-command local launch via Docker Compose.

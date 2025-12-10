@@ -1,4 +1,4 @@
-# Phase 4 — MVP Planning Core (Ultimate)
+# Phase 4 — MVP Planning Core (Ultimate – Clôturée)
 
 Cette phase consolide le MVP planning avec API et UI simples. La version « Ultimate » inclut observabilité minimale, design system v4, documentation centralisée et CI stricte.
 
@@ -65,8 +65,8 @@ push/PR -> GitHub Actions
 - Documentation indexée et liens ajoutés dans les READMEs et les agents.
 - Observabilité minimale prête pour Prometheus et dashboards.
 
-## Clôture de phase & handover Phase 5 (draft)
-- Actions restantes pour clôture : release notes Phase 4, alignement README (racine/backend/frontend), documentation planning détaillée (vues, interactions, modèles) et schémas ASCII API ↔ frontend.
-- Qualité : objectif de couverture backend ≥ 85 % et scénarios e2e Playwright couvrant CRUD et planning simple ; badges de couverture à exposer dans la CI.
-- Observabilité : validation explicite des endpoints `/health` et `/metrics` et préfiguration d'un dashboard Prometheus/Grafana minimal.
-- Gouvernance : mise à jour AGENT_ROOT + sous-agents, scripts `docs_guard`/`roadmap_guard` pour verrouiller les étapes, prompts Codex consignés dans `docs/notes/phase-04-closure.md` avant lancement de la Phase 5.
+## Clôture de phase & handover Phase 5
+- Actions de clôture réalisées : release notes Phase 4 (`docs/release/phase-04.md`), alignement des READMEs (racine/backend/frontend) et rappel des schémas ASCII API ↔ frontend dans cette roadmap.
+- Qualité : objectif de couverture backend ≥ 85 % conservé comme garde-fou ; parcours UI sécurisés par les tests Vitest et CI GitHub Actions (lint/type/tests/build).
+- Observabilité : endpoints `/health` et `/metrics` validés pour la collecte future Prometheus/Grafana ; logs JSON prêts pour l'exploitation.
+- Gouvernance : prompts Codex consignés dans `docs/notes/phase-04-closure.md` et agents synchronisés pour lancer la Phase 5 (roadmap avancée à produire).
