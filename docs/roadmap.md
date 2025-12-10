@@ -4,13 +4,14 @@
 - Cadre des agents (`agent.md`, `agents/`), journal `codex_log.md`.
 - Alignement sur la stack verrouillée et règles de qualité.
 
-## Phase 1 : Documentation fondatrice (en cours)
+## Phase 1 : Documentation fondatrice (validée)
 - Consolider les specs fonctionnelles/techniques, l'architecture et les ADR.
 - Définir le périmètre métier initial (organisations, sites, rôles, collaborateurs, missions, shifts).
 - Formaliser critères d'acceptation et exigences de qualité (CI, sécurité, traçabilité).
 - **Livrables** : backlog priorisé pour le bootstrap, API cibles listées, règles de validation et modèle de données stabilisés.
 - **Sortie de phase** : documents `docs/*.md` synchronisés, journal `codex_log.md` mis à jour, validation du périmètre par les agents.
 - **Gates** : périmètre approuvé, ADR complètes pour les choix structurants (versionnage API, UTC, multi-org, erreurs).
+- **Validation** : périmètre et documents approuvés par les agents ; aucune décision structurante en attente hors ADR.
 
 ## Phase 2 : Bootstrap technique
 - Squelette FastAPI avec routers/domains, services et configuration `.env` ; healthcheck opérationnel.
