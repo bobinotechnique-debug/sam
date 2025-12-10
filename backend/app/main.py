@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from starlette.middleware.base import RequestResponseEndpoint
 
 from app.api.errors import register_exception_handlers
@@ -42,6 +43,14 @@ def create_application() -> FastAPI:
         response = await call_next(request)
         response.headers.setdefault("X-App-Timestamp", datetime.now(UTC).isoformat())
         return response
+
+    @application.get("/", include_in_schema=False, response_class=JSONResponse)
+    async def root() -> dict[str, str]:
+        return {
+            "message": "Backend API is running.",
+            "docs_url": "/docs",
+            "health_url": "/api/v1/health",
+        }
 
     register_exception_handlers(application)
     application.include_router(router)
