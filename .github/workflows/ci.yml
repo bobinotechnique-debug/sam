@@ -36,7 +36,7 @@ jobs:
         run: pytest
 
   frontend-ci:
-    name: CI / Frontend - lint and tests
+    name: CI / Frontend - lint, tests, build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -58,3 +58,7 @@ jobs:
       - name: Tests (vitest)
         working-directory: frontend
         run: npm run test
+
+      - name: Build (vite)
+        working-directory: frontend
+        run: npm run build

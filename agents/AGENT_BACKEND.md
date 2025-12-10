@@ -26,3 +26,4 @@ Garantir la conception, la sécurité et la qualité du backend FastAPI/PostgreS
 - **Qualité** : refuser tout merge sans `ruff check app`, `mypy app` et `pytest` verts (parité avec `.github/workflows/ci.yml`).
 - **Traçabilité** : toute correction de validation ou de règles métier doit être reflétée dans la doc (README backend, roadmap phase 4).
   - Références : `docs/roadmap/phase-04.md` (sous-phases, commandes CI) et `docs/specs/planning_simple_v1.md` (flux planning v1).
+- **Observabilité (Phase 4 Ultimate)** : logs JSON avec `trace_id`, endpoints `/health` et `/health/metrics` enrichis (counts, uptime, app info) et validation via tests dédiés.

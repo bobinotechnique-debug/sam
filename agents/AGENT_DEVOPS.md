@@ -13,6 +13,7 @@ Assurer la reproductibilité, l'observabilité future et la qualité continue du
 - Maintenir les scripts de démarrage locaux (docker-compose, make/poetry/npm) et documenter dans `README.md`.
 - Surveiller la sécurité : pas de secrets dans le repo, dépendances à jour, scans ou jobs dédiés si nécessaires.
 - Préparer l'observabilité (logging structuré, futures métriques/traces) selon la roadmap.
+- Vérifier la parité CI : lint/type/tests backend, lint/tests/build frontend et exposition des artefacts observabilité (`/health`, `/health/metrics`).
 
 ## Processus et garde-fous
 - Toute modification d'infra ou CI doit être synchronisée avec `docs/specs_techniques.md`, `docs/decisions.md` et tracée dans `codex_log.md`.

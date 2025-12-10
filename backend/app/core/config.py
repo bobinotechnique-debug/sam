@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     project_name: str = Field(default="Codex Starter", alias="PROJECT_NAME")
+    project_version: str = Field(default="0.4.0", alias="PROJECT_VERSION")
     database_url: str = Field(
         default="postgresql://app_user:change_me@db:5432/app_db",
         alias="DATABASE_URL",

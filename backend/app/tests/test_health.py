@@ -3,10 +3,28 @@ from datetime import UTC, datetime, timedelta
 from fastapi.testclient import TestClient
 
 
-def test_healthcheck_returns_ok(client: TestClient) -> None:
+def test_healthcheck_returns_details(client: TestClient) -> None:
     response = client.get("/api/v1/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    payload = response.json()
+    assert payload["status"] == "ok"
+    assert "version" in payload
+    assert payload["dependencies"] == {"database": "ok"}
+    assert payload["counts"] == {
+        "organizations": 0,
+        "sites": 0,
+        "roles": 0,
+        "collaborators": 0,
+        "missions": 0,
+        "shifts": 0,
+    }
+
+
+def test_metrics_format(client: TestClient) -> None:
+    response = client.get("/api/v1/health/metrics")
+    assert response.status_code == 200
+    assert "codex_entities_total" in response.text
+    assert "codex_app_info" in response.text
 
 
 def test_create_organization_and_site_inherits_timezone(client: TestClient) -> None:
