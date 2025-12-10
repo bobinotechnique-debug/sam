@@ -32,3 +32,9 @@
 - **Rationale**: Stabilise l'interface contractuelle pour le front et les intégrations tierces, et facilite l'évolution ultérieure via `/api/v2` sans breaking changes immédiates.
 - **Impacts**: Documentation OpenAPI alignée sur ce préfixe ; tests et clients front doivent inclure la version ; rewrite éventuelle via reverse proxy à prévoir pour futures versions.
 - **Status**: Accepted.
+
+## ADR-007: Format d'erreurs normalisé et traçabilité
+- **Decision**: Utiliser une réponse d'erreur unique `{ code, message, detail, trace_id }` sur toutes les routes, avec `trace_id` injecté par middleware.
+- **Rationale**: Facilite le support, l'observabilité et les tests contractuels front ; simplifie la corrélation logs/requêtes.
+- **Impacts**: Middleware de corrélation obligatoire, tests API doivent vérifier la présence de `trace_id`, les services doivent renvoyer des codes HTTP cohérents (400/401/403/404/409/422/500).
+- **Status**: Accepted.

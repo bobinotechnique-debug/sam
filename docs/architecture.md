@@ -20,6 +20,18 @@
 - **Core & Security** : configuration, logging, auth JWT, gestion des erreurs, middlewares (trace-id, CORS).
 - **Frontend Modules** : pages référentiel, vues calendrier et composants partagés (design system minimal, toasts/erreurs futures).
 
+### Modules applicatifs (prévisionnels)
+- **Backend**
+  - `app/core` : settings `.env`, logger JSON, middlewares (CORS, trace-id, auth), gestion d'erreurs normalisées.
+  - `app/api/<domaine>` : routers par ressource avec dépendances injectées (services/repos) et pagination standard.
+  - `app/services/<domaine>` : règles métier (compatibilité rôle/compétence, validation fuseau, transitions de statut).
+  - `app/repositories/<domaine>` : accès Postgres via SQLAlchemy async, gestion transactionnelle et filtres `organization_id`/`site_id` obligatoires.
+  - `app/tests` : tests isolés service + tests API avec fixtures DB.
+- **Frontend**
+  - `modules/core` : layout, providers (React Query futur), gestion des notifications/erreurs.
+  - `modules/<domaine>` : écrans CRUD référentiel, vues planning jour/semaine/mois, composants d'édition de shift.
+  - `components/ui` : boutons, inputs, badges de statut, modales de confirmation.
+
 ## Request Flow
 1. Requête HTTP reçue par le router FastAPI (`/health`, `/organizations`, `/missions/...`).
 2. Validation Pydantic -> service métier (vérif rôle/compétence, horaires, site/org présents).
@@ -31,6 +43,12 @@
 2. Les pages planning consomment des endpoints paginés/filtrés (`site_id`, `start`, `end`, `role_id`).
 3. Les validations front (saisie horaires, fuseau, filtres) réutilisent les contraintes exposées par les schémas API (OpenAPI/TS types).
 
+### Scénario de planification (séquence simplifiée)
+1. **Créer mission** : POST `/missions` ➜ service vérifie site/rôle et fuseau, enregistre en `draft`.
+2. **Affecter collaborateur** : POST `/shifts` ➜ service vérifie disponibilité (chevauchements) + compatibilité rôle/organisation, retourne shift `confirmed` ou `draft` selon règle.
+3. **Afficher planning** : GET `/shifts` filtré par site/période ➜ front mappe fuseaux locaux et affiche statuts via composants calendrier.
+4. **Annuler shift** : PATCH `/shifts/{id}` ➜ statut `cancelled` et motif stockés ; réponse propage `trace_id` pour audit.
+
 ## Observabilité & Logging
 - Logging JSON console par service, niveau configurable via `.env`.
 - Healthcheck `/health` ; exposition `/docs`/`/redoc` pour l'API ; métriques/trace prévus Phase 4.
@@ -38,6 +56,11 @@
 ### Traçabilité
 - Middleware de corrélation (trace-id) appliqué sur toutes les routes ; ID propagé au logger.
 - Erreurs normalisées (code, message, détail, trace-id) pour faciliter le support.
+
+## Vue déploiement (local dev)
+- **docker-compose** : réseau interne unique, services `backend` (uvicorn), `frontend` (Vite build/serve), `db` (PostgreSQL). Dépendances : backend attend DB healthy ; frontend consomme API via URL configurée.
+- **Configuration** : `.env.example` référence les variables critiques (DB, JWT, CORS, log level) et sert de base au `.env` local.
+- **Ports** : 8000 (API), 5173 (front), 5432 (PostgreSQL) exposés pour le dev ; aucune exposition additionnelle par défaut.
 
 ## Sécurité & Configuration
 - Variables d'environnement centralisées (`.env`) pour base de données, secrets JWT, CORS, log level.

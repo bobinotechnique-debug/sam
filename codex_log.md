@@ -5,3 +5,4 @@
 2025-12-10 | Environnement | tentative docker compose | Copie du template .env et essai de lancement docker compose (--build) bloque car Docker est absent sur l'environnement local.
 2025-12-10 | Phase 1 | itération documentation fondatrice | Enrichissement des specs fonctionnelles/techniques, architecture, roadmap et ADR (versionnage API) pour préparer le bootstrap.
 2025-12-11 | Phase 1 | documentation fondatrice | Consolidation des specs fonctionnelles/techniques, architecture, ADR et roadmap pour cadrer le SaaS de planning.
+2025-12-11 | Phase 1 | documentation fondatrice approfondie | Itération sur la documentation (INDEX, specs fonctionnelles/techniques, architecture, roadmap, ADR erreurs) pour verrouiller le périmètre et la traçabilité.

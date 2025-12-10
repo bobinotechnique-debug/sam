@@ -8,6 +8,8 @@ Elle doit fluidifier la collaboration entre responsables planning, managers de s
 - Unifier la donnée de planification (organisations, sites, référentiels de rôles) et éviter les doublons.
 - Garantir la cohérence horaire multi-fuseaux (saisie locale, stockage UTC) et la visibilité consolidée des affectations.
 - Préparer l'exposition d'API claires pour itérer rapidement sur le front et les intégrations futures.
+- Sécuriser l'accès par rôle et par organisation dès les premières API pour éviter la dette d'autorisation.
+- Rendre les validations explicites (formats, fuseaux, chevauchements) afin d'alimenter les schémas front dès le bootstrap.
 
 ## Personas et responsabilités
 - **Responsable planning** : structure les organisations et sites, définit les rôles/compétences, planifie à l'échelle multi-sites.
@@ -21,6 +23,11 @@ Elle doit fluidifier la collaboration entre responsables planning, managers de s
 - **Missions** : besoins planifiés (date, site, rôle requis, volume horaire, budget cible).
 - **Shifts / affectations** : créneaux attribués à un collaborateur sur une mission, avec état (brouillon, confirmé, annulé).
 - **Disponibilités/indisponibilités** : calendrier des contraintes collaborateur (prévu Phase 3+).
+
+### Hypothèses de périmètre (Phase 1)
+- Multi-organisation dans un même schéma, sans partage d'entités entre organisations (filtrage obligatoire dans les parcours et API).
+- Les contraintes réglementaires (durée légale, repos) ne sont pas modélisées en Phase 1 ; elles seront traitées en Phase 4+.
+- Les notifications et exports restent hors périmètre court terme mais doivent être anticipées dans les modèles (champs de statut, timestamps, notes internes).
 
 ### Attributs cibles par domaine (Phase 2-3)
 - **Organisation** : nom, fuseau horaire par défaut, paramètres de coût (monnaie, taux horaire moyen), contact administratif.
@@ -36,6 +43,12 @@ Elle doit fluidifier la collaboration entre responsables planning, managers de s
 - **Planification des shifts** : affecter un collaborateur à une mission, ajuster horaires, changer le statut, annuler une affectation.
 - **Consultation planning** : vues Jour/Semaine/Mois par site et par personne ; recherche par rôle ou compétence.
 - **Qualité de données** : validation des champs (horaires cohérents, rôles obligatoires, site requis, doublons évités).
+
+### Parcours critiques détaillés (Phase 2)
+1. **Créer une mission** : le responsable planning sélectionne un site (obligatoire), un rôle, une période et un budget ; la mission passe en `draft` tant qu'aucun shift n'est confirmé.
+2. **Affecter un collaborateur** : le manager de site choisit un collaborateur compatible (même organisation, rôle/compétence requis) et définit un shift sans chevauchement ; le statut passe à `confirmed` si validé.
+3. **Modifier ou annuler un shift** : un shift confirmé peut être ajusté (horaires, collaborateur) ou annulé avec motif ; l'historique d'annulation est conservé pour l'audit futur.
+4. **Consulter le planning** : filtres par site/période/rôle/compétence ; affichage des statuts et fuseaux horaires locaux ; mise en avant des collisions potentielles détectées par le service.
 
 ## Exigences fonctionnelles immédiates (Phase 1)
 - Documentation fondatrice alignée sur le périmètre (présent fichier + `specs_techniques.md`, `architecture.md`, `roadmap.md`).
@@ -65,8 +78,11 @@ Elle doit fluidifier la collaboration entre responsables planning, managers de s
 - Référentiel : aucune suppression dure si entité référencée (prévoir soft-delete ou blocage).
 - Compatibilité : rôle requis d'une mission doit exister et être associé à l'organisation ; un collaborateur doit partager l'organisation et posséder le rôle/compétence.
 - Fuseaux : tout nouvel horaire saisit un fuseau explicite (du site) avant conversion UTC.
+- Statuts : transitions autorisées `draft` ➜ `confirmed` ➜ `cancelled`; retour à `draft` uniquement si aucune affectation confirmée.
+- Cohérence planning : une mission ne peut être publiée sans site ni rôle ; un shift ne peut être confirmé si la mission est annulée ou inactive.
 
 ## Critères d'acceptation transverses
 - **Documentation** : chaque évolution de périmètre met à jour `docs/` et `agent.md` avant code.
 - **Qualité** : tests automatisés pour chaque parcours ajouté (API + front) et CI verte obligatoire pour merger.
 - **Sécurité** : aucun secret en clair ; validation d'entrée stricte et logs structurés d'erreur/acquisition.
+- **Expérience** : les vues planning affichent les fuseaux et statuts ; les erreurs bloquantes sont explicites et actionnables pour l'utilisateur final.
