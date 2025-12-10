@@ -1,7 +1,7 @@
 # Frontend (React + Vite + Tailwind)
 
 ## Overview
-This frontend uses React with Vite and Tailwind CSS. It now provides CRUD screens for organizations, collaborators, sites and missions (Phase 4.2) using the backend API.
+This frontend uses React with Vite and Tailwind CSS. It now provides CRUD screens for organizations, collaborators, sites and missions (Phase 4.2) using the backend API, and a planning view (Phase 4.3) grouped par lieu avec affectations visibles.
 
 ## Getting Started
 
@@ -29,6 +29,25 @@ npm run lint && npm run test
 - `src/main.tsx` — React entrypoint
 - `src/index.css` — Tailwind entry
 - `tests/` — Vitest setup for UI
+- `src/pages/PlanningPage.tsx` — vue planning jour/semaine (groupée par lieu)
+- `src/components/planning/*` — toolbar, grilles et modale de détail/affectation
+
+## Phase 4.3 – Vue /planning
+- Route : `/planning`, accessible depuis la navigation.
+- Modes : jour et semaine, fenêtre horaire configurable en code (par défaut 06:00 → 02:00).
+- Groupement : par lieu, missions positionnées horizontalement ; empilement simple en cas de chevauchement.
+- Interaction : clic sur une mission → modale pour modifier heure début/fin, lieu, affectations (création/suppression de shifts).
+- Chargement : missions, sites, collaborateurs et shifts sont rechargés via l'API après sauvegarde.
+
+Layout ASCII simplifié (mode jour) :
+```
+[Jour|Semaine] [< 12 jan >] [Rafraîchir]
+
+Lieu A | 06h | 08h | 10h | ... | 02h
+        [==== Mission 42 ====]
+Lieu B | 06h | 08h | 10h | ... | 02h
+        [Mission 43][Mission 44     ]
+```
 
 ## Phase 4.2 – UI CRUD basique
 - Routes principales :
