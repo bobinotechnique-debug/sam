@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from app.core.logging import logger
 from app.models.common import PaginatedResponse
 from app.models.shift import Shift, ShiftCreate, ShiftUpdate
 from app.services.database import InMemoryDatabase
@@ -36,6 +37,14 @@ class ShiftService:
         self._assert_no_overlap(collaborator.id, payload.start_utc, payload.end_utc, ignore_id=None)
         shift = Shift(id=self._db.next_id("shifts"), **payload.model_dump())
         self._db.shifts[shift.id] = shift
+        logger.info(
+            "Shift created",
+            extra={
+                "shift_id": shift.id,
+                "mission_id": payload.mission_id,
+                "collaborator_id": payload.collaborator_id,
+            },
+        )
         return shift
 
     def get(self, shift_id: int) -> Shift:
@@ -68,6 +77,7 @@ class ShiftService:
         self._assert_no_overlap(collaborator_id, start_utc, end_utc, ignore_id=shift_id)
         updated = existing.model_copy(update=updates)
         self._db.shifts[shift_id] = updated
+        logger.info("Shift updated", extra={"shift_id": shift_id})
         return updated
 
     def delete(self, shift_id: int) -> None:
@@ -75,6 +85,7 @@ class ShiftService:
         if shift is None:
             raise NotFoundError("Shift not found")
         del self._db.shifts[shift_id]
+        logger.info("Shift deleted", extra={"shift_id": shift_id})
 
     def _assert_no_overlap(
         self, collaborator_id: int, start: datetime, end: datetime, ignore_id: int | None

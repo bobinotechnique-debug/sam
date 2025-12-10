@@ -72,6 +72,12 @@ Elle doit fluidifier la collaboration entre responsables planning, managers de s
 - Healthcheck exposé et consommé par le frontend pour vérifier le lien front/back dès le démarrage.
 - Docker compose prêt pour lancer API + frontend + PostgreSQL, avec configuration via `.env.example`.
 
+### Avancement Phase 4.1 – Modèle de données & API core (MVP)
+- CRUD REST complet pour organisation, site, collaborateur, mission/shift (affectation) avec schémas de validation dédiés.
+- Règles métiers minimales : fuseaux horaires valides, cohérence organisation/site/rôle, pas de chevauchement d'affectations par collaborateur, fenêtres temporelles ordonnées.
+- Journalisation des actions critiques (création, mise à jour, suppression) pour faciliter l'audit et le support.
+- Tests API couvrant les parcours principaux : CRUD organisation, validations rôle/collaborateur, cohérence mission, cycle de vie d'un shift avec annulation.
+
 ## Règles métier clés (préparatoires)
 - Un shift appartient à une mission et à un site ; un collaborateur ne peut avoir deux shifts qui se chevauchent sur le même créneau.
 - Les horaires sont stockés en UTC et présentés dans le fuseau du site.

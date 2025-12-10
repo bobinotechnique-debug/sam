@@ -1,3 +1,4 @@
+from app.core.logging import logger
 from app.models.common import PaginatedResponse
 from app.models.role import Role, RoleCreate, RoleUpdate
 from app.services.database import InMemoryDatabase
@@ -17,6 +18,10 @@ class RoleService:
             raise NotFoundError("Organization not found")
         role = Role(id=self._db.next_id("roles"), **payload.model_dump())
         self._db.roles[role.id] = role
+        logger.info(
+            "Role created",
+            extra={"role_id": role.id, "organization_id": payload.organization_id},
+        )
         return role
 
     def get(self, role_id: int) -> Role:
@@ -29,6 +34,7 @@ class RoleService:
         role = self.get(role_id)
         updated = role.model_copy(update=payload.model_dump(exclude_none=True))
         self._db.roles[role_id] = updated
+        logger.info("Role updated", extra={"role_id": role_id})
         return updated
 
     def delete(self, role_id: int) -> None:
@@ -40,3 +46,4 @@ class RoleService:
         if any(mission.role_id == role_id for mission in self._db.missions.values()):
             raise ConflictError("Role is used by missions")
         del self._db.roles[role_id]
+        logger.info("Role deleted", extra={"role_id": role_id})

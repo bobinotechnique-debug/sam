@@ -13,7 +13,7 @@
 - **Gates** : périmètre approuvé, ADR complètes pour les choix structurants (versionnage API, UTC, multi-org, erreurs).
 - **Validation** : périmètre et documents approuvés par les agents ; aucune décision structurante en attente hors ADR.
 
-## Phase 2 : Bootstrap technique
+## Phase 2 : Bootstrap technique (validée)
 - Squelette FastAPI avec routers/domains, services et configuration `.env` ; healthcheck opérationnel.
 - Squelette React/Vite/Tailwind avec layout, navigation et appels API mockés.
 - Docker Compose complet (backend, frontend, PostgreSQL) + `.env.example` cohérent.
@@ -21,16 +21,13 @@
 - **État** : endpoints `/api/v1/health` et CRUD référentiel implémentés sur un service en mémoire, front connecté au healthcheck, docker-compose fonctionnel pour lancer API/front/DB.
 - **Gates** : commandes dev documentées dans `README.md`, pipeline CI verte, endpoints `/health` et CRUD référentiel opérationnels.
 
-## Phase 3 : Core produit
-- CRUD organisations/sites/rôles/collaborateurs/missions/shifts avec validations métier.
-- Authentification JWT + autorisations par rôle ; gestion des fuseaux horaires.
-- Tests d'intégration (API + DB) et couverture front (Vitest) sur parcours critiques.
-- Premières vues planning (Jour/Semaine) avec drag-and-drop côté front.
-- **Gates** : CI verte avec lint/typage/tests, démos manuelles sur parcours référentiel + planning.
-- **Observabilité minimale** : logs JSON corrélés, traces d'erreur avec `trace_id`, métriques healthcheck surveillées.
+## Phase 3 : CI / Qualité (validée)
+- Workflows GitHub Actions prêts (ruff, mypy, pytest, npm lint/test) avec exigences bloquantes.
+- Alignement des scripts locaux/CI documentés ; rappel des règles de traçabilité et de non régression.
+- **Gates** : pipeline verte obligatoire avant toute évolution, commandes de qualité synchronisées entre doc/CI.
 
-## Phase 4 : Fiabilisation & Observabilité
-- Logs enrichis (trace-id), métriques et traces (OpenTelemetry envisagé).
-- Optimisations perf (caching lecture, pagination généralisée) et durcissement CI (coverage thresholds, scan dépendances).
-- Gestion des indisponibilités, notifications et exports partageables.
-- Préproduction/production alignées (secret management, migrations automatisées).
+## Phase 4 : MVP Planning Core (en cours)
+- **Phase 4.1 – Modèle de données & API core** : CRUD complet sur organisations, collaborateurs, sites, missions/shifts avec validations de cohérence et logs d'audit ; tests API principaux (livré).
+- **Phase 4.2 – UI CRUD basique** : vues React pour gérer organisations/collaborateurs/lieux/missions, formulaires simples et appels API cohérents.
+- **Phase 4.3 – Planning visuel simple** : vue planning jour/semaine, affichage des missions par lieu et affectations, mises à jour backend correspondantes.
+- **Phase 4.4 – Stabilisation MVP** : tests supplémentaires, nettoyage des logs/code, documentation consolidée (README, specs fonctionnelles/techniques, roadmap mise à jour) et CI verte.

@@ -1,27 +1,15 @@
 from datetime import UTC, datetime, timedelta
 
-import pytest
 from fastapi.testclient import TestClient
 
-from app.main import app
-from app.services.registry import db
 
-
-@pytest.fixture(autouse=True)
-def reset_database() -> None:
-    db.reset()
-
-
-client = TestClient(app)
-
-
-def test_healthcheck_returns_ok() -> None:
+def test_healthcheck_returns_ok(client: TestClient) -> None:
     response = client.get("/api/v1/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
 
-def test_create_organization_and_site_inherits_timezone() -> None:
+def test_create_organization_and_site_inherits_timezone(client: TestClient) -> None:
     organization = client.post(
         "/api/v1/organizations",
         json={"name": "Acme Corp", "timezone": "Europe/Paris", "currency": "EUR"},
@@ -37,7 +25,7 @@ def test_create_organization_and_site_inherits_timezone() -> None:
     assert site.json()["timezone"] == "Europe/Paris"
 
 
-def test_shift_overlap_is_rejected() -> None:
+def test_shift_overlap_is_rejected(client: TestClient) -> None:
     org = client.post(
         "/api/v1/organizations",
         json={"name": "Overlap Org", "timezone": "UTC", "currency": "EUR"},
