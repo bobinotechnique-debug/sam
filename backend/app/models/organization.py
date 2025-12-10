@@ -1,4 +1,4 @@
-from zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -6,7 +6,10 @@ from pydantic import BaseModel, Field, field_validator
 def _validate_timezone(value: str | None) -> str | None:
     if value is None:
         return None
-    ZoneInfo(value)  # raises if invalid
+    try:
+        ZoneInfo(value)
+    except ZoneInfoNotFoundError as exc:
+        raise ValueError(f"Invalid timezone: {value}") from exc
     return value
 
 

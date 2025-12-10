@@ -12,3 +12,4 @@
 2025-12-14 | Phase 3 | CI stricte backend/frontend | Ajout workflow GitHub Actions (lint/type/tests), règles CI bloquantes et documentation des commandes locales.
 2025-12-15 | Phase 3 | CI/Qualité renforcée | Alignement des scripts (Vitest run), CI GitHub Actions backend/frontend stricte, documentation CI mise à jour et rappel des règles bloquantes dans les agents.
 2025-12-16 | Phase 4.1 | démarrage MVP planning | Mise en place des CRUD backend avec validations/logs et tests API principaux pour le noyau planning.
+2025-12-10 | Phase 4.1 | erreurs API structurées | Ajout d'handlers globaux avec trace_id et réponse normalisée pour harmoniser les erreurs et le suivi des requêtes.

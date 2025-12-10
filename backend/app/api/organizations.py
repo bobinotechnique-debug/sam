@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Query, status
 
-from app.api.errors import map_service_error
 from app.models.common import PaginatedResponse
 from app.models.organization import Organization, OrganizationCreate, OrganizationUpdate
-from app.services.errors import ServiceError
 from app.services.registry import organization_service
 
 router = APIRouter(prefix="/api/v1/organizations", tags=["organizations"])
@@ -23,23 +21,14 @@ def create_organization(payload: OrganizationCreate) -> Organization:
 
 @router.get("/{organization_id}", response_model=Organization)
 def get_organization(organization_id: int) -> Organization:
-    try:
-        return organization_service.get(organization_id)
-    except ServiceError as error:
-        raise map_service_error(error) from error
+    return organization_service.get(organization_id)
 
 
 @router.patch("/{organization_id}", response_model=Organization)
 def update_organization(organization_id: int, payload: OrganizationUpdate) -> Organization:
-    try:
-        return organization_service.update(organization_id, payload)
-    except ServiceError as error:
-        raise map_service_error(error) from error
+    return organization_service.update(organization_id, payload)
 
 
 @router.delete("/{organization_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_organization(organization_id: int) -> None:
-    try:
-        organization_service.delete(organization_id)
-    except ServiceError as error:
-        raise map_service_error(error) from error
+    organization_service.delete(organization_id)
