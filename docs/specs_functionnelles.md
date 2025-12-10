@@ -67,6 +67,11 @@ Elle doit fluidifier la collaboration entre responsables planning, managers de s
 - Règles métier structurées pour guider les schémas Pydantic/SQL et les validations front.
 - Parcours cibles listés pour alimenter les user stories du bootstrap.
 
+### Livrables réalisés pour le bootstrap (Phase 2)
+- Endpoints `/api/v1` disponibles pour le référentiel (organizations, sites, roles, collaborators, missions, shifts) avec validations de base (timezone, chevauchement des shifts, héritage du fuseau site ➜ mission/shift).
+- Healthcheck exposé et consommé par le frontend pour vérifier le lien front/back dès le démarrage.
+- Docker compose prêt pour lancer API + frontend + PostgreSQL, avec configuration via `.env.example`.
+
 ## Règles métier clés (préparatoires)
 - Un shift appartient à une mission et à un site ; un collaborateur ne peut avoir deux shifts qui se chevauchent sur le même créneau.
 - Les horaires sont stockés en UTC et présentés dans le fuseau du site.

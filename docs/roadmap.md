@@ -18,6 +18,7 @@
 - Squelette React/Vite/Tailwind avec layout, navigation et appels API mockés.
 - Docker Compose complet (backend, frontend, PostgreSQL) + `.env.example` cohérent.
 - CI GitHub Actions exécutant lint/type/tests sur backend et frontend.
+- **État** : endpoints `/api/v1/health` et CRUD référentiel implémentés sur un service en mémoire, front connecté au healthcheck, docker-compose fonctionnel pour lancer API/front/DB.
 - **Gates** : commandes dev documentées dans `README.md`, pipeline CI verte, endpoints `/health` et CRUD référentiel opérationnels.
 
 ## Phase 3 : Core produit

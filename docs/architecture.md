@@ -20,6 +20,12 @@
 - **Core & Security** : configuration, logging, auth JWT, gestion des erreurs, middlewares (trace-id, CORS).
 - **Frontend Modules** : pages référentiel, vues calendrier et composants partagés (design system minimal, toasts/erreurs futures).
 
+### État livré (Phase 2 – Bootstrap)
+- **Backend** : routers `/api/v1` couvrant healthcheck et CRUD référentiel appuyés sur un service en mémoire (`app/services/database.py`). La séparation API/services/models est déjà en place pour remplacer rapidement le stockage par PostgreSQL.
+- **Frontend** : composant principal (`src/App.tsx`) qui consomme le healthcheck backend et présente la stack. La base Tailwind est configurée via `index.css`.
+- **Configuration** : variables injectées via `.env` et propagées dans docker-compose (`BACKEND_PORT`, `FRONTEND_PORT`, `API_BASE_URL`).
+- **CI** : workflow GitHub Actions déclenchant lint/type/tests pour les deux piles.
+
 ### Modules applicatifs (prévisionnels)
 - **Backend**
   - `app/core` : settings `.env`, logger JSON, middlewares (CORS, trace-id, auth), gestion d'erreurs normalisées.

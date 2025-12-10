@@ -7,6 +7,7 @@ Plateforme SaaS de planning multi-sites construite sur FastAPI + React + Tailwin
 - Documentation fondatrice (spécs fonctionnelles/techniques, architecture, ADR, roadmap) avant toute implémentation majeure.
 - Strict CI with backend/frontend linting, typing, and tests.
 - Extensible architecture avec couches séparées, observation et sécurité (JWT) prévues.
+- Phase 2 bootstrap déjà livré : healthcheck `/api/v1/health`, CRUD référentiel en mémoire, frontend connecté et docker-compose prêt (PostgreSQL inclus pour les prochaines migrations).
 
 ## Quickstart
 1. Copier le template d'environnement :
