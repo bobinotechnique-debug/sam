@@ -58,6 +58,10 @@ npm run dev
 GitHub Actions workflow runs backend lint/type/tests and frontend lint/tests on every push and pull request (see `.github/workflows/ci.yml`).
 
 ## Documentation
+- `docs/INDEX.md` — plan de la documentation
 - `docs/architecture.md` — high-level design and flows
-- `docs/roadmap.md` — phases and backlog
+- `docs/specs_functionnelles.md` — exigences et parcours métier
+- `docs/specs_techniques.md` — stack, contraintes techniques et sécurité
+- `docs/conventions.md` — conventions de contribution et de code
+- `docs/roadmap.md` — phases et backlog
 - `docs/decisions.md` — architectural decisions (ADR-style)

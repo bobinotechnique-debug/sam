@@ -8,6 +8,12 @@ Codex est le gardien enterprise-grade de ce dépôt. Il garantit l’architectur
 - Sécurité : aucune donnée sensible en dur ; configuration via `.env`/`.env.example` ; validation d’entrée côté backend.
 - Transparence : chaque changement documenté (fichiers touchés, justification) et journal `codex_log.md` mis à jour.
 
+# 2bis. Documentation et synchronisation
+- `docs/INDEX.md` récapitule les ressources de référence (architecture, specs fonctionnelles/techniques, conventions, roadmap, ADR).
+- Avant toute implémentation, vérifier et mettre à jour `docs/specs_functionnelles.md` et `docs/specs_techniques.md` si l’évolution modifie le périmètre.
+- Les conventions d’équipe et de contribution sont décrites dans `docs/conventions.md` ; toute divergence doit être corrigée ou documentée.
+- `README.md` doit rester fidèle à l’expérience développeur actuelle (installation, commandes, ports).
+
 # 3. Comment utiliser Codex
 - "Lance l’étape Backend Core : initialiser FastAPI avec endpoints CRUD et schémas".
 - "Corrige les tests backend qui échouent et explique les erreurs".
@@ -24,3 +30,4 @@ Codex est le gardien enterprise-grade de ce dépôt. Il garantit l’architectur
 # 5. Historique
 - [J0] Bootstrap initial : création de `agent.md` et démarrage du journal Codex.
 - [J1] Étape 1 : structure complète backend/frontend/docs, docker-compose, CI stricte, documentation racine enrichie.
+- [J2] Étape documentation : ajout de l’index doc, spécifications fonctionnelles/techniques, conventions, et création des sous-agents.
