@@ -9,6 +9,9 @@ Ce répertoire centralise les informations de référence du projet. Lecture con
 - `blueprint/03_ux_ui_planning.md` : spécification visuelle UX/UI (source de vérité des écrans et interactions).
 - `conventions.md` : conventions de code, branches, revues et mise à jour documentaire.
 - `roadmap.md` : jalons par phase (agents, documentation, bootstrap, core produit, observabilité).
+- `roadmap/phase-04.md` : feuille de route détaillée de la phase 4 (tests, documentation, CI, planning simple).
+- `specs/planning_simple_v1.md` : description de la vue planning simple (v1) et de ses limitations.
+- `notes/phase-04-changes.md` : journal synthétique des ajustements réalisés pendant la phase 4.
 - `decisions.md` : décisions architecturales (ADR) maintenues à jour.
 
 ## Principes de maintenance documentaire

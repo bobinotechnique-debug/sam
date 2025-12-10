@@ -24,6 +24,7 @@ ruff check app
 mypy app
 pytest
 ```
+Les attentes de phase 4 (tests à lancer, validations) sont rappelées dans `docs/roadmap/phase-04.md` et la vue planning est décrite dans `docs/specs/planning_simple_v1.md`.
 
 ### Endpoints clés (MVP Planning Core)
 - `GET /api/v1/organizations` — liste paginée, CRUD complet sous `/api/v1/organizations/{id}`.

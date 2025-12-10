@@ -25,3 +25,4 @@ Garantir la conception, la sécurité et la qualité du backend FastAPI/PostgreS
 - **Tests** : maintenir et étendre la couverture `pytest` sur les routes organisations/collaborateurs/sites/missions/shifts, incluant validations métier (fenêtres temporelles, cohérence organisationnelle, conflits de shifts).
 - **Qualité** : refuser tout merge sans `ruff check app`, `mypy app` et `pytest` verts (parité avec `.github/workflows/ci.yml`).
 - **Traçabilité** : toute correction de validation ou de règles métier doit être reflétée dans la doc (README backend, roadmap phase 4).
+  - Références : `docs/roadmap/phase-04.md` (sous-phases, commandes CI) et `docs/specs/planning_simple_v1.md` (flux planning v1).

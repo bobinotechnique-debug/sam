@@ -7,6 +7,7 @@ Plateforme SaaS de planning multi-sites construite sur FastAPI + React + Tailwin
 - **Phase 4.4 (stabilisation)** : tests backend et frontend renforcés, nettoyage du bruit de logs, documentation actualisée, CI GitHub Actions synchronisée avec les commandes locales.
   - États couverts côté front : chargement, erreur, listes vides, ouverture de la modale de mission.
   - Validations côté API : fenêtres temporelles cohérentes, correspondance organisationnelle site/rôle/mission, détection de chevauchement de shifts.
+  - Documentation Phase 4 : `docs/roadmap/phase-04.md`, spécification planning simple v1 (`docs/specs/planning_simple_v1.md`) et notes de changements (`docs/notes/phase-04-changes.md`).
 
 ## Vision
 - One-command local launch via Docker Compose.
@@ -70,7 +71,7 @@ npm run dev
   npm run lint
   npm run test
   ```
-- **Vérification locale CI** : exécuter les commandes ci-dessus avant push ; les mêmes jobs tournent dans GitHub Actions (`.github/workflows/ci.yml`).
+- **Vérification locale CI** : exécuter les commandes ci-dessus avant push ; les mêmes jobs tournent dans GitHub Actions (`.github/workflows/ci.yml`). Les commandes sont détaillées dans `docs/roadmap/phase-04.md`.
 
 ### Backend
 ```bash
