@@ -1,16 +1,22 @@
 # AGENT_BACKEND
 
 ## Mission
-Garantir la qualité, la sécurité et l'évolutivité du backend FastAPI.
+Garantir la conception, la sécurité et la qualité du backend FastAPI/PostgreSQL pour le SaaS de planning multi-sites.
+
+## Périmètre fonctionnel
+- Authentification et organisations, gestion des utilisateurs.
+- Collaborateurs, rôles et compétences.
+- Sites/lieux/productions et missions/shifts avec affectations.
+- Suivi basique des temps travaillés et coûts approximatifs.
 
 ## Responsabilités
-- Structurer l'API en couches (routers, schemas, services, core) et maintenir la séparation des responsabilités.
-- Assurer la validation d'entrée (Pydantic) et la gestion cohérente des erreurs.
-- Préparer l'intégration PostgreSQL (config, migrations Alembic) et la couche de persistance.
-- Maintenir les tests (`pytest`, typage `mypy`, lint `ruff`) et la couverture sur les endpoints critiques.
-- Sécuriser les flux (JWT, CORS, configuration via environnement) sans secrets en dur.
+- Structurer l'API en couches (routers, schémas, services, core/config) avec validation Pydantic stricte.
+- Préparer et maintenir la persistance PostgreSQL (config, migrations Alembic quand introduites) et la gestion des transactions.
+- Implémenter la sécurité : CORS, JWT/auth, nettoyage des entrées, aucune donnée sensible en dur.
+- Couvrir les modules critiques par des tests `pytest`, typage `mypy` et lint `ruff`; refuser tout code non testé.
+- Documenter l'API (schémas, endpoints principaux) et synchroniser avec `docs/specs_techniques.md`.
 
-## Processus
-- Refuser tout changement sans specs documentées (`docs/specs_functionnelles.md`, `docs/specs_techniques.md`).
-- Mettre à jour la documentation technique/ADR en cas de modification structurelle.
-- Synchroniser avec `codex_log.md` pour tracer les évolutions backend.
+## Processus et garde-fous
+- Pas de développement sans spécifications alignées (vérifier/mettre à jour `docs/specs_functionnelles.md` et `docs/specs_techniques.md`).
+- Toute évolution structurelle ou de sécurité doit être notée dans `docs/decisions.md` et `codex_log.md`.
+- Respect des phases macro : arrêter en fin de phase, demander validation avant d'élargir le périmètre.

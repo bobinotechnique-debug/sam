@@ -1,33 +1,41 @@
-# 1. Rôle global de Codex
-Codex est le gardien enterprise-grade de ce dépôt. Il garantit l’architecture, la qualité, la sécurité, la documentation et la CI stricte conformément au prompt MASTER V3. Chaque intervention doit préserver la cohérence long terme et la maintenabilité.
+# Système d'agents – SaaS Planning & Equipe
 
-# 2. Règles essentielles (résumé MASTER V3)
-- Stack imposée : FastAPI + PostgreSQL (backend), React/Vite/Tailwind (frontend), Docker-compose, CI GitHub Actions.
-- CI obligatoire : workflows push/pull_request avec tests backend/frontend, linters (ruff+mypy, eslint) et échec en cas d’erreur.
-- Qualité : aucun code critique sans tests ; typage explicite ; séparation API / services / models / core ; logs lisibles (démarrage, DB, erreurs).
-- Sécurité : aucune donnée sensible en dur ; configuration via `.env`/`.env.example` ; validation d’entrée côté backend.
-- Transparence : chaque changement documenté (fichiers touchés, justification) et journal `codex_log.md` mis à jour.
+## 1. Rôle global
+Codex pilote le dépôt de bout en bout pour construire une application SaaS de planning et de gestion d'équipes (intermittents du spectacle, exploitation multi-sites, retail, etc.). Il garantit la cohérence produit/technique, la sécurité et la qualité continue en respectant la stack verrouillée (FastAPI + PostgreSQL, React/Vite/Tailwind, Docker-compose, CI GitHub Actions).
 
-# 2bis. Documentation et synchronisation
-- `docs/INDEX.md` récapitule les ressources de référence (architecture, specs fonctionnelles/techniques, conventions, roadmap, ADR).
-- Avant toute implémentation, vérifier et mettre à jour `docs/specs_functionnelles.md` et `docs/specs_techniques.md` si l’évolution modifie le périmètre.
-- Les conventions d’équipe et de contribution sont décrites dans `docs/conventions.md` ; toute divergence doit être corrigée ou documentée.
-- `README.md` doit rester fidèle à l’expérience développeur actuelle (installation, commandes, ports).
+## 2. Vision produit (rappel)
+- Planifier des missions/shifts pour des collaborateurs avec vues jour/semaine/mois, par site ou par personne.
+- Gérer organisations, sites/lieux, collaborateurs, rôles/compétences, missions et affectations.
+- Couvrir les besoins des responsables planning, managers de site et collaborateurs (consultation, notifications ultérieures, export partageable).
 
-# 3. Comment utiliser Codex
-- "Lance l’étape Backend Core : initialiser FastAPI avec endpoints CRUD et schémas".
-- "Corrige les tests backend qui échouent et explique les erreurs".
-- "Améliore la documentation de démarrage rapide dans le README racine".
-- "Renforce la CI pour ajouter la vérification mypy et un cache de dépendances".
-- "Prépare une étape frontend UI de base avec React/Vite/Tailwind et un composant principal".
+## 3. Cycle de travail
+- **Phases macro** :
+  - Phase 0 – Système d'agents (fichiers agent + journal).
+  - Phase 1 – Documentation fondatrice (INDEX, specs fonctionnelles/techniques, architecture, roadmap, conventions, décisions).
+  - Phase 2 – Bootstrap technique (backend, frontend, docker-compose, .env.example).
+  - Phase 3 – CI/qualité (workflows, lint, tests backend/frontend).
+  - Phase 4 – MVP (organisations, utilisateurs, collaborateurs, lieux, missions, planning de base).
+- **Workflow de chaque évolution** : Analyse ➜ Mise à jour documentaire/agents si périmètre touché ➜ Validation explicite ➜ Implémentation (code + tests) ➜ Synchronisation (README, journal) ➜ Vérification CI.
+- Arrêt obligatoire en fin de chaque phase majeure avant de poursuivre.
 
-# 4. Sous-agents / Responsabilités
-- **AGENT_BACKEND** : API FastAPI, PostgreSQL, services, validation, authentification.
-- **AGENT_FRONTEND** : UI/UX React, composants, tests frontend, intégration Tailwind/Vite.
-- **AGENT_DEVOPS** : Docker, docker-compose, CI GitHub Actions, observabilité et logging.
-- **AGENT_DOCS** : documentation README/docs, schémas d’architecture, ADR/decisions.
+## 4. Règles de qualité & sécurité
+- Pas de données sensibles en dur ; configuration via `.env`/`.env.example` et secrets externes uniquement.
+- Tests et linters obligatoires pour tout code critique ; CI rouge bloquante.
+- Respect strict des conventions décrites dans `docs/conventions.md` (naming, commits, structure).
+- Logs clairs pour démarrage, accès DB et erreurs ; validation systématique des entrées API.
 
-# 5. Historique
-- [J0] Bootstrap initial : création de `agent.md` et démarrage du journal Codex.
-- [J1] Étape 1 : structure complète backend/frontend/docs, docker-compose, CI stricte, documentation racine enrichie.
-- [J2] Étape documentation : ajout de l’index doc, spécifications fonctionnelles/techniques, conventions, et création des sous-agents.
+## 5. Synchronisation documentaire
+- Toute évolution fonctionnelle ou technique doit être reflétée dans `docs/specs_functionnelles.md` et/ou `docs/specs_techniques.md` avant code.
+- Les décisions structurantes sont consignées dans `docs/decisions.md` et les architectures dans `docs/architecture.md`.
+- `agent.md` et les contrats `agents/*.md` peuvent et doivent être réécrits si le périmètre change ; chaque mise à jour est tracée dans `codex_log.md`.
+
+## 6. Sous-agents et périmètres
+- **AGENT_BACKEND** : API FastAPI, domaines (auth/organisations, collaborateurs, lieux, missions, planning, temps & coûts), persistance PostgreSQL, tests pytest/mypy/ruff.
+- **AGENT_FRONTEND** : UI React/Vite/Tailwind, vues Dashboard/Planning/Collaborateurs/Lieux, interactions drag-and-drop, tests Vitest/ESLint.
+- **AGENT_DEVOPS** : Docker/docker-compose, variables d'environnement, CI GitHub Actions (lint, type-check, tests), sécurité dépendances.
+- **AGENT_DOCS** : Cohérence documentaire (`docs/`, `README.md`, `agent.md`, `codex_log.md`), coordination des mises à jour d'agents.
+
+## 7. Traçabilité
+- Chaque étape importante ajoute une ligne dans `codex_log.md` (date, phase, sujet, justification).
+- Messages de commit au format conventionnel, PR incluant résumé et tests exécutés.
+- Aucune avancée silencieuse : si une décision dévie du cadre, l'ADR correspondante doit être ajoutée avant implémentation.
