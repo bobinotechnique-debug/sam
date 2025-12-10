@@ -23,6 +23,7 @@ Codex pilote le dépôt de bout en bout pour construire une application SaaS de 
 - Tests et linters obligatoires pour tout code critique ; CI rouge bloquante.
 - Respect strict des conventions décrites dans `docs/conventions.md` (naming, commits, structure).
 - Logs clairs pour démarrage, accès DB et erreurs ; validation systématique des entrées API.
+- Aucune fonctionnalité ne peut être ajoutée si la CI n’est pas verte.
 
 ## 5. Synchronisation documentaire
 - Toute évolution fonctionnelle ou technique doit être reflétée dans `docs/specs_functionnelles.md` et/ou `docs/specs_techniques.md` avant code.

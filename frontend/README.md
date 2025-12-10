@@ -18,6 +18,11 @@ npm run lint
 npm run test
 ```
 
+### CI parity (local)
+```bash
+npm run lint && npm run test -- --runInBand --watch=false
+```
+
 ## Project Layout
 - `src/App.tsx` — main UI with healthcheck call
 - `src/main.tsx` — React entrypoint
