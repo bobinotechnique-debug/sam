@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -105,7 +106,7 @@ class HrRule(BaseModel):
     code: str = Field(max_length=120)
     severity: str = Field(default="hard", pattern="^(hard|soft)$")
     description: str | None = Field(default=None, max_length=255)
-    config: dict = Field(default_factory=dict)
+    config: dict[str, Any] = Field(default_factory=dict)
 
     model_config = {"extra": "forbid"}
 
@@ -116,7 +117,7 @@ class ConflictRule(BaseModel):
     code: str = Field(max_length=120)
     severity: str = Field(default="error", pattern="^(error|warning)$")
     description: str | None = Field(default=None, max_length=255)
-    config: dict = Field(default_factory=dict)
+    config: dict[str, Any] = Field(default_factory=dict)
 
     model_config = {"extra": "forbid"}
 
@@ -138,7 +139,7 @@ class NotificationEvent(BaseModel):
     organization_id: int
     recipient_user_id: int | None = None
     event_type: str = Field(max_length=100)
-    payload: dict = Field(default_factory=dict)
+    payload: dict[str, Any] = Field(default_factory=dict)
     related_shift_instance_id: int | None = None
     created_at: datetime | None = None
     read_at: datetime | None = None

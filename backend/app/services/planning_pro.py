@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from typing import Any
 from datetime import datetime
 
 from app.models.planning_pro import (
@@ -108,7 +109,7 @@ class AuditService:
         entity_type: str,
         entity_id: int,
         action: str,
-        payload: dict,
+        payload: dict[str, Any],
     ) -> None:
         raise NotImplementedError
 

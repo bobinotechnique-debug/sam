@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Any
 
 from sqlalchemy import (
     JSON,
@@ -306,7 +307,7 @@ class HrRule(Base):
     code: Mapped[str] = mapped_column(String(120), nullable=False)
     severity: Mapped[str] = mapped_column(String(20), default="hard", nullable=False)
     description: Mapped[str | None] = mapped_column(String(255))
-    config: Mapped[dict] = mapped_column(JSON, default=dict)
+    config: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
 
     organization: Mapped[Organization] = relationship(back_populates="hr_rules")
 
@@ -319,7 +320,7 @@ class ConflictRule(Base):
     code: Mapped[str] = mapped_column(String(120), nullable=False)
     severity: Mapped[str] = mapped_column(String(20), default="error", nullable=False)
     description: Mapped[str | None] = mapped_column(String(255))
-    config: Mapped[dict] = mapped_column(JSON, default=dict)
+    config: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
 
     organization: Mapped[Organization] = relationship(back_populates="conflict_rules")
 
@@ -333,7 +334,7 @@ class PlanningChange(Base):
     entity_type: Mapped[str] = mapped_column(String(100), nullable=False)
     entity_id: Mapped[int] = mapped_column(Integer, nullable=False)
     action: Mapped[str] = mapped_column(String(50), nullable=False)
-    payload: Mapped[dict] = mapped_column(JSON, default=dict)
+    payload: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     organization: Mapped[Organization] = relationship()
@@ -362,7 +363,7 @@ class NotificationEvent(Base):
     organization_id: Mapped[int] = mapped_column(ForeignKey("organizations.id"), nullable=False)
     recipient_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
     event_type: Mapped[str] = mapped_column(String(100), nullable=False)
-    payload: Mapped[dict] = mapped_column(JSON, default=dict)
+    payload: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     related_shift_instance_id: Mapped[int | None] = mapped_column(ForeignKey("shift_instances.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     read_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
