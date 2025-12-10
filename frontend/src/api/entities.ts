@@ -7,6 +7,8 @@ import {
   Organization,
   OrganizationPayload,
   PaginatedResponse,
+  Shift,
+  ShiftPayload,
   Site,
   SitePayload,
 } from "./types";
@@ -128,4 +130,26 @@ export function updateMission(id: number, payload: Partial<MissionPayload>): Pro
 
 export function deleteMission(id: number): Promise<void> {
   return request(`/api/v1/missions/${id}`, { method: "DELETE" });
+}
+
+export function listShifts(page?: number, pageSize?: number): Promise<PaginatedResponse<Shift>> {
+  return request(withPagination("/api/v1/shifts", page, pageSize));
+}
+
+export function createShift(payload: ShiftPayload): Promise<Shift> {
+  return request<Shift>("/api/v1/shifts", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function updateShift(id: number, payload: Partial<ShiftPayload>): Promise<Shift> {
+  return request<Shift>(`/api/v1/shifts/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function deleteShift(id: number): Promise<void> {
+  return request(`/api/v1/shifts/${id}`, { method: "DELETE" });
 }

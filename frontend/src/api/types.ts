@@ -72,3 +72,22 @@ export interface MissionPayload {
   budget_target?: number | null;
   note?: string | null;
 }
+
+export interface Shift {
+  id: number;
+  mission_id: number;
+  collaborator_id: number;
+  status: string;
+  start_utc: string;
+  end_utc: string;
+  cancellation_reason: string | null;
+}
+
+export interface ShiftPayload {
+  mission_id: number;
+  collaborator_id: number;
+  status?: string;
+  start_utc: string;
+  end_utc: string;
+  cancellation_reason?: string | null;
+}

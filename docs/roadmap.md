@@ -32,4 +32,8 @@
   - Vues livrées : listes avec états de chargement/erreur/vide, actions créer/éditer/supprimer avec confirmation.
   - Périmètre limité : aucun planning visuel ni drag & drop, uniquement la gestion des référentiels et formulaires basiques.
 - **Phase 4.3 – Planning visuel simple** : vue planning jour/semaine, affichage des missions par lieu et affectations, mises à jour backend correspondantes.
+  - Nouvelle page `/planning` avec modes Jour/Semaine et fenêtre horaire configurable (06:00 → 02:00) documentée dans le code.
+  - Groupement par lieu ; les missions sont positionnées dans la grille temporelle avec les collaborateurs issus des shifts.
+  - Interaction principale : clic sur une mission pour ouvrir une modale, modifier heure début/fin, lieu et affectations ; synchronisation via API missions + shifts (création/suppression mise à jour des affectations).
+  - Gestion des erreurs basique en surimpression et rafraîchissement du planning après sauvegarde ; drag & drop restera optionnel pour une phase ultérieure.
 - **Phase 4.4 – Stabilisation MVP** : tests supplémentaires, nettoyage des logs/code, documentation consolidée (README, specs fonctionnelles/techniques, roadmap mise à jour) et CI verte.

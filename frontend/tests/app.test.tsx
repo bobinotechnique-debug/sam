@@ -1,3 +1,4 @@
+import { act } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -52,6 +53,22 @@ describe("App", () => {
       page: 1,
       page_size: 50,
     };
+    const shifts = {
+      items: [
+        {
+          id: 1,
+          mission_id: 1,
+          collaborator_id: 1,
+          status: "draft",
+          start_utc: new Date().toISOString(),
+          end_utc: new Date(Date.now() + 3600000).toISOString(),
+          cancellation_reason: null,
+        },
+      ],
+      total: 1,
+      page: 1,
+      page_size: 50,
+    };
 
     global.fetch = vi.fn((url: RequestInfo | URL) => {
       const href = url.toString();
@@ -59,25 +76,34 @@ describe("App", () => {
       if (href.includes("/collaborators")) return mockResponse(collaborators);
       if (href.includes("/sites")) return mockResponse(sites);
       if (href.includes("/missions")) return mockResponse(missions);
+      if (href.includes("/shifts")) return mockResponse(shifts);
       return mockResponse({});
     }) as unknown as typeof fetch;
   });
 
-  it("renders organization list by default", async () => {
-    render(<App />);
+  it("renders planning view by default", async () => {
+    await act(async () => {
+      render(<App />);
+    });
 
-    expect(screen.getByText(/CRUD UI/i)).toBeInTheDocument();
-    await screen.findByText("Acme");
-    expect(await screen.findByRole("heading", { name: /Organisations/i })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /Planning visuel/i })).toBeInTheDocument();
+    await screen.findByText(/HQ/);
+    expect(screen.getByText(/Vue jour\/semaine/i)).toBeInTheDocument();
   });
 
   it("navigates to collaborators and missions", async () => {
-    render(<App />);
+    await act(async () => {
+      render(<App />);
+    });
 
-    await userEvent.click(screen.getByRole("link", { name: "Collaborateurs" }));
+    await act(async () => {
+      await userEvent.click(screen.getByRole("link", { name: "Collaborateurs" }));
+    });
     await screen.findByText("Jane Doe");
 
-    await userEvent.click(screen.getByRole("link", { name: "Missions" }));
+    await act(async () => {
+      await userEvent.click(screen.getByRole("link", { name: "Missions" }));
+    });
     await screen.findByRole("heading", { name: /Missions/i });
     expect(screen.queryByText(/Aucune mission/)).not.toBeInTheDocument();
   });
