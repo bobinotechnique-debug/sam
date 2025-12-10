@@ -1,4 +1,4 @@
-name: CI
+name: CI / Qualité
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   backend-ci:
-    name: Backend - lint, type, tests
+    name: CI / Backend - lint, type, tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -36,7 +36,7 @@ jobs:
         run: pytest
 
   frontend-ci:
-    name: Frontend - lint and tests
+    name: CI / Frontend - lint and tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -49,7 +49,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: frontend
-        run: npm install
+        run: npm ci
 
       - name: Lint (eslint)
         working-directory: frontend
@@ -57,4 +57,4 @@ jobs:
 
       - name: Tests (vitest)
         working-directory: frontend
-        run: npm run test -- --watch=false
+        run: npm run test

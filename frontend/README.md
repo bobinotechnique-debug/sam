@@ -17,10 +17,11 @@ Open http://localhost:5173.
 npm run lint
 npm run test
 ```
+Les mêmes commandes sont utilisées dans la CI GitHub Actions.
 
 ### CI parity (local)
 ```bash
-npm run lint && npm run test -- --runInBand --watch=false
+npm run lint && npm run test
 ```
 
 ## Project Layout
