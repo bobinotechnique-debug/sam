@@ -7,6 +7,12 @@
 - **CI/CD (GitHub Actions)** : pipeline lint/type/test pour backend et frontend, condition de merge bloquante.
 - **Containerization** : docker-compose orchestre API, frontend, base de données et réseau interne unique.
 
+### Découpage par domaine
+- **Référentiel** : organisations, sites, rôles/compétences ; partagé par toutes les autres entités.
+- **Identité & accès** : base JWT + rôles (admin org, manager site, collaborateur) prévue dès Phase 2.
+- **Planification** : missions (besoins) et shifts (affectations), validations de fuseau et de chevauchement.
+- **Support** : santé/observabilité, configuration, gestion des erreurs.
+
 ## Domain Boundaries & Components
 - **Organizations/Sites** : référentiel hiérarchique, impose fuseau horaire et politiques locales.
 - **Collaborators & Roles** : gestion des profils, compétences, états d'activité ; mapping vers rôles requis par les missions.
@@ -20,9 +26,18 @@
 3. Service appelle repository SQLAlchemy async (PostgreSQL), gère transactions et cohérence des fuseaux horaires.
 4. Réponse sérialisée retournée ; logs structurés (trace-id) et erreurs normalisées (422/400/404/500).
 
+### Flux front ➜ API (Phase 2)
+1. Front utilise hooks d'appel API (React Query envisagé) avec tokens JWT ; headers `X-Request-ID` générés côté front si manquants.
+2. Les pages planning consomment des endpoints paginés/filtrés (`site_id`, `start`, `end`, `role_id`).
+3. Les validations front (saisie horaires, fuseau, filtres) réutilisent les contraintes exposées par les schémas API (OpenAPI/TS types).
+
 ## Observabilité & Logging
 - Logging JSON console par service, niveau configurable via `.env`.
 - Healthcheck `/health` ; exposition `/docs`/`/redoc` pour l'API ; métriques/trace prévus Phase 4.
+
+### Traçabilité
+- Middleware de corrélation (trace-id) appliqué sur toutes les routes ; ID propagé au logger.
+- Erreurs normalisées (code, message, détail, trace-id) pour faciliter le support.
 
 ## Sécurité & Configuration
 - Variables d'environnement centralisées (`.env`) pour base de données, secrets JWT, CORS, log level.
@@ -33,3 +48,8 @@
 - **Backend** : uvicorn reload pour dev local, tests `pytest`, lint/format `ruff`, typage `mypy`.
 - **Frontend** : Vite dev server, lint `npm run lint`, tests `npm run test` (Vitest, jsdom).
 - **Docker** : `docker compose up --build` pour lancer API + frontend + PostgreSQL ; ports 8000 et 5173 exposés.
+
+### Livrables Phase 1
+- Schémas d'API et modèle de données validés dans les specs techniques.
+- Roadmap alignée sur l'enchaînement bootstrap backend/frontend + CI.
+- ADR mises à jour si des choix structurants évoluent.

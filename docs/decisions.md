@@ -26,3 +26,9 @@
 - **Rationale**: Supprime les ambiguïtés multi-sites et simplifie les calculs de chevauchement.
 - **Impacts**: Les services doivent convertir vers UTC à l'entrée et exposer le fuseau utilisé dans les réponses.
 - **Status**: Accepted.
+
+## ADR-006: Versionnage et normalisation des endpoints API
+- **Decision**: Exposer l'API sous `/api/v1/...` avec ressources au pluriel et routes cohérentes par domaine (`organizations`, `sites`, `roles`, `collaborators`, `missions`, `shifts`).
+- **Rationale**: Stabilise l'interface contractuelle pour le front et les intégrations tierces, et facilite l'évolution ultérieure via `/api/v2` sans breaking changes immédiates.
+- **Impacts**: Documentation OpenAPI alignée sur ce préfixe ; tests et clients front doivent inclure la version ; rewrite éventuelle via reverse proxy à prévoir pour futures versions.
+- **Status**: Accepted.
