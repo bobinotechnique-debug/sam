@@ -7,8 +7,9 @@
 - **CI/CD** : GitHub Actions avec lint, typage, tests pour backend et frontend.
 
 ## Architecture applicative
-- Backend structuré par couches : `api` (routes), `schemas` (Pydantic), `services` (métier), `core` (config/logs), `tests`.
+- Backend structuré par couches : `api` (routes), `models` (Pydantic), `services` (métier), `core` (config/logs), `tests`.
 - Frontend organisé autour de composants React, hooks, et styles Tailwind, prêt pour un gestionnaire d'état (React Query) ultérieur.
+- Docker Compose orchestre trois services : `db` (PostgreSQL), `backend` (FastAPI) et `frontend` (Vite), avec dépendances explicites.
 
 ## Conformité et sécurité
 - Configuration via variables d'environnement (`.env`), exemple dans `.env.example`.

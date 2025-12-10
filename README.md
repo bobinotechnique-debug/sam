@@ -9,6 +9,8 @@ A FastAPI + React + Tailwind starter aligned with enterprise-grade quality gates
 - Extensible architecture with separated layers and observable runtime.
 
 ## Quickstart
+Prerequisites: Docker (with Compose plugin), Python 3.11, and Node.js 20.
+
 1. Copy environment template and adjust values:
    ```bash
    cp .env.example .env
@@ -19,12 +21,12 @@ A FastAPI + React + Tailwind starter aligned with enterprise-grade quality gates
    ```
 3. Access services:
    - Backend API docs: http://localhost:8000/docs
-   - Frontend: http://localhost:5173
+- Frontend: http://localhost:5173
 
 ## Project Structure
 ```
 / (root)
-├─ backend/          # FastAPI app, services, schemas, tests
+├─ backend/          # FastAPI app, services, Pydantic models, tests
 ├─ frontend/         # React + Vite + Tailwind UI
 ├─ docs/             # Architecture, roadmap, ADRs
 ├─ .github/workflows # CI definitions
@@ -33,6 +35,11 @@ A FastAPI + React + Tailwind starter aligned with enterprise-grade quality gates
 ├─ agent.md          # Operating guide for Codex agents
 ├─ codex_log.md      # Journal of Codex steps
 ```
+
+## Docker Services
+- `db`: PostgreSQL 16 with volume-backed data directory.
+- `backend`: FastAPI application wired to `DATABASE_URL` and depending on `db`.
+- `frontend`: Vite dev server consuming the API URL via `VITE_API_BASE_URL`.
 
 ## Development
 ### Backend
