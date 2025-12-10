@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import RequestResponseEndpoint
 
 from app.api.errors import register_exception_handlers
@@ -13,6 +14,14 @@ from app.core.logging import TRACE_ID_CTX, configure_logging, logger
 def create_application() -> FastAPI:
     configure_logging()
     application = FastAPI(title=settings.project_name)
+
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     @application.middleware("http")
     async def add_request_trace_id(

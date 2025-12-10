@@ -18,3 +18,4 @@
 2025-12-18 | Phase 4.3 | Planning visuel simple | Ajout vue /planning (jour/semaine) groupée par lieu avec modale d'affectation (missions + shifts), documentation roadmap/agents/spec mise à jour.
 2025-12-20 | Phase 4.4 | tests & docs finalisation | Renforcement des tests backend/frontend (planning, CRUD, validations), documentation phase 4 centralisée et liens CI/agents alignés.
 2025-12-22 | Phase 4.U | ultimate stabilisation | Logs JSON, health/metrics enrichis, docs Phase 4 finalisées, CI frontend build ajoutée.
+2025-12-23 | Phase 4.U | support CORS frontend | Ajout de la configuration CORS backend paramétrable pour permettre les appels API du frontend containerisé.
