@@ -1,23 +1,28 @@
 # Roadmap
 
-## Phase 1: Bootstrap (current)
-- Project structure with FastAPI + React + Tailwind
-- Docker Compose for local stack
-- CI pipeline with linting, typing, and tests
-- Baseline documentation and ADRs
+## Phase 0 : Système d'agents (validée)
+- Cadre des agents (`agent.md`, `agents/`), journal `codex_log.md`.
+- Alignement sur la stack verrouillée et règles de qualité.
 
-## Phase 2: Core Features
-- Implement JWT authentication and session management
-- Replace in-memory storage with PostgreSQL persistence
-- CRUD endpoints with validation and service abstraction
-- Seed scripts and migrations (Alembic)
+## Phase 1 : Documentation fondatrice (en cours)
+- Consolider les specs fonctionnelles/techniques, l'architecture et les ADR.
+- Définir le périmètre métier initial (organisations, sites, rôles, collaborateurs, missions, shifts).
+- Formaliser critères d'acceptation et exigences de qualité (CI, sécurité, traçabilité).
 
-## Phase 3: UX Enhancements
-- Responsive CRUD screens with form validation
-- Global state management (e.g., React Query)
-- Error handling and notifications
+## Phase 2 : Bootstrap technique
+- Squelette FastAPI avec routers/domains, services et configuration `.env` ; healthcheck opérationnel.
+- Squelette React/Vite/Tailwind avec layout, navigation et appels API mockés.
+- Docker Compose complet (backend, frontend, PostgreSQL) + `.env.example` cohérent.
+- CI GitHub Actions exécutant lint/type/tests sur backend et frontend.
 
-## Phase 4: Observability & Ops
-- Structured application metrics
-- Request tracing and correlation IDs
-- Hardened CI/CD with caching, coverage thresholds, and security scans
+## Phase 3 : Core produit
+- CRUD organisations/sites/rôles/collaborateurs/missions/shifts avec validations métier.
+- Authentification JWT + autorisations par rôle ; gestion des fuseaux horaires.
+- Tests d'intégration (API + DB) et couverture front (Vitest) sur parcours critiques.
+- Premières vues planning (Jour/Semaine) avec drag-and-drop côté front.
+
+## Phase 4 : Fiabilisation & Observabilité
+- Logs enrichis (trace-id), métriques et traces (OpenTelemetry envisagé).
+- Optimisations perf (caching lecture, pagination généralisée) et durcissement CI (coverage thresholds, scan dépendances).
+- Gestion des indisponibilités, notifications et exports partageables.
+- Préproduction/production alignées (secret management, migrations automatisées).

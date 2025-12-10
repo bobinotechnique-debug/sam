@@ -1,23 +1,23 @@
 # Codex Enterprise Starter
 
-A FastAPI + React + Tailwind starter aligned with enterprise-grade quality gates (CI, linting, typing, tests) and ready for PostgreSQL-backed CRUD features.
+Plateforme SaaS de planning multi-sites construite sur FastAPI + React + Tailwind, alignée avec des garde-fous enterprise (CI, linting, typage, tests) et prête pour un stockage PostgreSQL.
 
 ## Vision
 - One-command local launch via Docker Compose.
+- Documentation fondatrice (spécs fonctionnelles/techniques, architecture, ADR, roadmap) avant toute implémentation majeure.
 - Strict CI with backend/frontend linting, typing, and tests.
-- Clear documentation to onboard contributors quickly.
-- Extensible architecture with separated layers and observable runtime.
+- Extensible architecture avec couches séparées, observation et sécurité (JWT) prévues.
 
 ## Quickstart
-1. Copy environment template and adjust values:
+1. Copier le template d'environnement :
    ```bash
    cp .env.example .env
    ```
-2. Launch the stack:
+2. Lancer la stack :
    ```bash
    docker compose up --build
    ```
-3. Access services:
+3. Accéder aux services :
    - Backend API docs: http://localhost:8000/docs
    - Frontend: http://localhost:5173
 
@@ -26,7 +26,7 @@ A FastAPI + React + Tailwind starter aligned with enterprise-grade quality gates
 / (root)
 ├─ backend/          # FastAPI app, services, schemas, tests
 ├─ frontend/         # React + Vite + Tailwind UI
-├─ docs/             # Architecture, roadmap, ADRs
+├─ docs/             # Architecture, roadmap, ADRs, specs fondatrices
 ├─ .github/workflows # CI definitions
 ├─ docker-compose.yml
 ├─ .env.example
@@ -60,8 +60,8 @@ GitHub Actions workflow runs backend lint/type/tests and frontend lint/tests on 
 ## Documentation
 - `docs/INDEX.md` — plan de la documentation
 - `docs/architecture.md` — high-level design and flows
-- `docs/specs_functionnelles.md` — exigences et parcours métier
-- `docs/specs_techniques.md` — stack, contraintes techniques et sécurité
+- `docs/specs_functionnelles.md` — vision produit, domaines, règles et parcours cibles
+- `docs/specs_techniques.md` — stack, modèle de données prévisionnel et contraintes techniques
 - `docs/conventions.md` — conventions de contribution et de code
 - `docs/roadmap.md` — phases et backlog
 - `docs/decisions.md` — architectural decisions (ADR-style)
