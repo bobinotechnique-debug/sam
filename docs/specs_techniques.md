@@ -6,6 +6,12 @@
 - **Base de données** : PostgreSQL (docker-compose), schéma unique multi-organisation via clés `organization_id`/`site_id`.
 - **CI/CD** : GitHub Actions (lint, typage, tests backend et frontend) sur push et PR ; cache futur pour dépendances.
 
+### État du bootstrap (Phase 2)
+- **Backend opérationnel** : FastAPI expose `/api/v1/health` et les CRUD de référentiel (organizations, sites, roles, collaborators, missions, shifts) via services en mémoire. La couche service est isolée pour faciliter le basculement vers PostgreSQL/Alembic en Phase 3.
+- **Front connecté** : Vite + React affiche l'état du healthcheck et lit l'URL API depuis `VITE_API_BASE_URL` (variable transmise par Docker ou le `.env`).
+- **Conteneurs prêts** : docker-compose orchestre PostgreSQL, backend (uvicorn) et frontend, avec ports 8000/5173 exposés et variables déclarées dans `.env.example`.
+- **Qualité** : CI GitHub Actions exécute `ruff`, `mypy`, `pytest`, `npm run lint` et `npm run test` ; pas de secrets en dépôt.
+
 ### Principes de conception
 - **Séparation stricte des couches** : API (routers) ➜ services ➜ repositories ; dépendances injectées.
 - **Validation systématique** : schémas Pydantic `Create/Update/Read` dédiés, erreurs normalisées (422/400/404/409).
