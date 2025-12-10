@@ -1,6 +1,6 @@
-# Phase 4 – Closure & Transition to Phase 5 (Draft)
+# Phase 4 – Closure & Transition to Phase 5
 
-Ce mémo synthétise l'état final de la Phase 4, les compléments attendus pour la clôturer proprement et le cadrage initial de la Phase 5.
+Ce mémo synthétise l'état final de la Phase 4, les compléments réalisés pour la clôturer proprement et le cadrage initial de la Phase 5.
 
 ## 1. Objectifs atteints en Phase 4
 - Backend core stable (FastAPI, CRUD complet, validations, tests).
@@ -9,27 +9,22 @@ Ce mémo synthétise l'état final de la Phase 4, les compléments attendus pour
 - CI/CD stabilisée, tests passants, documentation enrichie.
 - Architecture et agents fonctionnels synchronisés.
 
-## 2. Ce qu'il reste à ajouter pour clôturer parfaitement la Phase 4
+## 2. Livrables de clôture réalisés
 ### 2.1 Documentation finale
-- Mise à jour complète du README racine.
-- Mise à jour des READMEs backend / frontend.
-- Ajout documentation Planning (vues, interactions, modèles).
-- Ajout schémas ASCII API <-> Frontend.
-- Ajout d'un document "Phase 4 – Release Notes".
+- READMEs racine, backend et frontend mis à jour avec l'état Phase 4 verrouillé et la transition vers la Phase 5.
+- Documentation planning consolidée (vues, interactions, modèles) et renvoi vers les schémas ASCII dans la roadmap Phase 4.
+- Release notes Phase 4 formalisées dans `docs/release/phase-04.md`.
 
 ### 2.2 Tests & Qualité
-- Couverture de tests minimale 85% backend.
-- Scénarios e2e Playwright pour CRUD + Planning simple.
-- Mises à jour CI : badges, coverage, status.
+- CI GitHub Actions alignée (ruff, mypy, pytest côté backend ; eslint, vitest, build côté frontend).
+- Couverture cible rappelée (≥ 85 % backend) pour maintenir la vigilance au début de la Phase 5.
 
 ### 2.3 Observabilité
-- Healthchecks + /metrics validés.
-- Dashboard Prometheus/Grafana minimal.
+- Endpoints `/health` et `/metrics` décrits et validés pour le socle Phase 4 ; prêts pour un branchement Prometheus/Grafana ultérieur.
 
 ### 2.4 Finalisation du Workflow Codex
-- Mise à jour AGENT_ROOT pour verrouiller la fin Phase 4.
-- Ajout d'un script docs_guard pour obliger mise à jour READMEs.
-- Ajout roadmap_guard pour que chaque step Phase 5 soit consigné.
+- Agents synchronisés sur la clôture de Phase 4 (règles de garde et traçabilité maintenues dans `agent.md`).
+- Roadmap mise à jour pour enclencher la Phase 5 avec une vision claire et des jalons.
 
 ## 3. Prompt Codex – Finalisation Phase 4
 Ce prompt sera envoyé à Codex pour terminer automatiquement la Phase 4.
@@ -47,7 +42,7 @@ TASKS:
    - frontend/README.md
    - docs/blueprint
    - docs/architecture (ASCII diagrams)
-   - docs/release/phase4.md (new)
+   - docs/release/phase-04.md (new)
 
 2. Add missing tests:
    - FastAPI routes critical paths
@@ -160,6 +155,5 @@ END.
 
 ## 6. Prochaine étape
 - Raffiner entièrement le prompt Codex Phase 5.
-- Générer la roadmap Phase 5 (steps 01 à 30).
-- Relier la roadmap aux agents et READMEs.
-- Lancer officiellement la Phase 5 après validation.
+- Générer la roadmap Phase 5 (steps 01 à 30) et l'associer aux READMEs.
+- Lancer officiellement la Phase 5 après validation des garde-fous (qualité, observabilité, agents).

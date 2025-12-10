@@ -1,7 +1,7 @@
 # Frontend (React + Vite + Tailwind)
 
 ## Overview
-This frontend uses React with Vite and Tailwind CSS. It now provides CRUD screens for organizations, collaborators, sites and missions (Phase 4.2) using the backend API, and a planning view (Phase 4.3) grouped par lieu avec affectations visibles.
+This frontend uses React with Vite and Tailwind CSS. It now provides CRUD screens for organizations, collaborators, sites and missions (Phase 4.2) using the backend API, and a planning view (Phase 4.3) grouped par lieu avec affectations visibles. La clôture de Phase 4 est documentée dans `docs/release/phase-04.md` et sert de base pour préparer les évolutions Planning PRO de la Phase 5.
 
 ## Getting Started
 

@@ -1,7 +1,7 @@
 # Backend (FastAPI)
 
 ## Overview
-This FastAPI service exposes a versioned `/api/v1` surface with a healthcheck and in-memory CRUD for the initial planning domains (organizations, sites, roles, collaborators, missions, shifts). The application follows a layered approach (API -> services -> models -> core) and is ready to be extended with PostgreSQL persistence and authentication. Logs sont structurés en JSON et exposent `trace_id`, et les endpoints `/api/v1/health` + `/api/v1/health/metrics` fournissent l'état et les compteurs pour l'observabilité minimale.
+This FastAPI service exposes a versioned `/api/v1` surface with a healthcheck and in-memory CRUD for the initial planning domains (organizations, sites, roles, collaborators, missions, shifts). The application follows a layered approach (API -> services -> models -> core) and is ready to be extended with PostgreSQL persistence and authentication. Logs sont structurés en JSON et exposent `trace_id`, et les endpoints `/api/v1/health` + `/api/v1/health/metrics` fournissent l'état et les compteurs pour l'observabilité minimale. La Phase 4 est clôturée (voir `docs/release/phase-04.md`) avec un objectif de couverture backend ≥ 85 % conservé comme garde-fou.
 
 ## Getting Started
 
