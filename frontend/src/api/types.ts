@@ -256,3 +256,25 @@ export interface PlanningProConfig {
   hr_rules: HrRule[];
   conflict_rules: ConflictRule[];
 }
+
+export interface ConflictEntry {
+  type: "hard" | "soft";
+  rule: string;
+  details: Record<string, unknown>;
+}
+
+export interface ShiftWriteResponse {
+  shift: ShiftInstance;
+  conflicts: ConflictEntry[];
+}
+
+export interface AssignmentWriteResponse {
+  assignment: Assignment;
+  conflicts: ConflictEntry[];
+}
+
+export interface PlanningShift {
+  shift: ShiftInstance;
+  assignments: Assignment[];
+  conflicts: ConflictEntry[];
+}

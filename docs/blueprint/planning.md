@@ -18,6 +18,7 @@
 - **Timeline V2** : lignes par site/équipe, badges statut (draft/warning/error/published), couleurs d’équipe, en-tête pour zoom/snapping/mode highlight.
 - **Panneau Conflits** : zone dédiée aux erreurs/avertissements (ancres timeline, export CSV/JSON prévu).
 - **Préparation interactions** : TODO Step 06/07 pour drag/drop, redimensionnement, assignation depuis la liste latérale et surface temps réel des règles.
+- **Connexion API (Step 03)** : la timeline consomme `GET /api/v1/planning/shifts` et affiche assignments, conflits hard/soft et statuts réels ; les badges « proposé » reflètent les assignments issus d auto-assign.
 
 ## API & services (squelettes)
 - Endpoints prévus : configuration Planning PRO (`hr_rule`/`conflict_rule`), liste/CRUD `shift_template`, `shift_instance`, `assignment`, publication.

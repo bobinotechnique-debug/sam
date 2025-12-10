@@ -79,8 +79,19 @@
      ├─ shift_templates / shift_instances / assignments
      ├─ user_availabilities / leaves / blackouts
      ├─ hr_rules / conflict_rules
-     └─ planning_changes / publications / notification_events
+    └─ planning_changes / publications / notification_events
 ```
+
+### Planning PRO API (Step 03)
+- Endpoints FastAPI `/api/v1/planning/*` exposés pour les templates, instances, assignments, disponibilités, règles, publication et auto-assign (start/status).
+- Les routes délèguent la logique aux services Planning PRO (validation hard/soft, détection de double booking, disponibilité, audit `planning_change`).
+- Les réponses d écriture (`POST`/`PUT`) incluent l entité et une liste `conflicts` séparant hard vs soft.
+
+### Flux UI ➜ API ➜ DB (Timeline V2 connectée)
+1. La page Planning PRO (React Query) appelle `GET /api/v1/planning/shifts` et `GET /api/v1/planning/rules` pour afficher les shifts réels, assignments et conflits (badges hard/soft).
+2. Les créations/modifications déclenchent `POST/PUT /api/v1/planning/shifts|assignments`, qui appliquent les validations métier, retournent les conflits détectés et loggent `planning_change`.
+3. La publication utilise `POST /api/v1/planning/publish` : un enregistrement `publication` est créé puis marqué `published`, avec audit associé.
+4. Les jobs d auto-assign sont initiés via `/api/v1/planning/auto-assign/start` et suivis via `/auto-assign/status/{job_id}` pour préparer les futures propositions d assignments.
 
 ## Observabilité & Logging
 - Logging JSON console par service, niveau configurable via `.env`.
