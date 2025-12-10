@@ -24,6 +24,11 @@ mypy app
 pytest
 ```
 
+### CI parity (local)
+```bash
+ruff check app && mypy app && pytest
+```
+
 ## Configuration
 Configuration is loaded from environment variables (see `.env.example`). Key variables include:
 - `DATABASE_URL` for PostgreSQL connection string.
