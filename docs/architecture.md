@@ -55,6 +55,33 @@
 3. **Afficher planning** : GET `/shifts` filtré par site/période ➜ front mappe fuseaux locaux et affiche statuts via composants calendrier.
 4. **Annuler shift** : PATCH `/shifts/{id}` ➜ statut `cancelled` et motif stockés ; réponse propage `trace_id` pour audit.
 
+### Flux Planning PRO V2 (fondations Step 02)
+```
+[UI Planning PRO]
+  ├─ Timeline V2 (site/team rows, status badges)
+  ├─ Filters & collaborators panel
+  └─ Conflicts panel (warnings/errors)
+       |
+       v
+   [/api/v1/planning/*]
+     ├─ GET /config (hr_rules, conflict_rules)
+     ├─ CRUD shift_templates / shift_instances / assignments
+     └─ POST /publications (versions brouillon/publié)
+       |
+       v
+   [Domain services]
+     ├─ ShiftTemplateService / ShiftInstanceService
+     ├─ AssignmentService / AvailabilityService
+     └─ RuleService + AuditService + PublicationService
+       |
+       v
+   [DB]
+     ├─ shift_templates / shift_instances / assignments
+     ├─ user_availabilities / leaves / blackouts
+     ├─ hr_rules / conflict_rules
+     └─ planning_changes / publications / notification_events
+```
+
 ## Observabilité & Logging
 - Logging JSON console par service, niveau configurable via `.env`.
 - Healthcheck `/health` ; exposition `/docs`/`/redoc` pour l'API ; métriques/trace prévus Phase 4.
