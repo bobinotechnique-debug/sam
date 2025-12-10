@@ -91,7 +91,9 @@ def delete_shift_template(template_id: int) -> None:
 
 
 @router.get("/shifts", response_model=list[ShiftWithAssignments])
-def list_shift_instances(mission_id: int | None = Query(default=None)) -> list[ShiftWithAssignments]:
+def list_shift_instances(
+    mission_id: int | None = Query(default=None),
+) -> list[ShiftWithAssignments]:
     return planning_shift_instance_service.list_instances(mission_id=mission_id)
 
 

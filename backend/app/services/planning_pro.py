@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from datetime import UTC, datetime
-from typing import Any, Iterable
+from typing import Any
 
 from app.core.logging import logger
 from app.models.collaborator import Collaborator
@@ -107,7 +108,7 @@ class ShiftTemplateService:
 class ShiftInstanceService:
     """Manage concrete shift instances generated from templates or ad hoc."""
 
-    def __init__(self, db: InMemoryDatabase, rule_service: "RuleService") -> None:
+    def __init__(self, db: InMemoryDatabase, rule_service: RuleService) -> None:
         self._db = db
         self._rule_service = rule_service
 
@@ -119,8 +120,8 @@ class ShiftInstanceService:
 
     def create_instance(self, payload: ShiftInstanceCreate) -> ShiftWithAssignments:
         mission = self._require_mission(payload.mission_id)
-        site = self._require_site(payload.site_id)
-        role = self._require_role(payload.role_id)
+        self._require_site(payload.site_id)
+        self._require_role(payload.role_id)
         if mission.site_id != payload.site_id or mission.role_id != payload.role_id:
             raise ValidationError("Shift must align with mission site and role")
         if payload.template_id is not None and payload.template_id not in self._db.shift_templates:
@@ -131,22 +132,28 @@ class ShiftInstanceService:
         logger.info("Shift instance created", extra={"shift_instance_id": instance.id})
         return ShiftWithAssignments(shift=instance, assignments=[], conflicts=conflicts)
 
-    def update_instance(self, instance_id: int, payload: ShiftInstanceUpdate) -> ShiftWithAssignments:
+    def update_instance(
+        self, instance_id: int, payload: ShiftInstanceUpdate
+    ) -> ShiftWithAssignments:
         existing = self._get_instance(instance_id)
         updates = payload.model_dump(exclude_none=True)
         mission_id = updates.get("mission_id", existing.mission_id)
         site_id = updates.get("site_id", existing.site_id)
         role_id = updates.get("role_id", existing.role_id)
         mission = self._require_mission(mission_id)
-        site = self._require_site(site_id)
-        role = self._require_role(role_id)
+        self._require_site(site_id)
+        self._require_role(role_id)
         if mission.site_id != site_id or mission.role_id != role_id:
             raise ValidationError("Shift must align with mission site and role")
         updated = existing.model_copy(update=updates)
         self._db.shift_instances[instance_id] = updated
         conflicts = self._rule_service.evaluate_shift(updated)
-        assignments = [a for a in self._db.assignments.values() if a.shift_instance_id == instance_id]
-        return ShiftWithAssignments(shift=updated, assignments=assignments, conflicts=conflicts)
+        assignments = [
+            a for a in self._db.assignments.values() if a.shift_instance_id == instance_id
+        ]
+        return ShiftWithAssignments(
+            shift=updated, assignments=assignments, conflicts=conflicts
+        )
 
     def delete_instance(self, instance_id: int) -> None:
         self._get_instance(instance_id)
@@ -162,7 +169,9 @@ class ShiftInstanceService:
         return instance
 
     def _build_shift_view(self, instance: ShiftInstance) -> ShiftWithAssignments:
-        assignments = [a for a in self._db.assignments.values() if a.shift_instance_id == instance.id]
+        assignments = [
+            a for a in self._db.assignments.values() if a.shift_instance_id == instance.id
+        ]
         conflicts = self._rule_service.evaluate_shift(instance)
         for assignment in assignments:
             conflicts.extend(self._rule_service.evaluate_assignment(assignment))
@@ -190,7 +199,7 @@ class ShiftInstanceService:
 class AssignmentService:
     """Handle collaborator assignments on shift instances."""
 
-    def __init__(self, db: InMemoryDatabase, rule_service: "RuleService") -> None:
+    def __init__(self, db: InMemoryDatabase, rule_service: RuleService) -> None:
         self._db = db
         self._rule_service = rule_service
 
@@ -200,24 +209,34 @@ class AssignmentService:
             assignments = [a for a in assignments if a.shift_instance_id == instance_id]
         return assignments
 
-    def create_assignment(self, payload: AssignmentCreate) -> tuple[Assignment, list[ConflictEntry]]:
+    def create_assignment(
+        self, payload: AssignmentCreate
+    ) -> tuple[Assignment, list[ConflictEntry]]:
         shift = self._require_shift(payload.shift_instance_id)
-        collaborator = self._require_collaborator(payload.collaborator_id)
+        self._require_collaborator(payload.collaborator_id)
         if shift.status == "cancelled":
             raise ValidationError("Cannot assign to a cancelled shift")
         if payload.role_id != shift.role_id:
             raise ValidationError("Assignment role must match shift role")
-        assignment = Assignment(id=self._db.next_id("assignments"), **payload.model_dump())
+        assignment = Assignment(
+            id=self._db.next_id("assignments"), **payload.model_dump()
+        )
         self._db.assignments[assignment.id] = assignment
         conflicts = self._rule_service.evaluate_assignment(assignment, shift=shift)
         logger.info("Assignment created", extra={"assignment_id": assignment.id})
         return assignment, conflicts
 
-    def update_assignment(self, assignment_id: int, payload: AssignmentUpdate) -> tuple[Assignment, list[ConflictEntry]]:
+    def update_assignment(
+        self, assignment_id: int, payload: AssignmentUpdate
+    ) -> tuple[Assignment, list[ConflictEntry]]:
         existing = self._get_assignment(assignment_id)
         updates = payload.model_dump(exclude_none=True)
-        shift = self._require_shift(updates.get("shift_instance_id", existing.shift_instance_id))
-        collaborator = self._require_collaborator(updates.get("collaborator_id", existing.collaborator_id))
+        shift = self._require_shift(
+            updates.get("shift_instance_id", existing.shift_instance_id)
+        )
+        self._require_collaborator(
+            updates.get("collaborator_id", existing.collaborator_id)
+        )
         if shift.status == "cancelled":
             raise ValidationError("Cannot assign to a cancelled shift")
         if updates.get("role_id", existing.role_id) != shift.role_id:
@@ -305,10 +324,18 @@ class RuleService:
             self._seed_rules()
 
     def list_hr_rules(self, organization_id: int) -> list[HrRule]:
-        return [rule for rule in self._db.hr_rules.values() if rule.organization_id == organization_id]
+        return [
+            rule
+            for rule in self._db.hr_rules.values()
+            if rule.organization_id == organization_id
+        ]
 
     def list_conflict_rules(self, organization_id: int) -> list[ConflictRule]:
-        return [rule for rule in self._db.conflict_rules.values() if rule.organization_id == organization_id]
+        return [
+            rule
+            for rule in self._db.conflict_rules.values()
+            if rule.organization_id == organization_id
+        ]
 
     def evaluate_instance(self, instance: ShiftInstance) -> list[str]:
         conflicts = self.evaluate_shift(instance)
@@ -318,11 +345,19 @@ class RuleService:
         conflicts: list[ConflictEntry] = []
         if instance.start_utc >= instance.end_utc:
             conflicts.append(
-                ConflictEntry(type="hard", rule="time_order", details={"message": "start must be before end"})
+                ConflictEntry(
+                    type="hard",
+                    rule="time_order",
+                    details={"message": "start must be before end"},
+                )
             )
         if instance.status not in {"draft", "published", "cancelled"}:
             conflicts.append(
-                ConflictEntry(type="hard", rule="invalid_status", details={"status": instance.status})
+                ConflictEntry(
+                    type="hard",
+                    rule="invalid_status",
+                    details={"status": instance.status},
+                )
             )
         return conflicts
 
@@ -452,7 +487,10 @@ class AuditService:
             "timestamp": datetime.now(UTC),
         }
         self._db.planning_changes.append(entry)
-        logger.info("Planning change logged", extra={"entity_type": entity_type, "entity_id": entity_id})
+        logger.info(
+            "Planning change logged",
+            extra={"entity_type": entity_type, "entity_id": entity_id},
+        )
 
     def list_changes(self) -> list[dict[str, Any]]:
         return list(self._db.planning_changes)
@@ -481,7 +519,9 @@ class PublicationService:
         publication = self._db.publications.get(publication_id)
         if publication is None:
             raise NotFoundError("Publication not found")
-        updated = publication.model_copy(update={"status": "published", "published_at": datetime.now(UTC)})
+        updated = publication.model_copy(
+            update={"status": "published", "published_at": datetime.now(UTC)}
+        )
         self._db.publications[publication_id] = updated
         self._audit_service.log_change(
             organization_id=publication.organization_id,
@@ -494,11 +534,17 @@ class PublicationService:
         return updated
 
     def list_events(self, organization_id: int) -> list[NotificationEvent]:
-        return [event for event in self._db.notification_events.values() if event.organization_id == organization_id]
+        return [
+            event
+            for event in self._db.notification_events.values()
+            if event.organization_id == organization_id
+        ]
 
 
 class AutoAssignJobService:
-    def __init__(self, db: InMemoryDatabase, assignment_service: AssignmentService):
+    def __init__(
+        self, db: InMemoryDatabase, assignment_service: AssignmentService
+    ) -> None:
         self._db = db
         self._assignment_service = assignment_service
 
@@ -506,12 +552,19 @@ class AutoAssignJobService:
         job_id = f"job-{self._db.next_id('auto_assign_jobs')}"
         created_assignments = []
         targets = (
-            [self._db.shift_instances[sid] for sid in shift_ids or [] if sid in self._db.shift_instances]
+            [
+                self._db.shift_instances[sid]
+                for sid in shift_ids or []
+                if sid in self._db.shift_instances
+            ]
             if shift_ids
             else list(self._db.shift_instances.values())
         )
         for shift in targets:
-            if any(a.shift_instance_id == shift.id for a in self._db.assignments.values()):
+            if any(
+                a.shift_instance_id == shift.id
+                for a in self._db.assignments.values()
+            ):
                 continue
             collaborator_ids = list(self._db.collaborators.keys())
             if not collaborator_ids:
@@ -524,13 +577,22 @@ class AutoAssignJobService:
                 status="proposed",
                 source="auto-assign-v1",
             )
-            assignment, conflicts = self._assignment_service.create_assignment(assignment_payload)
-            created_assignments.append({"assignment": assignment, "conflicts": conflicts})
+            assignment, conflicts = self._assignment_service.create_assignment(
+                assignment_payload
+            )
+            created_assignments.append({
+                "assignment": assignment,
+                "conflicts": conflicts,
+            })
         job_payload = {
             "job_id": job_id,
             "status": "completed",
             "assignments_created": len(created_assignments),
-            "conflicts": [c for item in created_assignments for c in item["conflicts"]],
+            "conflicts": [
+                conflict
+                for item in created_assignments
+                for conflict in item["conflicts"]
+            ],
         }
         self._db.auto_assign_jobs[job_id] = job_payload
         return job_payload

@@ -1,10 +1,12 @@
 from datetime import UTC, datetime, timedelta
-from typing import Any, Tuple
+from typing import Any
 
 from fastapi.testclient import TestClient
 
 
-def _setup_org_role_site(client: TestClient) -> Tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+def _setup_org_role_site(
+    client: TestClient,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     org = client.post(
         "/api/v1/organizations",
         json={"name": "Org", "timezone": "UTC", "currency": "EUR"},
@@ -20,7 +22,9 @@ def _setup_org_role_site(client: TestClient) -> Tuple[dict[str, Any], dict[str, 
     return org, role, site
 
 
-def _create_collaborator(client: TestClient, org: dict[str, Any], role: dict[str, Any]) -> dict[str, Any]:
+def _create_collaborator(
+    client: TestClient, org: dict[str, Any], role: dict[str, Any]
+) -> dict[str, Any]:
     return client.post(
         "/api/v1/collaborators",
         json={
@@ -33,7 +37,9 @@ def _create_collaborator(client: TestClient, org: dict[str, Any], role: dict[str
     ).json()
 
 
-def _create_mission(client: TestClient, site_id: int, role_id: int, start: datetime) -> dict[str, Any]:
+def _create_mission(
+    client: TestClient, site_id: int, role_id: int, start: datetime
+) -> dict[str, Any]:
     return client.post(
         "/api/v1/missions",
         json={
@@ -50,6 +56,7 @@ def test_double_booking_detected_in_assignment_conflicts(client: TestClient) -> 
     org, role, site = _setup_org_role_site(client)
     collaborator = _create_collaborator(client, org, role)
     mission = _create_mission(client, site["id"], role["id"], datetime.now(UTC))
+    mission_start = datetime.fromisoformat(mission["start_utc"])
 
     shift_one = client.post(
         "/api/v1/planning/shifts",
@@ -60,7 +67,7 @@ def test_double_booking_detected_in_assignment_conflicts(client: TestClient) -> 
             "role_id": role["id"],
             "team_id": None,
             "start_utc": mission["start_utc"],
-            "end_utc": (datetime.fromisoformat(mission["start_utc"]) + timedelta(hours=2)).isoformat(),
+            "end_utc": (mission_start + timedelta(hours=2)).isoformat(),
             "status": "draft",
             "source": "manual",
             "capacity": 1,
@@ -76,7 +83,7 @@ def test_double_booking_detected_in_assignment_conflicts(client: TestClient) -> 
             "role_id": role["id"],
             "team_id": None,
             "start_utc": mission["start_utc"],
-            "end_utc": (datetime.fromisoformat(mission["start_utc"]) + timedelta(hours=3)).isoformat(),
+            "end_utc": (mission_start + timedelta(hours=3)).isoformat(),
             "status": "draft",
             "source": "manual",
             "capacity": 1,
@@ -106,7 +113,11 @@ def test_double_booking_detected_in_assignment_conflicts(client: TestClient) -> 
         },
     )
     payload = second_assignment.json()
-    assert any(conflict["rule"] == "double_booking" and conflict["type"] == "hard" for conflict in payload["conflicts"])
+    assert any(
+        conflict["rule"] == "double_booking"
+        and conflict["type"] == "hard"
+        for conflict in payload["conflicts"]
+    )
 
 
 def test_shift_status_validation(client: TestClient) -> None:

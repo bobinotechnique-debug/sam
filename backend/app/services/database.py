@@ -3,9 +3,6 @@ from collections import defaultdict
 from app.models.collaborator import Collaborator
 from app.models.mission import Mission
 from app.models.organization import Organization
-from app.models.role import Role
-from app.models.shift import Shift
-from app.models.site import Site
 from app.models.planning_pro import (
     Assignment,
     ConflictRule,
@@ -15,6 +12,9 @@ from app.models.planning_pro import (
     ShiftTemplate,
     UserAvailability,
 )
+from app.models.role import Role
+from app.models.shift import Shift
+from app.models.site import Site
 
 
 class InMemoryDatabase:
