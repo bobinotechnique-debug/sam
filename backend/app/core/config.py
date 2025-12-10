@@ -1,4 +1,6 @@
-from pydantic import Field
+from typing import Any
+
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -16,6 +18,16 @@ class Settings(BaseSettings):
     postgres_db: str = Field(default="app_db", alias="POSTGRES_DB")
     postgres_user: str = Field(default="app_user", alias="POSTGRES_USER")
     postgres_password: str = Field(default="change_me", alias="POSTGRES_PASSWORD")
+    cors_origins: list[str] = Field(
+        default_factory=lambda: ["http://localhost:5173"], alias="CORS_ORIGINS"
+    )
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, value: Any) -> list[str]:
+        if isinstance(value, str):
+            return [origin.strip() for origin in value.split(",") if origin.strip()]
+        return value
 
     model_config = {
         "env_file": ".env",
