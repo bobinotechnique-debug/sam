@@ -1,29 +1,26 @@
-# 1. Role global de Codex
-Codex est le gardien enterprise-grade de ce depot. Il assure l'architecture, la qualite, la securite, la documentation et la CI stricte selon le prompt MASTER V3. Chaque intervention doit respecter la stack imposee, maintenir les tests et linters, et proteger la coherence long terme.
+# 1. Rôle global de Codex
+Codex est le gardien enterprise-grade de ce dépôt. Il garantit l’architecture, la qualité, la sécurité, la documentation et la CI stricte conformément au prompt MASTER V3. Chaque intervention doit préserver la cohérence long terme et la maintenabilité.
 
-# 2. Regles essentielles (resume du MASTER V3)
-- Stack imposee : FastAPI + PostgreSQL (backend), React/Vite/Tailwind (frontend), Docker-compose, CI GitHub Actions.
-- CI obligatoire : workflows push/pull_request avec tests backend/frontend, linters (ruff+mypy, eslint) et echec si probleme.
-- Tests et linters : aucun code critique sans tests; ruff+mypy backend, eslint+tests frontend.
-- Pas de changements silencieux : tout changement documente, justification fournie, fichiers touches listes.
-- Journal `codex_log.md` mis a jour a chaque etape avec date, etape, fichiers, resume.
-- Pas de secrets en dur : variables sensibles via `.env`/`.env.example` uniquement.
-- Logs clairs : demarrage, connexion DB, erreurs applicatives doivent etre traces.
-- Respect de la separation des couches (API / services / models / core) et typage explicite.
+# 2. Règles essentielles (résumé MASTER V3)
+- Stack imposée : FastAPI + PostgreSQL (backend), React/Vite/Tailwind (frontend), Docker-compose, CI GitHub Actions.
+- CI obligatoire : workflows push/pull_request avec tests backend/frontend, linters (ruff+mypy, eslint) et échec en cas d’erreur.
+- Qualité : aucun code critique sans tests ; typage explicite ; séparation API / services / models / core ; logs lisibles (démarrage, DB, erreurs).
+- Sécurité : aucune donnée sensible en dur ; configuration via `.env`/`.env.example` ; validation d’entrée côté backend.
+- Transparence : chaque changement documenté (fichiers touchés, justification) et journal `codex_log.md` mis à jour.
 
-# 3. Comment utiliser Codex sur ce projet
-- "Lance l'etape Backend Core : initialiser FastAPI avec endpoints CRUD et schemas".
-- "Corrige les tests backend qui echouent et explique les erreurs".
-- "Ameliore la documentation de demarrage rapide dans le README racine".
-- "Renforce la CI pour ajouter la verification mypy et un cache de dependances".
-- "Prepares une etape frontend UI de base avec React/Vite/Tailwind et un composant principal".
+# 3. Comment utiliser Codex
+- "Lance l’étape Backend Core : initialiser FastAPI avec endpoints CRUD et schémas".
+- "Corrige les tests backend qui échouent et explique les erreurs".
+- "Améliore la documentation de démarrage rapide dans le README racine".
+- "Renforce la CI pour ajouter la vérification mypy et un cache de dépendances".
+- "Prépare une étape frontend UI de base avec React/Vite/Tailwind et un composant principal".
 
-# 4. Sous-agents / Responsabilites
-- **AGENT_BACKEND** : API FastAPI, base de donnees PostgreSQL, services, validation, authentification.
-- **AGENT_FRONTEND** : UI/UX React, composants, tests frontend, integration Tailwind/Vite.
-- **AGENT_DEVOPS** : Docker, docker-compose, CI GitHub Actions, observabilite et logging.
-- **AGENT_DOCS** : documentation README/docs, schemas d'architecture, ADR/decisions.
+# 4. Sous-agents / Responsabilités
+- **AGENT_BACKEND** : API FastAPI, PostgreSQL, services, validation, authentification.
+- **AGENT_FRONTEND** : UI/UX React, composants, tests frontend, intégration Tailwind/Vite.
+- **AGENT_DEVOPS** : Docker, docker-compose, CI GitHub Actions, observabilité et logging.
+- **AGENT_DOCS** : documentation README/docs, schémas d’architecture, ADR/decisions.
 
 # 5. Historique
-- [J0] Bootstrap enterprise : creation initiale de `agent.md` et demarrage du journal Codex.
-- Cette section doit etre enrichie a chaque grande etape.
+- [J0] Bootstrap initial : création de `agent.md` et démarrage du journal Codex.
+- [J1] Étape 1 : structure complète backend/frontend/docs, docker-compose, CI stricte, documentation racine enrichie.
