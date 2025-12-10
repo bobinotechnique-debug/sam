@@ -9,11 +9,21 @@
 - Créer l'ossature documentaire (roadmap Phase 5, fichier de step) et rappeler les garde-fous qualité/CI.
 - Aligner la roadmap globale (`docs/roadmap.md`) et le journal (`codex_log.md`).
 
+### Livrables
+- Roadmap macro `docs/roadmap/phase-05.md` créée avec objectifs, étapes 01 → 30 et exigences de qualité/CI.
+- Fiche step-01 initialisée dans `docs/roadmap/phase5/` pour tracer l'avancement détaillé.
+- Roadmap globale (`docs/roadmap.md`) et journal (`codex_log.md`) synchronisés pour refléter l'ouverture de la phase.
+
 ## Actions réalisées
 - Ajout du fichier `docs/roadmap/phase-05.md` résumant la Phase 5 et listant les étapes 01 → 30 avec objectifs/gates.
 - Création du dossier `docs/roadmap/phase5/` avec ce fichier de step pour tracer l'avancement détaillé.
 - Mise à jour de `docs/roadmap.md` pour introduire la Phase 5 et pointer vers la nouvelle roadmap détaillée.
 - Journal `codex_log.md` enrichi pour consigner l'ouverture de la Phase 5 et la création de la structure roadmap.
+
+### Points de contrôle qualité
+- CI cible rappelée (ruff, mypy, pytest, npm lint/test/build, Playwright e2e) avec obligation de rester au vert pendant la phase.
+- Conventions de documentation alignées : chaque évolution Phase 5 doit mettre à jour les roadmaps, plans UX/UI et journaux.
+- Traçabilité assurée par `codex_log.md` pour tout jalon ou décision structurante.
 
 ## Fichiers impactés
 - `docs/roadmap/phase-05.md`
