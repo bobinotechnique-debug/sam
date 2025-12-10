@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Query, status
 
-from app.api.errors import map_service_error
 from app.models.common import PaginatedResponse
 from app.models.mission import Mission, MissionCreate, MissionUpdate
-from app.services.errors import ServiceError
 from app.services.registry import mission_service
 
 router = APIRouter(prefix="/api/v1/missions", tags=["missions"])
@@ -18,31 +16,19 @@ def list_missions(
 
 @router.post("", response_model=Mission, status_code=status.HTTP_201_CREATED)
 def create_mission(payload: MissionCreate) -> Mission:
-    try:
-        return mission_service.create(payload)
-    except ServiceError as error:
-        raise map_service_error(error) from error
+    return mission_service.create(payload)
 
 
 @router.get("/{mission_id}", response_model=Mission)
 def get_mission(mission_id: int) -> Mission:
-    try:
-        return mission_service.get(mission_id)
-    except ServiceError as error:
-        raise map_service_error(error) from error
+    return mission_service.get(mission_id)
 
 
 @router.patch("/{mission_id}", response_model=Mission)
 def update_mission(mission_id: int, payload: MissionUpdate) -> Mission:
-    try:
-        return mission_service.update(mission_id, payload)
-    except ServiceError as error:
-        raise map_service_error(error) from error
+    return mission_service.update(mission_id, payload)
 
 
 @router.delete("/{mission_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_mission(mission_id: int) -> None:
-    try:
-        mission_service.delete(mission_id)
-    except ServiceError as error:
-        raise map_service_error(error) from error
+    mission_service.delete(mission_id)

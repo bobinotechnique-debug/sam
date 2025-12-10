@@ -77,6 +77,7 @@ Elle doit fluidifier la collaboration entre responsables planning, managers de s
 - Règles métiers minimales : fuseaux horaires valides, cohérence organisation/site/rôle, pas de chevauchement d'affectations par collaborateur, fenêtres temporelles ordonnées.
 - Journalisation des actions critiques (création, mise à jour, suppression) pour faciliter l'audit et le support.
 - Tests API couvrant les parcours principaux : CRUD organisation, validations rôle/collaborateur, cohérence mission, cycle de vie d'un shift avec annulation.
+- Erreurs d'API normalisées avec une enveloppe `{code, message, detail, trace_id}` et entête `X-Request-ID` renvoyé pour suivre les requêtes.
 
 ## Règles métier clés (préparatoires)
 - Un shift appartient à une mission et à un site ; un collaborateur ne peut avoir deux shifts qui se chevauchent sur le même créneau.

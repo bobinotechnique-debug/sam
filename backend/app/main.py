@@ -1,5 +1,9 @@
-from fastapi import FastAPI
+from uuid import uuid4
 
+from fastapi import FastAPI, Request, Response
+from starlette.middleware.base import RequestResponseEndpoint
+
+from app.api.errors import register_exception_handlers
 from app.api.routes import router
 from app.core.config import settings
 from app.core.logging import configure_logging, logger
@@ -8,6 +12,18 @@ from app.core.logging import configure_logging, logger
 def create_application() -> FastAPI:
     configure_logging()
     application = FastAPI(title=settings.project_name)
+
+    @application.middleware("http")
+    async def add_request_trace_id(
+        request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
+        trace_id = str(uuid4())
+        request.state.trace_id = trace_id
+        response = await call_next(request)
+        response.headers.setdefault("X-Request-ID", trace_id)
+        return response
+
+    register_exception_handlers(application)
     application.include_router(router)
     logger.info("Application created", extra={"project_name": settings.project_name})
     return application

@@ -16,6 +16,7 @@
 - CRUD REST complet pour organisations, sites, rôles, collaborateurs, missions et shifts avec validations Pydantic (fuseaux valides, fenêtres temporelles, cohérence organisation/site/rôle, prévention des chevauchements d'affectations).
 - Services en mémoire enrichis de logs structurés lors des créations/mises à jour/suppressions pour faciliter le suivi.
 - Tests API supplémentaires couvrant les flux critiques (CRUD organisation, validation rôle/collaborateur, cohérence mission, cycle de vie d'un shift avec annulation).
+- Normalisation des erreurs API via une enveloppe `{code, message, detail, trace_id}` et propagation du trace_id dans le header `X-Request-ID` pour l'audit.
 
 ### Principes de conception
 - **Séparation stricte des couches** : API (routers) ➜ services ➜ repositories ; dépendances injectées.
@@ -55,7 +56,7 @@
 - Succès : enveloppe JSON alignée sur les schémas Pydantic `Read`, pagination standard (`items`, `total`, `page`, `page_size`).
 - Erreurs :
   - 400/422 pour validation, 404 pour ressource absente, 409 pour conflit (chevauchement, doublon), 401/403 pour auth.
-  - Structure : `{ "code": "<slug>", "message": "...", "detail": {}, "trace_id": "..." }`.
+  - Structure : `{ "code": "<slug>", "message": "...", "detail": {}, "trace_id": "..." }` (générée par les handlers globaux qui exposent aussi `X-Request-ID`).
 
 ## Modèle de données (prévisionnel)
 - `organizations` (id, nom, fuseau par défaut, metadata de facturation)

@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Query, status
 
-from app.api.errors import map_service_error
 from app.models.common import PaginatedResponse
 from app.models.site import Site, SiteCreate, SiteUpdate
-from app.services.errors import ServiceError
 from app.services.registry import site_service
 
 router = APIRouter(prefix="/api/v1/sites", tags=["sites"])
@@ -18,31 +16,19 @@ def list_sites(
 
 @router.post("", response_model=Site, status_code=status.HTTP_201_CREATED)
 def create_site(payload: SiteCreate) -> Site:
-    try:
-        return site_service.create(payload)
-    except ServiceError as error:
-        raise map_service_error(error) from error
+    return site_service.create(payload)
 
 
 @router.get("/{site_id}", response_model=Site)
 def get_site(site_id: int) -> Site:
-    try:
-        return site_service.get(site_id)
-    except ServiceError as error:
-        raise map_service_error(error) from error
+    return site_service.get(site_id)
 
 
 @router.patch("/{site_id}", response_model=Site)
 def update_site(site_id: int, payload: SiteUpdate) -> Site:
-    try:
-        return site_service.update(site_id, payload)
-    except ServiceError as error:
-        raise map_service_error(error) from error
+    return site_service.update(site_id, payload)
 
 
 @router.delete("/{site_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_site(site_id: int) -> None:
-    try:
-        site_service.delete(site_id)
-    except ServiceError as error:
-        raise map_service_error(error) from error
+    site_service.delete(site_id)
