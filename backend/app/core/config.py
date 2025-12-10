@@ -1,4 +1,4 @@
-from typing import Any
+from collections.abc import Sequence
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
@@ -24,10 +24,14 @@ class Settings(BaseSettings):
 
     @field_validator("cors_origins", mode="before")
     @classmethod
-    def parse_cors_origins(cls, value: Any) -> list[str]:
+    def parse_cors_origins(cls, value: str | Sequence[str]) -> list[str]:
         if isinstance(value, str):
             return [origin.strip() for origin in value.split(",") if origin.strip()]
-        return value
+
+        if isinstance(value, Sequence):
+            return list(value)
+
+        raise TypeError("cors_origins must be a string or a sequence of strings")
 
     model_config = {
         "env_file": ".env",
