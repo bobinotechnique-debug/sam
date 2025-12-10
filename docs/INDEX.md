@@ -12,6 +12,7 @@ Ce répertoire centralise les informations de référence du projet. Lecture con
 - `roadmap/phase-04.md` : feuille de route détaillée de la phase 4 (tests, documentation, CI, planning simple).
 - `specs/planning_simple_v1.md` : description de la vue planning simple (v1) et de ses limitations.
 - `notes/phase-04-changes.md` : journal synthétique des ajustements réalisés pendant la phase 4.
+- `notes/phase-04-closure.md` : plan de clôture de la phase 4 et cadrage draft de la phase 5.
 - `decisions.md` : décisions architecturales (ADR) maintenues à jour.
 
 ## Principes de maintenance documentaire

@@ -40,3 +40,9 @@
   - Backend : couverture des validations critiques (fenêtres temporelles mission/shift, cohérence site/role/mission, conflits de planning) via pytest.
   - Frontend : tests Vitest sur la vue planning (états vide/erreur, ouverture modale) en plus des parcours de navigation existants.
   - CI : workflows GitHub Actions alignés sur les commandes locales (`ruff`, `mypy`, `pytest`, `npm run lint`, `npm run test`).
+
+### Clôture de phase & transition (draft)
+- Consolidation documentaire finale : READMEs racine/backend/frontend, doc planning (vues, interactions, modèles), schémas ASCII API ↔ frontend et release notes Phase 4.
+- Qualité et observabilité : objectif de couverture backend ≥ 85 %, scénarios e2e Playwright CRUD + planning simple, validation `/health` et `/metrics`, pré-configuration Prometheus/Grafana minimale.
+- Garde-fous agents & workflow : mise à jour d'AGENT_ROOT et scripts de garde (docs_guard, roadmap_guard) pour verrouiller la fin de phase et préparer la Phase 5.
+- Prompts Codex de finalisation Phase 4 et de cadrage Phase 5 consignés dans `docs/notes/phase-04-closure.md` avant lancement de la prochaine phase.
