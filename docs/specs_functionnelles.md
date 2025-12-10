@@ -5,6 +5,7 @@ Fournir une base applicative permettant de tester la stack FastAPI + React + Tai
 
 ## Parcours utilisateur actuels
 - **Healthcheck backend** : consultation des docs Swagger sur `/docs`.
+- **CRUD démo en mémoire** : création, lecture, mise à jour et suppression d'items via l'API `/items`.
 - **Interface frontend minimale** : chargement de la page d'accueil et consommation future de l'API.
 
 ## Exigences métier immédiates

@@ -21,6 +21,14 @@ A FastAPI + React + Tailwind starter aligned with enterprise-grade quality gates
    - Backend API docs: http://localhost:8000/docs
    - Frontend: http://localhost:5173
 
+## API (bootstrap)
+- `GET /health` — healthcheck used by the frontend landing page.
+- `GET /items` — list in-memory demo items (resets between runs).
+- `POST /items` — create a demo item with `name` and `description`.
+- `GET /items/{id}` — retrieve an item or return 404 if missing.
+- `PUT /items/{id}` — update an item.
+- `DELETE /items/{id}` — delete an item.
+
 ## Project Structure
 ```
 / (root)

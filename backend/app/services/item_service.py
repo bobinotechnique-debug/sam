@@ -32,5 +32,9 @@ class InMemoryItemService:
             return True
         return False
 
+    def reset(self) -> None:
+        self._items.clear()
+        self._counter = 0
+
 
 item_service = InMemoryItemService()
