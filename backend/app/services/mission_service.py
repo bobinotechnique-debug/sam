@@ -1,3 +1,4 @@
+from app.core.logging import logger
 from app.models.common import PaginatedResponse
 from app.models.mission import Mission, MissionCreate, MissionUpdate
 from app.services.database import InMemoryDatabase
@@ -23,6 +24,15 @@ class MissionService:
             raise ValidationError("Role and site must belong to the same organization")
         mission = Mission(id=self._db.next_id("missions"), **payload.model_dump())
         self._db.missions[mission.id] = mission
+        logger.info(
+            "Mission created",
+            extra={
+                "mission_id": mission.id,
+                "site_id": payload.site_id,
+                "role_id": payload.role_id,
+                "organization_id": site.organization_id,
+            },
+        )
         return mission
 
     def get(self, mission_id: int) -> Mission:
@@ -52,6 +62,7 @@ class MissionService:
             raise ValidationError("Role and site must belong to the same organization")
         updated = mission.model_copy(update=updates)
         self._db.missions[mission_id] = updated
+        logger.info("Mission updated", extra={"mission_id": mission_id})
         return updated
 
     def delete(self, mission_id: int) -> None:
@@ -61,3 +72,4 @@ class MissionService:
         if any(shift.mission_id == mission_id for shift in self._db.shifts.values()):
             raise ConflictError("Mission has related shifts")
         del self._db.missions[mission_id]
+        logger.info("Mission deleted", extra={"mission_id": mission_id})

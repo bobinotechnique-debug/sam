@@ -12,6 +12,11 @@
 - **Conteneurs prêts** : docker-compose orchestre PostgreSQL, backend (uvicorn) et frontend, avec ports 8000/5173 exposés et variables déclarées dans `.env.example`.
 - **Qualité** : CI GitHub Actions exécute `ruff`, `mypy`, `pytest`, `npm run lint` et `npm run test` ; pas de secrets en dépôt.
 
+### Avancement Phase 4.1 – Modèle de données & API core (MVP)
+- CRUD REST complet pour organisations, sites, rôles, collaborateurs, missions et shifts avec validations Pydantic (fuseaux valides, fenêtres temporelles, cohérence organisation/site/rôle, prévention des chevauchements d'affectations).
+- Services en mémoire enrichis de logs structurés lors des créations/mises à jour/suppressions pour faciliter le suivi.
+- Tests API supplémentaires couvrant les flux critiques (CRUD organisation, validation rôle/collaborateur, cohérence mission, cycle de vie d'un shift avec annulation).
+
 ### Principes de conception
 - **Séparation stricte des couches** : API (routers) ➜ services ➜ repositories ; dépendances injectées.
 - **Validation systématique** : schémas Pydantic `Create/Update/Read` dédiés, erreurs normalisées (422/400/404/409).

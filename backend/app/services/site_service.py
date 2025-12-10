@@ -1,3 +1,4 @@
+from app.core.logging import logger
 from app.models.common import PaginatedResponse
 from app.models.site import Site, SiteCreate, SiteUpdate
 from app.services.database import InMemoryDatabase
@@ -21,6 +22,10 @@ class SiteService:
         site_data["timezone"] = timezone
         site = Site(id=self._db.next_id("sites"), **site_data)
         self._db.sites[site.id] = site
+        logger.info(
+            "Site created",
+            extra={"site_id": site.id, "organization_id": payload.organization_id},
+        )
         return site
 
     def get(self, site_id: int) -> Site:
@@ -36,6 +41,7 @@ class SiteService:
             updates["timezone"] = site.timezone
         updated = site.model_copy(update=updates)
         self._db.sites[site_id] = updated
+        logger.info("Site updated", extra={"site_id": site_id})
         return updated
 
     def delete(self, site_id: int) -> None:
@@ -45,3 +51,4 @@ class SiteService:
         if any(mission.site_id == site_id for mission in self._db.missions.values()):
             raise ConflictError("Site has related missions")
         del self._db.sites[site_id]
+        logger.info("Site deleted", extra={"site_id": site_id})

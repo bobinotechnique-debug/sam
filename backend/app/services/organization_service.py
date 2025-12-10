@@ -1,3 +1,4 @@
+from app.core.logging import logger
 from app.models.common import PaginatedResponse
 from app.models.organization import Organization, OrganizationCreate, OrganizationUpdate
 from app.services.database import InMemoryDatabase
@@ -15,6 +16,7 @@ class OrganizationService:
     def create(self, payload: OrganizationCreate) -> Organization:
         organization = Organization(id=self._db.next_id("organizations"), **payload.model_dump())
         self._db.organizations[organization.id] = organization
+        logger.info("Organization created", extra={"organization_id": organization.id})
         return organization
 
     def get(self, organization_id: int) -> Organization:
@@ -27,6 +29,7 @@ class OrganizationService:
         organization = self.get(organization_id)
         updated = organization.model_copy(update=payload.model_dump(exclude_none=True))
         self._db.organizations[organization_id] = updated
+        logger.info("Organization updated", extra={"organization_id": organization_id})
         return updated
 
     def delete(self, organization_id: int) -> None:
@@ -42,3 +45,4 @@ class OrganizationService:
         ):
             raise ConflictError("Organization has related collaborators")
         del self._db.organizations[organization_id]
+        logger.info("Organization deleted", extra={"organization_id": organization_id})
