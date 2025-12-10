@@ -21,6 +21,7 @@ Codex pilote le dépôt de bout en bout pour construire une application SaaS de 
 ## 4. Règles de qualité & sécurité
 - Pas de données sensibles en dur ; configuration via `.env`/`.env.example` et secrets externes uniquement.
 - Tests et linters obligatoires pour tout code critique ; CI rouge bloquante.
+- La CI fait foi : aucune fonctionnalité ou merge si le pipeline n'est pas vert.
 - Respect strict des conventions décrites dans `docs/conventions.md` (naming, commits, structure).
 - Logs clairs pour démarrage, accès DB et erreurs ; validation systématique des entrées API.
 - Aucune fonctionnalité ne peut être ajoutée si la CI n’est pas verte.
@@ -39,4 +40,6 @@ Codex pilote le dépôt de bout en bout pour construire une application SaaS de 
 ## 7. Traçabilité
 - Chaque étape importante ajoute une ligne dans `codex_log.md` (date, phase, sujet, justification).
 - Messages de commit au format conventionnel, PR incluant résumé et tests exécutés.
+- Toute modification des scripts de test ou de lint doit être synchronisée entre CI, documentation et guides agents, et tracée
+  dans `codex_log.md`.
 - Aucune avancée silencieuse : si une décision dévie du cadre, l'ADR correspondante doit être ajoutée avant implémentation.

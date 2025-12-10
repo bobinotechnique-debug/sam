@@ -17,16 +17,12 @@ This FastAPI service exposes a versioned `/api/v1` surface with a healthcheck an
    ```
 4. Open http://localhost:8000/docs for interactive docs.
 
-### Tests and Quality
+### Tests and Quality (CI parity)
+Les mêmes commandes sont exécutées dans la CI GitHub Actions :
 ```bash
 ruff check app
 mypy app
 pytest
-```
-
-### CI parity (local)
-```bash
-ruff check app && mypy app && pytest
 ```
 
 ## Configuration

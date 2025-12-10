@@ -10,3 +10,4 @@
 2025-12-12 | Phase 2 | bootstrap technique | Mise en place des endpoints /api/v1 (référentiel planning, healthcheck), services en mémoire, front connecté et docs README synchronisés.
 2025-12-13 | Phase 2 | alignement bootstrap et documentation | Clarification de l'état du bootstrap (healthcheck, CRUD référentiel en mémoire, docker-compose prêt), mise à jour des specs/architecture/roadmap/README et traçabilité.
 2025-12-14 | Phase 3 | CI stricte backend/frontend | Ajout workflow GitHub Actions (lint/type/tests), règles CI bloquantes et documentation des commandes locales.
+2025-12-15 | Phase 3 | CI/Qualité renforcée | Alignement des scripts (Vitest run), CI GitHub Actions backend/frontend stricte, documentation CI mise à jour et rappel des règles bloquantes dans les agents.

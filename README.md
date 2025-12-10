@@ -54,12 +54,12 @@ npm run dev
 ## CI / Qualité
 - Déclencheurs : chaque `push` et `pull_request`.
 - Jobs vérifiés :
-  - **Backend** — lint (`ruff`), typage (`mypy`), tests (`pytest`).
-  - **Frontend** — lint (`eslint`), tests (`vitest`).
+  - **CI / Backend - lint, type, tests** — lint (`ruff`), typage (`mypy`), tests (`pytest`).
+  - **CI / Frontend - lint and tests** — lint (`eslint`), tests (`vitest`).
 - Commandes locales équivalentes :
   - Backend : `cd backend && pip install -e .[dev] && ruff check app && mypy app && pytest`
-  - Frontend : `cd frontend && npm install && npm run lint && npm run test -- --runInBand --watch=false`
-- La CI est bloquante : aucun merge ou nouvelle fonctionnalité sans pipeline vert (voir `.github/workflows/ci.yml`).
+  - Frontend : `cd frontend && npm install && npm run lint && npm run test`
+- La CI fait foi : aucun merge ou nouvelle fonctionnalité sans pipeline vert (voir `.github/workflows/ci.yml`).
 
 ## Documentation
 - `docs/INDEX.md` — plan de la documentation
