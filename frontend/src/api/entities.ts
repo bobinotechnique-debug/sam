@@ -7,6 +7,8 @@ import {
   Organization,
   OrganizationPayload,
   PaginatedResponse,
+  Role,
+  RolePayload,
   Shift,
   ShiftPayload,
   Site,
@@ -104,6 +106,32 @@ export function updateSite(id: number, payload: Partial<SitePayload>): Promise<S
 
 export function deleteSite(id: number): Promise<void> {
   return request(`/api/v1/sites/${id}`, { method: "DELETE" });
+}
+
+export function listRoles(page?: number, pageSize?: number): Promise<PaginatedResponse<Role>> {
+  return request(withPagination("/api/v1/roles", page, pageSize));
+}
+
+export function getRole(id: number): Promise<Role> {
+  return request(`/api/v1/roles/${id}`);
+}
+
+export function createRole(payload: RolePayload): Promise<Role> {
+  return request<Role>("/api/v1/roles", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function updateRole(id: number, payload: Partial<RolePayload>): Promise<Role> {
+  return request<Role>(`/api/v1/roles/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function deleteRole(id: number): Promise<void> {
+  return request(`/api/v1/roles/${id}`, { method: "DELETE" });
 }
 
 export function listMissions(page?: number, pageSize?: number): Promise<PaginatedResponse<Mission>> {

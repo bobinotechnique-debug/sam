@@ -21,7 +21,7 @@
 
 ### Avancement Phase 4.2 – UI CRUD basique (en cours)
 - Connexion du frontend aux endpoints REST existants via hooks d'appel API (URL issue de `VITE_API_BASE_URL`), gestion explicite des états de requête (chargement, succès, erreur) et affichage des erreurs normalisées.
-- Formulaires React/Tailwind pour organisations, sites, collaborateurs et missions/shifts, avec validations alignées sur les schémas API (horaires ordonnés, cohérence organisation/site/rôle, anti-chevauchement lors des confirmations de shift) et pré-remplissage des données lors des éditions.
+- Formulaires React/Tailwind pour organisations, sites, rôles/compétences, collaborateurs et missions/shifts, avec validations alignées sur les schémas API (horaires ordonnés, cohérence organisation/site/rôle, anti-chevauchement lors des confirmations de shift) et pré-remplissage des données lors des éditions.
 - Structure de navigation réutilisable (liste ➜ détail/édition) avec confirmations pour les opérations destructives et messages de feedback utilisateur.
 - Préparation à l'extraction de types front à partir d'OpenAPI ou de DTO communs pour réduire la divergence entre contrats front/back.
 

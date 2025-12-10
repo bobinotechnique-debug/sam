@@ -5,6 +5,7 @@ import { CollaboratorCreatePage, CollaboratorEditPage, CollaboratorsPage } from 
 import { MissionCreatePage, MissionEditPage, MissionsPage } from "./pages/MissionsPage";
 import { PlanningPage } from "./pages/PlanningPage";
 import { OrganizationCreatePage, OrganizationEditPage, OrganizationsPage } from "./pages/OrganizationsPage";
+import { RoleCreatePage, RoleEditPage, RolesPage } from "./pages/RolesPage";
 import { SiteCreatePage, SiteEditPage, SitesPage } from "./pages/SitesPage";
 
 function App() {
@@ -24,6 +25,10 @@ function App() {
           <Route path="sites" element={<SitesPage />} />
           <Route path="sites/new" element={<SiteCreatePage />} />
           <Route path="sites/:id/edit" element={<SiteEditPage />} />
+
+          <Route path="roles" element={<RolesPage />} />
+          <Route path="roles/new" element={<RoleCreatePage />} />
+          <Route path="roles/:id/edit" element={<RoleEditPage />} />
 
           <Route path="missions" element={<MissionsPage />} />
           <Route path="missions/new" element={<MissionCreatePage />} />

@@ -30,6 +30,9 @@ export function Layout() {
             <NavLink to="/sites" className={navLinkClass}>
               Lieux
             </NavLink>
+            <NavLink to="/roles" className={navLinkClass}>
+              Rôles
+            </NavLink>
             <NavLink to="/missions" className={navLinkClass}>
               Missions
             </NavLink>
