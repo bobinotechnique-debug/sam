@@ -205,7 +205,9 @@ def record_availability(payload: UserAvailabilityCreate) -> UserAvailability:
 
 
 @router.get("/rules")
-def list_rules(organization_id: int = Query(default=1)) -> dict[str, list[HrRule] | list[ConflictRule]]:
+def list_rules(
+    organization_id: int = Query(default=1),
+) -> dict[str, list[HrRule] | list[ConflictRule]]:
     hr_rules = planning_rule_service.list_hr_rules(organization_id)
     conflict_rules = planning_rule_service.list_conflict_rules(organization_id)
     return {"hr_rules": hr_rules, "conflict_rules": conflict_rules}
