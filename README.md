@@ -2,6 +2,12 @@
 
 Plateforme SaaS de planning multi-sites construite sur FastAPI + React + Tailwind, alignée avec des garde-fous enterprise (CI, linting, typage, tests) et prête pour un stockage PostgreSQL.
 
+## MVP Planning Core
+- **Périmètre livré (Phase 4.1 → 4.3)** : CRUD complet sur organisations, sites, rôles, collaborateurs, missions et shifts avec validations de cohérence, UI CRUD basique et vue planning jour/semaine.
+- **Phase 4.4 (stabilisation)** : tests backend et frontend renforcés, nettoyage du bruit de logs, documentation actualisée, CI GitHub Actions synchronisée avec les commandes locales.
+  - États couverts côté front : chargement, erreur, listes vides, ouverture de la modale de mission.
+  - Validations côté API : fenêtres temporelles cohérentes, correspondance organisationnelle site/rôle/mission, détection de chevauchement de shifts.
+
 ## Vision
 - One-command local launch via Docker Compose.
 - Documentation fondatrice (spécs fonctionnelles/techniques, architecture, ADR, roadmap) avant toute implémentation majeure.
@@ -36,6 +42,36 @@ Plateforme SaaS de planning multi-sites construite sur FastAPI + React + Tailwin
 ```
 
 ## Development
+### Lancer backend et frontend
+```bash
+# Backend
+cd backend
+python -m venv .venv && source .venv/bin/activate
+pip install -e .[dev]
+uvicorn app.main:app --reload
+
+# Frontend
+cd frontend
+npm install
+npm run dev
+```
+
+### Tests & qualité (parité CI)
+- **Backend** :
+  ```bash
+  cd backend
+  ruff check app
+  mypy app
+  pytest
+  ```
+- **Frontend** :
+  ```bash
+  cd frontend
+  npm run lint
+  npm run test
+  ```
+- **Vérification locale CI** : exécuter les commandes ci-dessus avant push ; les mêmes jobs tournent dans GitHub Actions (`.github/workflows/ci.yml`).
+
 ### Backend
 ```bash
 cd backend

@@ -25,6 +25,13 @@ mypy app
 pytest
 ```
 
+### Endpoints clés (MVP Planning Core)
+- `GET /api/v1/organizations` — liste paginée, CRUD complet sous `/api/v1/organizations/{id}`.
+- `GET /api/v1/collaborators` — CRUD des collaborateurs avec validation du rôle principal.
+- `GET /api/v1/sites` — sites liés aux organisations, nécessaires pour les missions.
+- `GET /api/v1/missions` — CRUD missions avec validation site/rôle et fenêtres temporelles.
+- `GET /api/v1/shifts` — CRUD shifts avec détection de chevauchement et alignement organisationnel.
+
 ## Configuration
 Configuration is loaded from environment variables (see `.env.example`). Key variables include:
 - `DATABASE_URL` for PostgreSQL connection string.

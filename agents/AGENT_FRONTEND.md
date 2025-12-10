@@ -14,6 +14,11 @@ Concevoir et maintenir l'interface React/Vite/Tailwind pour offrir une expérien
 - Synchroniser les spécifications UI/UX avec `docs/specs_functionnelles.md` et `docs/specs_techniques.md`, mettre à jour `README.md` si le flux développeur change.
 - Garantir la vue `/planning` (jour/semaine) : toolbar de période, grille temporelle par lieu, affichage des affectations (shifts), modale d'édition synchronisée avec l'API missions+shifts.
 
+## MVP Planning Core – Phase 4.x
+- **Tests** : assurer des scénarios Vitest couvrant navigation CRUD et vue planning (états vide/erreur/chargement, ouverture modale, mises à jour mockées).
+- **Qualité** : `npm run lint` et `npm run test` obligatoires avant merge (parité avec GitHub Actions).
+- **UX** : supprimer les logs de debug, conserver la cohérence avec le blueprint `docs/blueprint/03_ux_ui_planning.md` et documenter les limitations restantes.
+
 ## Processus et garde-fous
 - Aucun ajout UI sans maquette, user flow ou spécification validée ; arrêter en fin de phase macro.
 - Noter dans `codex_log.md` les évolutions impactant l'expérience utilisateur ou la navigation.
