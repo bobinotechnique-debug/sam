@@ -20,3 +20,8 @@ Garantir la conception, la sécurité et la qualité du backend FastAPI/PostgreS
 - Pas de développement sans spécifications alignées (vérifier/mettre à jour `docs/specs_functionnelles.md` et `docs/specs_techniques.md`).
 - Toute évolution structurelle ou de sécurité doit être notée dans `docs/decisions.md` et `codex_log.md`.
 - Respect des phases macro : arrêter en fin de phase, demander validation avant d'élargir le périmètre.
+
+## MVP Planning Core – Phase 4.x
+- **Tests** : maintenir et étendre la couverture `pytest` sur les routes organisations/collaborateurs/sites/missions/shifts, incluant validations métier (fenêtres temporelles, cohérence organisationnelle, conflits de shifts).
+- **Qualité** : refuser tout merge sans `ruff check app`, `mypy app` et `pytest` verts (parité avec `.github/workflows/ci.yml`).
+- **Traçabilité** : toute correction de validation ou de règles métier doit être reflétée dans la doc (README backend, roadmap phase 4).

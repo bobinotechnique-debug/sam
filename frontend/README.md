@@ -32,6 +32,11 @@ npm run lint && npm run test
 - `src/pages/PlanningPage.tsx` — vue planning jour/semaine (groupée par lieu)
 - `src/components/planning/*` — toolbar, grilles et modale de détail/affectation
 
+## Tests UI ciblés (Phase 4.4)
+- États de base : listes vides, erreurs et chargement couverts dans les écrans CRUD et la vue planning.
+- Planning : rendu jour/semaine, ouverture de la modale de mission et rafraîchissement après sauvegarde mockée.
+- Commande unique : `npm run test` (Vitest + Testing Library, environnement jsdom via `tests/setup.ts`).
+
 ## Phase 4.3 – Vue /planning
 - Route : `/planning`, accessible depuis la navigation.
 - Modes : jour et semaine, fenêtre horaire configurable en code (par défaut 06:00 → 02:00).

@@ -36,4 +36,7 @@
   - Groupement par lieu ; les missions sont positionnées dans la grille temporelle avec les collaborateurs issus des shifts.
   - Interaction principale : clic sur une mission pour ouvrir une modale, modifier heure début/fin, lieu et affectations ; synchronisation via API missions + shifts (création/suppression mise à jour des affectations).
   - Gestion des erreurs basique en surimpression et rafraîchissement du planning après sauvegarde ; drag & drop restera optionnel pour une phase ultérieure.
-- **Phase 4.4 – Stabilisation MVP** : tests supplémentaires, nettoyage des logs/code, documentation consolidée (README, specs fonctionnelles/techniques, roadmap mise à jour) et CI verte.
+- **Phase 4.4 – Stabilisation MVP (livrée)** : tests supplémentaires, nettoyage et documentation consolidée (README, roadmap) avec CI verte.
+  - Backend : couverture des validations critiques (fenêtres temporelles mission/shift, cohérence site/role/mission, conflits de planning) via pytest.
+  - Frontend : tests Vitest sur la vue planning (états vide/erreur, ouverture modale) en plus des parcours de navigation existants.
+  - CI : workflows GitHub Actions alignés sur les commandes locales (`ruff`, `mypy`, `pytest`, `npm run lint`, `npm run test`).
