@@ -66,3 +66,7 @@ GitHub Actions workflow runs backend lint/type/tests and frontend lint/tests on 
 - `docs/conventions.md` — conventions de contribution et de code
 - `docs/roadmap.md` — phases et backlog
 - `docs/decisions.md` — architectural decisions (ADR-style)
+- `docs/blueprint/03_ux_ui_planning.md` — spécification visuelle UX/UI (source de vérité des écrans et interactions)
+
+## UX / UI & Maquettes
+La spécification visuelle maître est définie dans `docs/blueprint/03_ux_ui_planning.md`. Elle sert de référence pour toutes les vues (planning jour/semaine/mois, fiches, modals, responsive). Les développeurs frontend doivent vérifier la conformité des écrans et interactions avec cette spec et la mettre à jour en amont de toute évolution UX/UI.

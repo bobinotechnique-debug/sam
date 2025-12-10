@@ -5,6 +5,8 @@ Ce répertoire centralise les informations de référence du projet. Lecture con
 - `architecture.md` : vue d'ensemble, composants et flux de requête.
 - `specs_functionnelles.md` : vision produit, domaines métier, règles et parcours cibles.
 - `specs_techniques.md` : exigences techniques, modèle de données prévisionnel, sécurité et qualité.
+- `blueprint/INDEX.md` : index des spécifications blueprint (UX/UI).
+- `blueprint/03_ux_ui_planning.md` : spécification visuelle UX/UI (source de vérité des écrans et interactions).
 - `conventions.md` : conventions de code, branches, revues et mise à jour documentaire.
 - `roadmap.md` : jalons par phase (agents, documentation, bootstrap, core produit, observabilité).
 - `decisions.md` : décisions architecturales (ADR) maintenues à jour.
