@@ -55,3 +55,4 @@ Cette phase introduit le « Planning PRO » avec interactions avancées, workflo
 
 ## Statut
 - Phase 4 clôturée ; Phase 5 ouverte. Suivi détaillé dans `docs/roadmap/phase5/`.
+- Steps 01 (initialisation) et 02 (spec Planning PRO) documentés ; prochaines étapes focalisées sur l’architecture backend.

@@ -24,3 +24,4 @@
 2025-12-27 | Phase 4 | clôture & préparation Phase 5 | Ajout du mémo `docs/notes/phase-04-closure.md` (objectifs atteints, tâches restantes, prompts Codex), mise à jour README/roadmap pour cadrer la fin de phase et le lancement de la Phase 5.
 2025-12-28 | Phase 4 | clôture finale & release notes | Release notes Phase 4 ajoutées, READMEs alignés et roadmap mise à jour pour préparer la Phase 5.
 2025-12-30 | Phase 5.1 | initialisation | Création de la roadmap Phase 5 (`docs/roadmap/phase-05.md` + `docs/roadmap/phase5/step-01.md`), mise à jour de la roadmap globale et traçabilité du lancement.
+2025-12-31 | Phase 5.2 | specification Planning PRO | Formalisation du modèle de données cible, interactions UI v2, règles de conflits/HR et auto-assign v1 dans `docs/roadmap/phase5/step-02.md`.
