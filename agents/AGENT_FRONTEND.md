@@ -17,6 +17,7 @@ Concevoir et maintenir l'interface React/Vite/Tailwind pour offrir une expérien
 - Aucun ajout UI sans maquette, user flow ou spécification validée ; arrêter en fin de phase macro.
 - Noter dans `codex_log.md` les évolutions impactant l'expérience utilisateur ou la navigation.
 - Vérifier la cohérence des conventions (naming, Tailwind) avec `docs/conventions.md` avant de livrer.
+- Pour la phase 4.2, livrer des écrans CRUD basiques (liste/formulaire/suppression avec confirmation) pour organisations, collaborateurs, sites et missions avant d'attaquer le planning visuel (phase 4.3).
 
 ## Sources de vérité UX/UI
 - Spécification visuelle maître : `docs/blueprint/03_ux_ui_planning.md` (écrans, interactions, responsive, composants fonctionnels).
