@@ -16,3 +16,4 @@
 2025-12-10 | Phase 4.1 | validation et passage 4.2 | Validation des livrables API core, mise à jour roadmap/specs et feu vert pour lancer l'UI CRUD basique (Phase 4.2).
 2025-12-17 | Phase 4.2 | UI CRUD basique | Ajout du routeur frontend, écrans CRUD (listes/formulaires/suppression) pour organisations, collaborateurs, sites et missions, mise à jour README/roadmap/agent.
 2025-12-18 | Phase 4.3 | Planning visuel simple | Ajout vue /planning (jour/semaine) groupée par lieu avec modale d'affectation (missions + shifts), documentation roadmap/agents/spec mise à jour.
+2025-12-20 | Phase 4.4 | tests & docs finalisation | Renforcement des tests backend/frontend (planning, CRUD, validations), documentation phase 4 centralisée et liens CI/agents alignés.

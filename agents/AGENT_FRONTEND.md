@@ -18,6 +18,7 @@ Concevoir et maintenir l'interface React/Vite/Tailwind pour offrir une expérien
 - **Tests** : assurer des scénarios Vitest couvrant navigation CRUD et vue planning (états vide/erreur/chargement, ouverture modale, mises à jour mockées).
 - **Qualité** : `npm run lint` et `npm run test` obligatoires avant merge (parité avec GitHub Actions).
 - **UX** : supprimer les logs de debug, conserver la cohérence avec le blueprint `docs/blueprint/03_ux_ui_planning.md` et documenter les limitations restantes.
+  - Références phase 4 : `docs/roadmap/phase-04.md` (sous-phases, objectifs) et `docs/specs/planning_simple_v1.md` (planning v1, états UI).
 
 ## Processus et garde-fous
 - Aucun ajout UI sans maquette, user flow ou spécification validée ; arrêter en fin de phase macro.

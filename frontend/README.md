@@ -19,6 +19,8 @@ npm run test
 ```
 Les mêmes commandes sont utilisées dans la CI GitHub Actions.
 
+Référence phase 4 : consultez `docs/roadmap/phase-04.md` pour les objectifs et `docs/specs/planning_simple_v1.md` pour la description du planning v1.
+
 ### CI parity (local)
 ```bash
 npm run lint && npm run test
