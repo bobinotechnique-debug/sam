@@ -12,11 +12,18 @@
 - **Conteneurs prêts** : docker-compose orchestre PostgreSQL, backend (uvicorn) et frontend, avec ports 8000/5173 exposés et variables déclarées dans `.env.example`.
 - **Qualité** : CI GitHub Actions exécute `ruff`, `mypy`, `pytest`, `npm run lint` et `npm run test` ; pas de secrets en dépôt.
 
-### Avancement Phase 4.1 – Modèle de données & API core (MVP)
+### Avancement Phase 4.1 – Modèle de données & API core (MVP – validée)
 - CRUD REST complet pour organisations, sites, rôles, collaborateurs, missions et shifts avec validations Pydantic (fuseaux valides, fenêtres temporelles, cohérence organisation/site/rôle, prévention des chevauchements d'affectations).
 - Services en mémoire enrichis de logs structurés lors des créations/mises à jour/suppressions pour faciliter le suivi.
 - Tests API supplémentaires couvrant les flux critiques (CRUD organisation, validation rôle/collaborateur, cohérence mission, cycle de vie d'un shift avec annulation).
 - Normalisation des erreurs API via une enveloppe `{code, message, detail, trace_id}` et propagation du trace_id dans le header `X-Request-ID` pour l'audit.
+- Statut : livrables validés et prêts pour intégration front en Phase 4.2.
+
+### Avancement Phase 4.2 – UI CRUD basique (en cours)
+- Connexion du frontend aux endpoints REST existants via hooks d'appel API (URL issue de `VITE_API_BASE_URL`), gestion explicite des états de requête (chargement, succès, erreur) et affichage des erreurs normalisées.
+- Formulaires React/Tailwind pour organisations, sites, collaborateurs et missions/shifts, avec validations alignées sur les schémas API (horaires ordonnés, cohérence organisation/site/rôle, anti-chevauchement lors des confirmations de shift) et pré-remplissage des données lors des éditions.
+- Structure de navigation réutilisable (liste ➜ détail/édition) avec confirmations pour les opérations destructives et messages de feedback utilisateur.
+- Préparation à l'extraction de types front à partir d'OpenAPI ou de DTO communs pour réduire la divergence entre contrats front/back.
 
 ### Principes de conception
 - **Séparation stricte des couches** : API (routers) ➜ services ➜ repositories ; dépendances injectées.
