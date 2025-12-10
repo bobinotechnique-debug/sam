@@ -1,11 +1,10 @@
-# Planning visuel simple (v1)
-
-Cette spécification décrit la vue planning minimale livrée en Phase 4.3 :
+Cette spécification décrit la vue planning minimale livrée en Phase 4.3 et consolidée en Phase 4 Ultimate.
 
 ## Objectifs
 - Permettre aux responsables de visualiser les missions et shifts sur une grille jour/semaine.
 - Ouvrir une modale de détail pour ajuster mission ou shift sans naviguer.
 - Garantir des états clairs : chargement, vide, erreur.
+- Colorer les missions par lieu et afficher les collaborateurs affectés comme badges.
 
 ## Scénarios couverts
 1. **Affichage jour/semaine** : liste des missions par site avec leur fenêtre horaire et statut.
