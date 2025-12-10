@@ -72,12 +72,19 @@ Elle doit fluidifier la collaboration entre responsables planning, managers de s
 - Healthcheck exposé et consommé par le frontend pour vérifier le lien front/back dès le démarrage.
 - Docker compose prêt pour lancer API + frontend + PostgreSQL, avec configuration via `.env.example`.
 
-### Avancement Phase 4.1 – Modèle de données & API core (MVP)
+### Avancement Phase 4.1 – Modèle de données & API core (MVP – validée)
 - CRUD REST complet pour organisation, site, collaborateur, mission/shift (affectation) avec schémas de validation dédiés.
 - Règles métiers minimales : fuseaux horaires valides, cohérence organisation/site/rôle, pas de chevauchement d'affectations par collaborateur, fenêtres temporelles ordonnées.
 - Journalisation des actions critiques (création, mise à jour, suppression) pour faciliter l'audit et le support.
 - Tests API couvrant les parcours principaux : CRUD organisation, validations rôle/collaborateur, cohérence mission, cycle de vie d'un shift avec annulation.
 - Erreurs d'API normalisées avec une enveloppe `{code, message, detail, trace_id}` et entête `X-Request-ID` renvoyé pour suivre les requêtes.
+- Statut : livrables validés, feu vert pour engager l'UI CRUD basique de la phase 4.2.
+
+### Avancement Phase 4.2 – UI CRUD basique (en cours)
+- Pages React dédiées pour lister et gérer organisations, sites, collaborateurs et missions/shifts avec formulaires simples (création, édition, suppression, annulation pour shifts) et validations alignées sur l'API.
+- Intégration des appels API réels (chargement, succès, erreurs) avec affichage d'états explicites et gestion des erreurs normalisées côté front.
+- Navigation cohérente via le layout existant (liste ➜ détail/édition), champs pré-remplis lors des éditions et messages de confirmation pour les opérations destructives.
+- Alignement avec la spécification visuelle maître (`docs/blueprint/03_ux_ui_planning.md`) pour les composants de base (boutons, inputs, badges de statut) avant toute extension UX.
 
 ## Règles métier clés (préparatoires)
 - Un shift appartient à une mission et à un site ; un collaborateur ne peut avoir deux shifts qui se chevauchent sur le même créneau.
