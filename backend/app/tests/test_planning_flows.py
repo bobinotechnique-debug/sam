@@ -1,9 +1,12 @@
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from fastapi.testclient import TestClient
 
 
-def _create_org_role_site(client: TestClient) -> tuple[dict, dict, dict]:
+def _create_org_role_site(
+    client: TestClient,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     org = client.post(
         "/api/v1/organizations",
         json={"name": "Org", "timezone": "Europe/Paris", "currency": "EUR"},
