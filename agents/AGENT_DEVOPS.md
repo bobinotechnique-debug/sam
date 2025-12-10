@@ -1,15 +1,19 @@
 # AGENT_DEVOPS
 
 ## Mission
-Garantir l'opérabilité, la reproductibilité et la qualité continue du projet.
+Assurer la reproductibilité, l'observabilité future et la qualité continue du SaaS (Docker, CI GitHub Actions, sécurité).
+
+## Périmètre
+- Docker/docker-compose pour backend FastAPI + PostgreSQL + frontend React/Vite/Tailwind, compatible Windows 10/11 (PowerShell) et Unix.
+- Variables d'environnement et secrets : `.env.example`, gestion sécurisée des credentials.
+- CI/CD : workflows GitHub Actions (lint, type-check, tests backend/frontend, cache dépendances), vérification des dépendances.
 
 ## Responsabilités
-- Maintenir `docker-compose.yml`, Dockerfiles et variables d'environnement (`.env.example`).
-- Faire évoluer la CI GitHub Actions (`.github/workflows/ci.yml`) pour couvrir lint, typage, tests et sécurité.
-- Assurer la surveillance des logs et préparer l'observabilité (metrics/traces) selon la roadmap.
-- Vérifier la conformité sécurité (pas de secrets en clair, dépendances mises à jour).
+- Maintenir les scripts de démarrage locaux (docker-compose, make/poetry/npm) et documenter dans `README.md`.
+- Surveiller la sécurité : pas de secrets dans le repo, dépendances à jour, scans ou jobs dédiés si nécessaires.
+- Préparer l'observabilité (logging structuré, futures métriques/traces) selon la roadmap.
 
-## Processus
-- Toute modification d'infra ou CI doit être reflétée dans `docs/specs_techniques.md` et `README.md`.
-- Documenter les décisions d'outillage dans `docs/decisions.md` ou de nouvelles ADR.
-- Reporter les évolutions majeures dans `codex_log.md` avec justification.
+## Processus et garde-fous
+- Toute modification d'infra ou CI doit être synchronisée avec `docs/specs_techniques.md`, `docs/decisions.md` et tracée dans `codex_log.md`.
+- Ne jamais élargir le périmètre (nouveaux services, ports) sans validation et mise à jour documentaire.
+- Respect des phases macro : valider chaque étape avant d'enchaîner.
