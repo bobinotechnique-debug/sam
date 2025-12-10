@@ -17,3 +17,8 @@ Maintenir une documentation source de vérité, alignée avec le code et les pha
 - Documenter toute décision structurante dans `docs/decisions.md` et tracer les évolutions dans `codex_log.md`.
 - Vérifier la complétude de la documentation en fin de phase macro avant de passer à la suivante.
 - En cas de changement majeur de vision, réécrire `agent.md` et les contrats pour refléter le nouvel accord produit/technique.
+
+## Spec visuelle & synchronisation
+- Maintenir la spécification visuelle maître `docs/blueprint/03_ux_ui_planning.md` comme source de vérité UX/UI.
+- Lorsqu'une nouvelle vue ou interaction majeure est ajoutée, enrichir la spec et mettre à jour les index (`docs/INDEX.md`, `docs/blueprint/INDEX.md`).
+- S'assurer que les autres agents référencent cette spec dans leurs guides et que les liens restent à jour.

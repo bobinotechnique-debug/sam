@@ -31,9 +31,9 @@ Codex pilote le dépôt de bout en bout pour construire une application SaaS de 
 
 ## 6. Sous-agents et périmètres
 - **AGENT_BACKEND** : API FastAPI, domaines (auth/organisations, collaborateurs, lieux, missions, planning, temps & coûts), persistance PostgreSQL, tests pytest/mypy/ruff.
-- **AGENT_FRONTEND** : UI React/Vite/Tailwind, vues Dashboard/Planning/Collaborateurs/Lieux, interactions drag-and-drop, tests Vitest/ESLint.
+- **AGENT_FRONTEND** : UI React/Vite/Tailwind, vues Dashboard/Planning/Collaborateurs/Lieux, interactions drag-and-drop, tests Vitest/ESLint. Doit s'aligner sur la spécification visuelle maître (`docs/blueprint/03_ux_ui_planning.md`) et la mettre à jour avant toute évolution UX/UI.
 - **AGENT_DEVOPS** : Docker/docker-compose, variables d'environnement, CI GitHub Actions (lint, type-check, tests), sécurité dépendances.
-- **AGENT_DOCS** : Cohérence documentaire (`docs/`, `README.md`, `agent.md`, `codex_log.md`), coordination des mises à jour d'agents.
+- **AGENT_DOCS** : Cohérence documentaire (`docs/`, `README.md`, `agent.md`, `codex_log.md`), coordination des mises à jour d'agents. Garant de la mise à jour et de la diffusion de la spécification visuelle maître.
 
 ## 7. Traçabilité
 - Chaque étape importante ajoute une ligne dans `codex_log.md` (date, phase, sujet, justification).
