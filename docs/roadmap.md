@@ -29,5 +29,7 @@
 ## Phase 4 : MVP Planning Core (en cours)
 - **Phase 4.1 – Modèle de données & API core (validée)** : CRUD complet sur organisations, collaborateurs, sites, missions/shifts avec validations de cohérence et logs d'audit ; tests API principaux livrés.
 - **Phase 4.2 – UI CRUD basique (en cours)** : vues React pour gérer organisations/collaborateurs/lieux/missions, formulaires simples et appels API cohérents.
+  - Vues livrées : listes avec états de chargement/erreur/vide, actions créer/éditer/supprimer avec confirmation.
+  - Périmètre limité : aucun planning visuel ni drag & drop, uniquement la gestion des référentiels et formulaires basiques.
 - **Phase 4.3 – Planning visuel simple** : vue planning jour/semaine, affichage des missions par lieu et affectations, mises à jour backend correspondantes.
 - **Phase 4.4 – Stabilisation MVP** : tests supplémentaires, nettoyage des logs/code, documentation consolidée (README, specs fonctionnelles/techniques, roadmap mise à jour) et CI verte.
