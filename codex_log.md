@@ -7,3 +7,4 @@
 2025-12-11 | Phase 1 | documentation fondatrice | Consolidation des specs fonctionnelles/techniques, architecture, ADR et roadmap pour cadrer le SaaS de planning.
 2025-12-11 | Phase 1 | documentation fondatrice approfondie | Itération sur la documentation (INDEX, specs fonctionnelles/techniques, architecture, roadmap, ADR erreurs) pour verrouiller le périmètre et la traçabilité.
 2025-12-12 | Phase 1 | validation de phase | Périmètre et documents validés par les agents ; revue ADR effectuée (aucune décision structurante manquante) et journal synchronisé pour lancer le bootstrap.
+2025-12-12 | Phase 2 | bootstrap technique | Mise en place des endpoints /api/v1 (référentiel planning, healthcheck), services en mémoire, front connecté et docs README synchronisés.

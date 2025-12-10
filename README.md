@@ -18,7 +18,7 @@ Plateforme SaaS de planning multi-sites construite sur FastAPI + React + Tailwin
    docker compose up --build
    ```
 3. Accéder aux services :
-   - Backend API docs: http://localhost:8000/docs
+   - Backend API docs: http://localhost:8000/docs (API versionnée sous `/api/v1` avec `/api/v1/health`)
    - Frontend: http://localhost:5173
 
 ## Project Structure

@@ -11,7 +11,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${apiBaseUrl}/health`)
+    fetch(`${apiBaseUrl}/api/v1/health`)
       .then(async (response) => {
         if (!response.ok) {
           throw new Error(`Unexpected status ${response.status}`);

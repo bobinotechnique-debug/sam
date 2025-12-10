@@ -1,7 +1,7 @@
 # Backend (FastAPI)
 
 ## Overview
-This FastAPI service exposes a simple healthcheck and an in-memory CRUD example to bootstrap the project structure. The application follows a layered approach (API -> services -> models -> core) and is ready to be extended with PostgreSQL persistence and authentication.
+This FastAPI service exposes a versioned `/api/v1` surface with a healthcheck and in-memory CRUD for the initial planning domains (organizations, sites, roles, collaborators, missions, shifts). The application follows a layered approach (API -> services -> models -> core) and is ready to be extended with PostgreSQL persistence and authentication.
 
 ## Getting Started
 
