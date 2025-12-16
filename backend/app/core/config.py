@@ -2,6 +2,8 @@ from collections.abc import Sequence
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
+from sqlalchemy.engine import URL, make_url
+from sqlalchemy.exc import ArgumentError
 
 
 class Settings(BaseSettings):
@@ -21,6 +23,34 @@ class Settings(BaseSettings):
     cors_origins: list[str] = Field(
         default_factory=lambda: ["http://localhost:5173"], alias="CORS_ORIGINS"
     )
+
+    @property
+    def sqlalchemy_database_uri(self) -> str:
+        """Return a validated SQLAlchemy database URL.
+
+        If ``database_url`` is empty, build it from the individual PostgreSQL
+        settings. When a URL is provided but invalid, raise a clear error
+        instead of letting SQLAlchemy fail with a generic parse exception.
+        """
+
+        if self.database_url and self.database_url.strip():
+            try:
+                make_url(self.database_url)
+            except ArgumentError as exc:
+                raise ValueError(
+                    "DATABASE_URL is invalid; expected a full SQLAlchemy URL"
+                ) from exc
+
+            return self.database_url
+
+        return URL.create(
+            drivername="postgresql+psycopg",
+            username=self.postgres_user,
+            password=self.postgres_password,
+            host=self.postgres_host,
+            port=self.postgres_port,
+            database=self.postgres_db,
+        ).render_as_string(hide_password=False)
 
     @field_validator("cors_origins", mode="before")
     @classmethod
