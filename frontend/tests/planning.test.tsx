@@ -25,6 +25,10 @@ const renderWithProviders = () => {
 
 describe("PlanningPage", () => {
   beforeEach(() => {
+    const start = new Date();
+    start.setHours(12, 0, 0, 0);
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+
     vi.clearAllMocks();
     vi.mocked(listSites).mockResolvedValue({
       items: [{ id: 1, organization_id: 1, name: "HQ", timezone: "UTC", address: "" }],
@@ -51,14 +55,14 @@ describe("PlanningPage", () => {
           role_id: 1,
           team_id: null,
           status: "draft",
-          source: "manual",
-          capacity: 2,
-          start_utc: new Date().toISOString(),
-          end_utc: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
-        },
-        assignments: [
-          {
-            id: 1,
+        source: "manual",
+        capacity: 2,
+        start_utc: start.toISOString(),
+        end_utc: end.toISOString(),
+      },
+      assignments: [
+        {
+          id: 1,
             shift_instance_id: 10,
             collaborator_id: 11,
             role_id: 1,
@@ -84,8 +88,8 @@ describe("PlanningPage", () => {
         status: "draft",
         source: "manual",
         capacity: 2,
-        start_utc: new Date().toISOString(),
-        end_utc: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+        start_utc: start.toISOString(),
+        end_utc: end.toISOString(),
       },
       assignments: [],
       conflicts: [],

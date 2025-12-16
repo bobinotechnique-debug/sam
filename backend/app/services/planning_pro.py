@@ -193,10 +193,33 @@ class ShiftInstanceService:
         self._session = session
         self._rule_service = rule_service
 
-    def list_instances(self, *, mission_id: int | None = None) -> list[ShiftWithAssignments]:
+    def list_instances(
+        self,
+        *,
+        mission_id: int | None = None,
+        start: datetime | None = None,
+        end: datetime | None = None,
+        site_ids: list[int] | None = None,
+        collaborator_ids: list[int] | None = None,
+        statuses: list[str] | None = None,
+    ) -> list[ShiftWithAssignments]:
         query = select(db_models.ShiftInstance)
         if mission_id is not None:
             query = query.where(db_models.ShiftInstance.mission_id == mission_id)
+        if start is not None:
+            query = query.where(db_models.ShiftInstance.end_utc > start)
+        if end is not None:
+            query = query.where(db_models.ShiftInstance.start_utc < end)
+        if site_ids:
+            query = query.where(db_models.ShiftInstance.site_id.in_(site_ids))
+        if statuses:
+            query = query.where(db_models.ShiftInstance.status.in_(statuses))
+        if collaborator_ids:
+            query = (
+                query.join(db_models.Assignment)
+                .where(db_models.Assignment.collaborator_id.in_(collaborator_ids))
+                .distinct()
+            )
         instances = self._session.scalars(query).all()
         return [self._build_shift_view(instance) for instance in instances]
 
