@@ -4,6 +4,12 @@ from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 from sqlalchemy.engine import URL, make_url
 from sqlalchemy.exc import ArgumentError
+DEFAULT_CORS_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:4173",
+    "http://127.0.0.1:4173",
+]
 
 
 class Settings(BaseSettings):
@@ -21,12 +27,7 @@ class Settings(BaseSettings):
     postgres_user: str = Field(default="app_user", alias="POSTGRES_USER")
     postgres_password: str = Field(default="change_me", alias="POSTGRES_PASSWORD")
     cors_origins: list[str] = Field(
-        default_factory=lambda: [
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
-            "http://localhost:4173",
-            "http://127.0.0.1:4173",
-        ],
+        default_factory=lambda: DEFAULT_CORS_ORIGINS.copy(),
         alias="CORS_ORIGINS",
     )
 
@@ -89,10 +90,12 @@ class Settings(BaseSettings):
     @classmethod
     def parse_cors_origins(cls, value: str | Sequence[str]) -> list[str]:
         if isinstance(value, str):
-            return [origin.strip() for origin in value.split(",") if origin.strip()]
+            parsed = [origin.strip() for origin in value.split(",") if origin.strip()]
+            return parsed or DEFAULT_CORS_ORIGINS.copy()
 
         if isinstance(value, Sequence):
-            return list(value)
+            parsed = list(value)
+            return parsed or DEFAULT_CORS_ORIGINS.copy()
 
         raise TypeError("cors_origins must be a string or a sequence of strings")
 
