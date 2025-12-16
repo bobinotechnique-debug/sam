@@ -1,7 +1,7 @@
 # Backend (FastAPI)
 
 ## Overview
-This FastAPI service exposes a versioned `/api/v1` surface with a healthcheck and in-memory CRUD for the initial planning domains (organizations, sites, roles, collaborators, missions, shifts). The application follows a layered approach (API -> services -> models -> core) and is ready to be extended with PostgreSQL persistence and authentication. Logs sont structurés en JSON et exposent `trace_id`, et les endpoints `/api/v1/health` + `/api/v1/health/metrics` fournissent l'état et les compteurs pour l'observabilité minimale. La Phase 4 est clôturée (voir `docs/release/phase-04.md`) avec un objectif de couverture backend ≥ 85 % conservé comme garde-fou.
+This FastAPI service exposes a versioned `/api/v1` surface with a healthcheck and CRUD for the planning domains (organizations, sites, roles, collaborators, missions, shifts). Planning PRO routes (`/api/v1/planning/*`) now persist to PostgreSQL via SQLAlchemy/Alembic (shift templates, instances, assignments, availability, audit/publications). Logs sont structurés en JSON et exposent `trace_id`, et les endpoints `/api/v1/health` + `/api/v1/health/metrics` fournissent l'état et les compteurs pour l'observabilité minimale. La Phase 4 est clôturée (voir `docs/release/phase-04.md`) avec un objectif de couverture backend ≥ 85 % conservé comme garde-fou.
 
 ## Getting Started
 
@@ -17,6 +17,12 @@ This FastAPI service exposes a versioned `/api/v1` surface with a healthcheck an
    ```
 4. Open http://localhost:8000/ to confirm the service is running (links to docs and health check).
 5. Open http://localhost:8000/docs for interactive docs.
+6. Run migrations against your `DATABASE_URL` (PostgreSQL expected in Docker):
+   ```bash
+   cd backend
+   alembic upgrade head
+   ```
+   For local, file-based SQLite during development/tests, set `DATABASE_URL=sqlite:///./app.db` before running migrations.
 
 ### Tests and Quality (CI parity)
 Les mêmes commandes sont exécutées dans la CI GitHub Actions :
