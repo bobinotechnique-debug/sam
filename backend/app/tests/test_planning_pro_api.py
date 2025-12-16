@@ -1,8 +1,8 @@
 from datetime import UTC, datetime, timedelta
+from uuid import uuid4
 
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
-from uuid import uuid4
 
 from app.db.models import planning as db_models
 
@@ -248,7 +248,10 @@ def test_audit_contains_before_and_after(client: TestClient, session: Session) -
     )
     assert update_response.status_code == 200
 
-    audit = client.get("/api/v1/planning/audit", params={"entity": "shift_instance", "entity_id": shift_id})
+    audit = client.get(
+        "/api/v1/planning/audit",
+        params={"entity": "shift_instance", "entity_id": shift_id},
+    )
     assert audit.status_code == 200
     payloads = [entry["payload"] for entry in audit.json() if entry["action"] == "update_shift"]
     assert payloads
@@ -258,7 +261,6 @@ def test_audit_contains_before_and_after(client: TestClient, session: Session) -
 
 def test_auto_assign_job_status(client: TestClient, session: Session) -> None:
     org, role, site = _setup_org_role_site(session)
-    collaborator = _create_collaborator(session, org, role)
     mission_start = datetime.now(UTC)
     mission = _create_mission(session, site.id, role.id, mission_start)
 
