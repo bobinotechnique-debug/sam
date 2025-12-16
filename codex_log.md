@@ -32,3 +32,4 @@
 2026-01-12 | Phase 5.3 | Robustesse env docker-compose | Ajout de valeurs par défaut pour les variables backend dans `docker-compose.yml` et documentation associée afin d'éviter les erreurs de connexion DB lorsque les variables ne sont pas exportées.
 2026-01-13 | Phase 5.3 | Cadrage Step 03 Planning PRO | Restructuration de `docs/roadmap/phase5/step-03.md` avec objectifs, livrables backend/frontend, critères d'acceptation et commandes de tests pour l'architecture Planning PRO connectée.
 2026-01-14 | Phase 5.3 | Planning PRO API wiring | Connected planning endpoints, conflict checks, audit before/after, auto-assign job skeleton, and Timeline V2 hooked to the API.
+2026-01-15 | Phase 5.3 | CORS dev fallback renforcé | Sécurisation de la configuration CORS (origine wildcard via regex, valeurs par défaut robustes et .env documenté) pour garantir les appels frontend Vite en développement.
