@@ -15,4 +15,4 @@ def test_invalid_database_url_raises(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("DATABASE_URL", "not a url")
 
     with pytest.raises(ValueError):
-        Settings().sqlalchemy_database_uri
+        _ = Settings().sqlalchemy_database_uri
