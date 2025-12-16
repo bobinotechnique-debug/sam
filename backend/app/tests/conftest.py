@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 os.environ.setdefault("DATABASE_URL", "sqlite:///./test.db")
 
-import app.db.models.planning  # noqa: F401, E402
+import app.db.models.planning as _planning_models  # noqa: F401, E402
 from app.db import base  # noqa: E402
 from app.db.session import SessionLocal, engine, get_session  # noqa: E402
 from app.main import app  # noqa: E402

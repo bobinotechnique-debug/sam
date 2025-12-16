@@ -38,9 +38,7 @@ def _overlaps(
     return start_a < end_b and start_b < end_a
 
 
-def _ensure_timezone(value: datetime | None) -> datetime | None:
-    if value is None:
-        return None
+def _ensure_timezone(value: datetime) -> datetime:
     return value if value.tzinfo is not None else value.replace(tzinfo=UTC)
 
 
@@ -182,7 +180,7 @@ class ShiftTemplateService:
 
 
 class ShiftInstanceService:
-    def __init__(self, session: Session, rule_service: RuleService) -> None:  # type: ignore[name-defined]
+    def __init__(self, session: Session, rule_service: RuleService) -> None:
         self._session = session
         self._rule_service = rule_service
 
@@ -296,7 +294,7 @@ class ShiftInstanceService:
 
 
 class AssignmentService:
-    def __init__(self, session: Session, rule_service: RuleService) -> None:  # type: ignore[name-defined]
+    def __init__(self, session: Session, rule_service: RuleService) -> None:
         self._session = session
         self._rule_service = rule_service
 
