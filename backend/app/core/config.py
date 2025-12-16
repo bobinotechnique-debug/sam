@@ -29,19 +29,33 @@ class Settings(BaseSettings):
         """Return a validated SQLAlchemy database URL.
 
         If ``database_url`` is empty, build it from the individual PostgreSQL
-        settings. When a URL is provided but invalid, raise a clear error
-        instead of letting SQLAlchemy fail with a generic parse exception.
+        settings. When a URL is provided but invalid, try to coerce common
+        mistakes (e.g. plain SQLite file path) before raising a clear error.
         """
 
         if self.database_url and self.database_url.strip():
+            candidate = self.database_url.strip()
+
             try:
-                make_url(self.database_url)
+                make_url(candidate)
             except ArgumentError as exc:
+                sqlite_candidate = self._sqlite_path_to_url(candidate)
+
+                if sqlite_candidate:
+                    try:
+                        make_url(sqlite_candidate)
+                    except ArgumentError:
+                        raise ValueError(
+                            "DATABASE_URL is invalid; expected a full SQLAlchemy URL"
+                        ) from exc
+
+                    return sqlite_candidate
+
                 raise ValueError(
                     "DATABASE_URL is invalid; expected a full SQLAlchemy URL"
                 ) from exc
 
-            return self.database_url
+            return candidate
 
         return URL.create(
             drivername="postgresql+psycopg",
@@ -51,6 +65,19 @@ class Settings(BaseSettings):
             port=self.postgres_port,
             database=self.postgres_db,
         ).render_as_string(hide_password=False)
+
+    @staticmethod
+    def _sqlite_path_to_url(url: str) -> str | None:
+        """Return a SQLite URL when ``url`` looks like a bare file path.
+
+        Values that already include a scheme or contain whitespace are ignored
+        so that obviously invalid connection strings still raise a clear error.
+        """
+
+        if "://" in url or " " in url:
+            return None
+
+        return f"sqlite:///{url}"
 
     @field_validator("cors_origins", mode="before")
     @classmethod
