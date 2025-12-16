@@ -1,169 +1,142 @@
-import { act } from "react";
-
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { listCollaborators, listSites } from "../src/api/entities";
 import {
-  createShift,
-  deleteShift,
-  listCollaborators,
-  listMissions,
-  listShifts,
-  listSites,
-  updateMission,
-  updateShift,
-} from "../src/api/entities";
+  createPlanningAssignment,
+  fetchPlanningShiftInstances,
+  updatePlanningShiftInstance,
+} from "../src/api/planning";
 import { PlanningPage } from "../src/pages/PlanningPage";
 
 vi.mock("../src/api/entities");
+vi.mock("../src/api/planning");
 
-const missionTime = () => {
-  const start = new Date();
-  const end = new Date(start.getTime() + 60 * 60 * 1000);
-  return { start: start.toISOString(), end: end.toISOString() };
+const renderWithProviders = () => {
+  const client = new QueryClient();
+  return render(
+    <QueryClientProvider client={client}>
+      <PlanningPage />
+    </QueryClientProvider>,
+  );
 };
 
-const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
-
-const baseResponses = () => {
-  const { start, end } = missionTime();
-  return {
-    missions: {
-      items: [
-        {
-          id: 1,
-          site_id: 1,
-          role_id: 1,
-          status: "draft",
-          start_utc: start,
-          end_utc: end,
-          budget_target: null,
-          note: null,
-        },
-      ],
-      total: 1,
-      page: 1,
-      page_size: 50,
-    },
-    sites: {
+describe("PlanningPage", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(listSites).mockResolvedValue({
       items: [{ id: 1, organization_id: 1, name: "HQ", timezone: "UTC", address: "" }],
       total: 1,
       page: 1,
       page_size: 50,
-    },
-    collaborators: {
+    });
+    vi.mocked(listCollaborators).mockResolvedValue({
       items: [
-        {
-          id: 1,
-          organization_id: 1,
-          full_name: "Jane Doe",
-          primary_role_id: null,
-          status: "active",
-          email: "jane@example.com",
-        },
+        { id: 11, organization_id: 1, full_name: "Alex King", primary_role_id: 1, status: "active", email: "alex@example.com" },
+        { id: 12, organization_id: 1, full_name: "Jamie Lee", primary_role_id: 1, status: "active", email: "jamie@example.com" },
       ],
-      total: 1,
+      total: 2,
       page: 1,
       page_size: 50,
-    },
-    shifts: {
-      items: [
-        {
-          id: 1,
+    });
+    vi.mocked(fetchPlanningShiftInstances).mockResolvedValue([
+      {
+        shift: {
+          id: 10,
           mission_id: 1,
-          collaborator_id: 1,
+          template_id: null,
+          site_id: 1,
+          role_id: 1,
+          team_id: null,
           status: "draft",
-          start_utc: start,
-          end_utc: end,
-          cancellation_reason: null,
+          source: "manual",
+          capacity: 2,
+          start_utc: new Date().toISOString(),
+          end_utc: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
         },
-      ],
-      total: 1,
-      page: 1,
-      page_size: 50,
-    },
-  };
-};
-
-const mockApis = () => ({
-  missions: vi.mocked(listMissions),
-  sites: vi.mocked(listSites),
-  collaborators: vi.mocked(listCollaborators),
-  shifts: vi.mocked(listShifts),
-  saveMission: vi.mocked(updateMission),
-  saveShift: vi.mocked(updateShift),
-  createShift: vi.mocked(createShift),
-  deleteShift: vi.mocked(deleteShift),
-});
-
-describe("PlanningPage", () => {
-  const apis = mockApis();
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    const fixtures = baseResponses();
-    apis.missions.mockResolvedValue(fixtures.missions);
-    apis.sites.mockResolvedValue(fixtures.sites);
-    apis.collaborators.mockResolvedValue(fixtures.collaborators);
-    apis.shifts.mockResolvedValue(fixtures.shifts);
-    apis.saveMission.mockResolvedValue(fixtures.missions.items[0]);
-    apis.saveShift.mockResolvedValue(fixtures.shifts.items[0]);
-    apis.createShift.mockResolvedValue(fixtures.shifts.items[0]);
-    apis.deleteShift.mockResolvedValue();
+        assignments: [
+          {
+            id: 1,
+            shift_instance_id: 10,
+            collaborator_id: 11,
+            role_id: 1,
+            status: "confirmed",
+            source: "manual",
+            note: null,
+            is_locked: false,
+            created_at: null,
+            updated_at: null,
+          },
+        ],
+        conflicts: [],
+      },
+    ]);
+    vi.mocked(updatePlanningShiftInstance).mockResolvedValue({
+      shift: {
+        id: 10,
+        mission_id: 1,
+        template_id: null,
+        site_id: 1,
+        role_id: 1,
+        team_id: null,
+        status: "draft",
+        source: "manual",
+        capacity: 2,
+        start_utc: new Date().toISOString(),
+        end_utc: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+      },
+      assignments: [],
+      conflicts: [],
+    });
+    vi.mocked(createPlanningAssignment).mockResolvedValue({
+      assignment: {
+        id: 2,
+        shift_instance_id: 10,
+        collaborator_id: 12,
+        role_id: 1,
+        status: "pending",
+        source: "manual",
+        note: null,
+        is_locked: false,
+        created_at: null,
+        updated_at: null,
+      },
+      conflicts: [],
+    });
   });
 
-  it("shows an empty state when no missions are available", async () => {
-    apis.missions.mockResolvedValueOnce({
-      items: [],
-      total: 0,
-      page: 1,
-      page_size: 50,
-    });
+  it("renders shifts from the planning API", async () => {
+    renderWithProviders();
 
-    await act(async () => {
-      render(<PlanningPage />);
-      await flushPromises();
-    });
-
-    await waitFor(() =>
-      expect(
-        screen.getByText(
-          /Aucune mission à afficher pour l'instant. Créez des missions puis affectez-les à des collaborateurs./i,
-        ),
-      ).toBeInTheDocument(),
-    );
+    await waitFor(() => expect(screen.getByText(/Shift #10/i)).toBeInTheDocument());
+    expect(screen.getAllByText(/HQ/).length).toBeGreaterThan(0);
   });
 
-  it("displays an error message when the planning fetch fails", async () => {
-    apis.missions.mockRejectedValueOnce(new Error("API indisponible"));
+  it("opens the editor when a shift is selected", async () => {
+    renderWithProviders();
 
-    await act(async () => {
-      render(<PlanningPage />);
-      await flushPromises();
-    });
+    const button = await screen.findByRole("button", { name: /Shift #10/i });
+    await userEvent.click(button);
 
-    await waitFor(() =>
-      expect(screen.getByText(/API indisponible/i)).toBeInTheDocument(),
-    );
+    await waitFor(() => expect(screen.getByText(/Edit shift #10/i)).toBeInTheDocument());
   });
 
-  it("opens the mission detail modal when clicking a mission", async () => {
-    await act(async () => {
-      render(<PlanningPage />);
-      await flushPromises();
-    });
+  it("sends an assignment when the user selects a collaborator", async () => {
+    renderWithProviders();
+    const button = await screen.findByRole("button", { name: /Shift #10/i });
+    await userEvent.click(button);
 
-    await waitFor(() => expect(screen.getByRole("heading", { name: /Planning visuel/i })).toBeInTheDocument());
+    const editor = await screen.findByText(/Assign collaborator/i);
+    const modal = editor.closest("div");
+    if (!modal) throw new Error("editor modal missing");
 
-    const missionButton = await screen.findByRole("button", { name: /Mission #1/i });
-    await act(async () => {
-      await userEvent.click(missionButton);
-      await flushPromises();
-    });
+    const selects = within(modal).getAllByRole("combobox");
+    await userEvent.selectOptions(selects[selects.length - 1], "12");
+    await userEvent.click(screen.getByRole("button", { name: /Assign/i }));
 
-    expect(
-      await screen.findByRole("heading", { name: /Détails et affectations/i }),
-    ).toBeInTheDocument();
+    await waitFor(() => expect(createPlanningAssignment).toHaveBeenCalled());
   });
 });
+

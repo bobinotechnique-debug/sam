@@ -1,4 +1,5 @@
 import { act } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -70,6 +71,26 @@ describe("App", () => {
       page_size: 50,
     };
 
+    const shiftInstances = [
+      {
+        shift: {
+          id: 10,
+          mission_id: 1,
+          template_id: null,
+          site_id: 1,
+          role_id: 1,
+          team_id: null,
+          status: "draft",
+          source: "manual",
+          capacity: 1,
+          start_utc: new Date().toISOString(),
+          end_utc: new Date(Date.now() + 3600000).toISOString(),
+        },
+        assignments: [],
+        conflicts: [],
+      },
+    ];
+
     global.fetch = vi.fn((url: RequestInfo | URL) => {
       const href = url.toString();
       if (href.includes("/organizations")) return mockResponse(organizations);
@@ -77,23 +98,31 @@ describe("App", () => {
       if (href.includes("/sites")) return mockResponse(sites);
       if (href.includes("/missions")) return mockResponse(missions);
       if (href.includes("/shifts")) return mockResponse(shifts);
+      if (href.includes("/planning/shift-instances")) return mockResponse(shiftInstances);
       return mockResponse({});
     }) as unknown as typeof fetch;
   });
 
+  const renderApp = () => {
+    const client = new QueryClient();
+    return render(
+      <QueryClientProvider client={client}>
+        <App />
+      </QueryClientProvider>,
+    );
+  };
+
   it("renders planning view by default", async () => {
     await act(async () => {
-      render(<App />);
+      renderApp();
     });
 
-    expect(await screen.findByRole("heading", { name: /Planning visuel/i })).toBeInTheDocument();
-    await screen.findByText(/HQ/);
-    expect(screen.getByText(/Vue jour\/semaine/i)).toBeInTheDocument();
+    await screen.findByText(/Filters/);
   });
 
   it("navigates to collaborators and missions", async () => {
     await act(async () => {
-      render(<App />);
+      renderApp();
     });
 
     await act(async () => {
