@@ -392,10 +392,10 @@ def get_auto_assign_status(
 @router.get("/audit", response_model=list[dict[str, Any]])
 def list_audit_trail(
     services: PlanningServicesDep,
-    from_ts: Annotated[datetime | None, Query(default=None)] = None,
-    to_ts: Annotated[datetime | None, Query(default=None)] = None,
-    entity: Annotated[str | None, Query(default=None)] = None,
-    entity_id: Annotated[int | None, Query(default=None)] = None,
+    from_ts: Annotated[datetime | None, Query()] = None,
+    to_ts: Annotated[datetime | None, Query()] = None,
+    entity: Annotated[str | None, Query()] = None,
+    entity_id: Annotated[int | None, Query()] = None,
 ) -> list[dict[str, Any]]:
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
     return audit_service.list_changes(
