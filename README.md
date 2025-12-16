@@ -116,3 +116,8 @@ npm run dev
 
 ## UX / UI & Maquettes
 La spécification visuelle maître est définie dans `docs/blueprint/03_ux_ui_planning.md`. Elle sert de référence pour toutes les vues (planning jour/semaine/mois, fiches, modals, responsive). Les développeurs frontend doivent vérifier la conformité des écrans et interactions avec cette spec et la mettre à jour en amont de toute évolution UX/UI.
+
+## Phase 5 preview (Planning PRO)
+- Backend expose `/api/v1/planning/*` pour les templates, shift instances, assignments, preview des conflits et un auto-assign v1 ; le stockage reste en mémoire et n'utilise pas encore PostgreSQL ou l'authentification.
+- Frontend propose une page `/planning/pro` qui consomme ces endpoints et affiche Timeline V2 en lecture seule (boutons de publication/auto-assign non connectés pour l'instant).
+- Les données Planning PRO ne sont pas persistées entre redémarrages ; lancer `docker compose` démarre PostgreSQL mais l'API ne l'emploie pas encore.

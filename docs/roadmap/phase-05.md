@@ -54,5 +54,6 @@ Cette phase introduit le « Planning PRO » avec interactions avancées, workflo
 - E2E : `cd frontend && npx playwright test`
 
 ## Statut
-- Phase 4 clôturée ; Phase 5 ouverte. Suivi détaillé dans `docs/roadmap/phase5/`.
-- Steps 01 (initialisation) et 02 (spec Planning PRO) documentés ; prochaines étapes focalisées sur l’architecture backend.
+- Phase 4 is closed; Phase 5 is open. Follow-up lives in `docs/roadmap/phase5/`.
+- Steps 01 (init) and 02 (spec Planning PRO) are documented. Code already embeds a preview of steps 03-05: in-memory Planning PRO services/routes (`/api/v1/planning/*`), basic rules/auto-assign and the `/planning/pro` page rendering Timeline V2. No DB session, auth or multi-org context yet; migrations are not executed.
+- Next actionable items are detailed in `docs/roadmap/next_steps.md`.
