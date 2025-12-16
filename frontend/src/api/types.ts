@@ -263,6 +263,12 @@ export interface ConflictEntry {
   details: Record<string, unknown>;
 }
 
+export interface ConflictPreviewResult {
+  shift?: ShiftInstancePayload | ShiftInstance;
+  assignment?: AssignmentPayload | Assignment;
+  conflicts: ConflictEntry[];
+}
+
 export interface ShiftWriteResponse {
   shift: ShiftInstance;
   conflicts: ConflictEntry[];
@@ -276,5 +282,14 @@ export interface AssignmentWriteResponse {
 export interface PlanningShift {
   shift: ShiftInstance;
   assignments: Assignment[];
+  conflicts: ConflictEntry[];
+}
+
+export interface AutoAssignJobStatus {
+  job_id: string;
+  status: string;
+  started_at?: string;
+  completed_at?: string;
+  assignments_created: number;
   conflicts: ConflictEntry[];
 }

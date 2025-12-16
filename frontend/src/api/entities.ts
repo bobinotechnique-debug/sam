@@ -2,7 +2,6 @@ import { request } from "./client";
 import {
   Collaborator,
   CollaboratorPayload,
-  ConflictEntry,
   PlanningProConfig,
   PlanningShift,
   Mission,
@@ -23,6 +22,8 @@ import {
   AssignmentPayload,
   AssignmentWriteResponse,
   ShiftWriteResponse,
+  ConflictPreviewResult,
+  AutoAssignJobStatus,
 } from "./types";
 
 const defaultPage = 1;
@@ -207,6 +208,17 @@ export function createShiftTemplate(payload: ShiftTemplatePayload): Promise<Shif
   });
 }
 
+export function updateShiftTemplate(id: number, payload: Partial<ShiftTemplatePayload>): Promise<ShiftTemplate> {
+  return request<ShiftTemplate>(`/api/v1/planning/shift-templates/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function deleteShiftTemplate(id: number): Promise<void> {
+  return request(`/api/v1/planning/shift-templates/${id}`, { method: "DELETE" });
+}
+
 export function listShiftInstances(): Promise<PlanningShift[]> {
   return request(`/api/v1/planning/shifts`);
 }
@@ -216,6 +228,17 @@ export function createShiftInstance(payload: ShiftInstancePayload): Promise<Shif
     method: "POST",
     body: JSON.stringify(payload),
   });
+}
+
+export function updateShiftInstance(id: number, payload: Partial<ShiftInstancePayload>): Promise<ShiftWriteResponse> {
+  return request<ShiftWriteResponse>(`/api/v1/planning/shifts/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function deleteShiftInstance(id: number): Promise<void> {
+  return request(`/api/v1/planning/shifts/${id}`, { method: "DELETE" });
 }
 
 export function listAssignments(): Promise<Assignment[]> {
@@ -229,12 +252,37 @@ export function createAssignment(payload: AssignmentPayload): Promise<Assignment
   });
 }
 
+export function updateAssignment(
+  id: number,
+  payload: Partial<AssignmentPayload>,
+): Promise<AssignmentWriteResponse> {
+  return request<AssignmentWriteResponse>(`/api/v1/planning/assignments/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function deleteAssignment(id: number): Promise<void> {
+  return request(`/api/v1/planning/assignments/${id}`, { method: "DELETE" });
+}
+
 export function previewPlanningConflicts(payload: {
   shift?: ShiftInstancePayload;
   assignments?: AssignmentPayload[];
-}): Promise<ConflictEntry[]> {
-  return request<ConflictEntry[]>(`/api/v1/planning/conflicts/preview`, {
+}): Promise<ConflictPreviewResult[]> {
+  return request<ConflictPreviewResult[]>(`/api/v1/planning/conflicts/preview`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
+}
+
+export function startAutoAssignJob(payload: { shift_ids?: number[] | null }): Promise<AutoAssignJobStatus> {
+  return request<AutoAssignJobStatus>(`/api/v1/planning/auto-assign/start`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function getAutoAssignStatus(jobId: string): Promise<AutoAssignJobStatus> {
+  return request<AutoAssignJobStatus>(`/api/v1/planning/auto-assign/status/${jobId}`);
 }

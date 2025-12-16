@@ -1,61 +1,37 @@
-# Phase 5 – Step 03 – Architecture Backend et API Planning PRO (V1 connectée)
+# Phase 5 - Step 03 - Planning PRO API wiring (connected v1)
 
-- **Statut** : en cours
-- **Date** : 2026-01-13
-- **Responsable** : Codex (agents)
+- Status: done
+- Date: 2026-01-13
+- Owner: Codex (agents)
 
-## Objectifs
-- Brancher les modèles et services Planning PRO sur les endpoints `/api/v1/planning/*` (templates, instances, assignments, règles, audit, publication, auto-assign).
-- Activer les premières validations métier (règles dures, collisions de disponibilité) pour sécuriser les écritures.
-- Retourner au front des données réelles (shifts, assignments, conflits, statuts) afin de remplacer les mocks.
-- Préparer l'auto-assign v1 comme job asynchrone (endpoint de lancement + statut) sans encore implémenter l'heuristique complète.
+## Objectives
+- Expose Planning PRO endpoints under `/api/v1/planning/*` with strict schemas and validation.
+- Return normalized conflicts (hard vs soft) for shifts and assignments, and record audit events for each change.
+- Replace the Planning PRO frontend mocks with live API calls (shifts, assignments, conflicts, auto-assign status).
+- Ship a minimal auto-assign v1 job skeleton with start/status endpoints.
 
-## Livrables attendus
-### Backend : endpoints et règles
-- Endpoints exposés via FastAPI et reliés aux services créés en Step 02 :
-  - `GET|POST|PUT|DELETE /api/v1/planning/shift-templates` – CRUD des modèles de shifts.
-  - `GET|POST|PUT|DELETE /api/v1/planning/shifts` – CRUD des instances (draft/published/cancelled).
-  - `GET|POST|PUT|DELETE /api/v1/planning/assignments` – Gestion des affectations (proposed/confirmed/rejected, lock).
-  - `GET|POST /api/v1/planning/availability` – Lecture/écriture des disponibilités et absences.
-  - `GET /api/v1/planning/rules` – Catalogue des règles HR et conflits actives.
-  - `POST /api/v1/planning/conflicts/preview` – Calcul des conflits (type hard/soft) sur un payload de planning.
-  - `POST /api/v1/planning/publish` – Publication et journalisation d'une version de planning.
-  - `POST /api/v1/planning/auto-assign/start` + `GET /api/v1/planning/auto-assign/status/{job_id}` – Démarrage et suivi du job d'auto-assign v1.
-- Contrats de base alignés avec la migration Alembic de référence :
-  ```json
-  {
-    "shift": { /* ou "assignment" */ },
-    "conflicts": [
-      { "type": "hard", "rule": "double_booking", "details": {} }
-    ]
-  }
-  ```
-- Validations minimales côté services/règles :
-  - Fenêtre temporelle valide (`start < end`) et statuts autorisés (`draft`, `published`, `cancelled`).
-  - Alignement mission/site/rôle pour les shifts ; rôle cohérent sur les assignments.
-  - Conflits d'agenda : double booking collaborateur, repos minimal manquant, absence/leave, manque de compétence, capacité « hard » dépassée.
-  - Warnings non bloquants : dépassement plafonds « soft », shift hors disponibilité déclarée, capacité « soft » dépassée, pause recommandée manquante.
-- Audit et journalisation (`planning_change`) :
-  - Création/mise à jour/annulation de shift, création/mise à jour/suppression d'assignment, publication.
-  - Entrées contenant `user_id`, `action`, `before`, `after`, `timestamp` (UTC).
-- Auto-assign v1 (squelette) : endpoints idempotents, stockage d'état en mémoire ou DB, métadonnées de job (`status`, couverture, conflits rencontrés).
+## Deliverables
+### Backend
+- CRUD endpoints for shift templates, shift instances, assignments, and availability, all backed by the Step 02 services.
+- Rule catalog exposed via `GET /api/v1/planning/rules` plus conflict preview and publish endpoints.
+- Auto-assign start/status endpoints with in-memory job tracking, deterministic job ids, and conflict aggregation.
+- Minimal validations enforced (time window order, allowed statuses, mission/site/role alignment, role match on assignment, double booking, min rest, leave overlap, missing skill, capacity checks).
+- Audit trail entries (`planning_change`) for shift and assignment mutations and publish actions, exposing before/after payloads and filters.
 
-### Frontend : intégration Timeline V2
-- Page Planning PRO reliée aux endpoints réels via React Query (plus de mocks).
-- Affichage des shifts et assignments réels, badges de conflits par shift, statuts brouillon/publié visibles, assignments proposés signalés.
-- Actions UI connectées : création/édition/suppression de shifts et assignments, récupération des conflits, consultation du statut d'auto-assign.
+### Frontend
+- Timeline V2 powered by React Query to list live shifts, assignments, conflicts, and statuses.
+- Auto-assign action wired to the backend with status polling and refetch on completion.
+- Conflict badges kept in the timeline; proposed assignments highlighted via source.
 
 ### Documentation
-- Fiche mise à jour (`docs/roadmap/phase5/step-03.md`) avec objectifs, livrables, critères d'acceptation et commandes de tests.
-- `docs/roadmap/phase5/index.md` référencée/alignée, ainsi que `docs/architecture*.md` et `docs/blueprint/03_ux_ui_planning.md` pour le flux API ↔ UI.
+- Roadmap and architecture notes updated to reflect the connected Planning PRO flow and UI/API contract.
 
 ### Tests
-- Backend : `pytest -q app/tests/test_planning_pro_api.py` et suites associées une fois les endpoints branchés.
-- Frontend : `npm run lint` puis `npm run test -- --runInBand` (ou équivalent CI) sur les composants Planning PRO.
-- CI : conserver les jobs GitHub Actions au vert (ruff, mypy, pytest backend ; lint/test/build frontend ; Playwright quand activé).
+- Backend: `pytest -q app/tests/test_planning_pro_api.py`.
+- Frontend: `npm run lint` and `npm run test`.
 
-### Critères d'acceptation
-- Tous les endpoints listés sous `/api/v1/planning/*` répondent avec des schémas cohérents et appliquent les validations minimales.
-- Les écritures planning génèrent des entrées d'audit consultables.
-- La Timeline V2 consomme les données réelles (shifts, assignments, conflits, statuts, assignments proposés).
-- Les suites de tests backend/frontend pertinentes passent en local et en CI.
+## Acceptance criteria
+- All `/api/v1/planning/*` endpoints are live, validated, and return normalized conflict payloads.
+- Audit entries are produced for publish, shift, and assignment changes and can be filtered by entity and date.
+- Timeline V2 consumes the live Planning PRO data and exposes auto-assign status.
+- Backend and frontend test suites pass locally and in CI.

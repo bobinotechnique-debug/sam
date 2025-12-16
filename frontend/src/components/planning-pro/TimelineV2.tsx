@@ -74,7 +74,7 @@ export function PlanningTimelineV2({ rows, headerSlot }: PlanningTimelineV2Props
                   </div>
                   <div className="mt-1 text-slate-300">
                     <span className="font-mono text-[11px] text-indigo-200">{item.start}</span>
-                    <span className="text-slate-500"> → </span>
+                    <span className="text-slate-500"> -&gt; </span>
                     <span className="font-mono text-[11px] text-indigo-200">{item.end}</span>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-1">
@@ -83,12 +83,12 @@ export function PlanningTimelineV2({ rows, headerSlot }: PlanningTimelineV2Props
                         key={`${item.id}-${assignment.id}`}
                         className="rounded bg-slate-800 px-2 py-0.5 text-[11px] text-indigo-100"
                       >
-                        Collab {assignment.collaboratorId} · {assignment.status}
-                        {assignment.source === "auto-assign-v1" ? " · proposé" : ""}
+                        Collab {assignment.collaboratorId} - {assignment.status}
+                        {assignment.source === "auto-assign-v1" ? " - proposed" : ""}
                       </span>
                     ))}
                     {item.assignments.length === 0 ? (
-                      <span className="rounded bg-slate-800 px-2 py-0.5 text-[11px] text-slate-300">Aucune assignment</span>
+                      <span className="rounded bg-slate-800 px-2 py-0.5 text-[11px] text-slate-300">No assignment</span>
                     ) : null}
                   </div>
                   {item.conflicts.length > 0 ? (

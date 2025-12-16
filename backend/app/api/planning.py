@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Query, status
@@ -47,6 +48,16 @@ class ConflictPreviewPayload(BaseModel):
 
 class PublishRequest(BaseModel):
     message: str | None = None
+
+
+class ConflictPreviewResult(BaseModel):
+    shift: ShiftInstanceCreate | ShiftInstance | None = None
+    assignment: AssignmentCreate | Assignment | None = None
+    conflicts: list[ConflictEntry]
+
+
+class AutoAssignStartRequest(BaseModel):
+    shift_ids: list[int] | None = None
 
 
 SessionDep = Annotated[Session, Depends(get_session)]
@@ -102,7 +113,8 @@ def create_shift_template(
         entity_type="shift_template",
         entity_id=template.id,
         action="create_shift_template",
-        payload=payload.model_dump(),
+        before=None,
+        after=template.model_dump(),
     )
     return template
 
@@ -115,6 +127,7 @@ def update_shift_template(
 ) -> ShiftTemplate:
     template_service: ShiftTemplateService = services["templates"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
+    before = template_service.get_template_state(template_id).model_dump()
     updated = template_service.update_template(template_id, payload)
     audit_service.log_change(
         organization_id=1,
@@ -122,7 +135,8 @@ def update_shift_template(
         entity_type="shift_template",
         entity_id=template_id,
         action="update_shift_template",
-        payload=payload.model_dump(exclude_none=True),
+        before=before,
+        after=updated.model_dump(),
     )
     return updated
 
@@ -134,6 +148,7 @@ def delete_shift_template(
 ) -> None:
     template_service: ShiftTemplateService = services["templates"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
+    before = template_service.get_template_state(template_id).model_dump()
     template_service.delete_template(template_id)
     audit_service.log_change(
         organization_id=1,
@@ -141,7 +156,8 @@ def delete_shift_template(
         entity_type="shift_template",
         entity_id=template_id,
         action="delete_shift_template",
-        payload={},
+        before=before,
+        after=None,
     )
 
 
@@ -167,7 +183,8 @@ def create_shift_instance(
         entity_type="shift_instance",
         entity_id=shift_view.shift.id,
         action="create_shift",
-        payload=payload.model_dump(),
+        before=None,
+        after=shift_view.shift.model_dump(),
     )
     return ShiftWriteResponse(shift=shift_view.shift, conflicts=shift_view.conflicts)
 
@@ -180,6 +197,7 @@ def update_shift_instance(
 ) -> ShiftWriteResponse:
     instance_service: ShiftInstanceService = services["instances"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
+    before = instance_service.get_instance_state(shift_id).model_dump()
     shift_view = instance_service.update_instance(shift_id, payload)
     audit_service.log_change(
         organization_id=1,
@@ -187,7 +205,8 @@ def update_shift_instance(
         entity_type="shift_instance",
         entity_id=shift_id,
         action="update_shift",
-        payload=payload.model_dump(exclude_none=True),
+        before=before,
+        after=shift_view.shift.model_dump(),
     )
     return ShiftWriteResponse(shift=shift_view.shift, conflicts=shift_view.conflicts)
 
@@ -199,6 +218,7 @@ def delete_shift_instance(
 ) -> None:
     instance_service: ShiftInstanceService = services["instances"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
+    before = instance_service.get_instance_state(shift_id).model_dump()
     instance_service.delete_instance(shift_id)
     audit_service.log_change(
         organization_id=1,
@@ -206,7 +226,8 @@ def delete_shift_instance(
         entity_type="shift_instance",
         entity_id=shift_id,
         action="delete_shift",
-        payload={},
+        before=before,
+        after=None,
     )
 
 
@@ -236,7 +257,8 @@ def create_assignment(
         entity_type="assignment",
         entity_id=assignment.id,
         action="create_assignment",
-        payload=payload.model_dump(),
+        before=None,
+        after=assignment.model_dump(),
     )
     return AssignmentWriteResponse(assignment=assignment, conflicts=conflicts)
 
@@ -249,6 +271,7 @@ def update_assignment(
 ) -> AssignmentWriteResponse:
     assignment_service: AssignmentService = services["assignments"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
+    before = assignment_service.get_assignment_state(assignment_id).model_dump()
     assignment, conflicts = assignment_service.update_assignment(assignment_id, payload)
     audit_service.log_change(
         organization_id=1,
@@ -256,7 +279,8 @@ def update_assignment(
         entity_type="assignment",
         entity_id=assignment_id,
         action="update_assignment",
-        payload=payload.model_dump(exclude_none=True),
+        before=before,
+        after=assignment.model_dump(),
     )
     return AssignmentWriteResponse(assignment=assignment, conflicts=conflicts)
 
@@ -268,6 +292,7 @@ def delete_assignment(
 ) -> None:
     assignment_service: AssignmentService = services["assignments"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
+    before = assignment_service.get_assignment_state(assignment_id).model_dump()
     assignment_service.delete_assignment(assignment_id)
     audit_service.log_change(
         organization_id=1,
@@ -275,7 +300,8 @@ def delete_assignment(
         entity_type="assignment",
         entity_id=assignment_id,
         action="delete_assignment",
-        payload={},
+        before=before,
+        after=None,
     )
 
 
@@ -310,18 +336,28 @@ def list_rules(
     return {"hr_rules": hr_rules, "conflict_rules": conflict_rules}
 
 
-@router.post("/conflicts/preview", response_model=list[ConflictEntry])
+@router.post("/conflicts/preview", response_model=list[ConflictPreviewResult])
 def preview_conflicts(
     payload: ConflictPreviewPayload,
     services: PlanningServicesDep,
-) -> list[ConflictEntry]:
+) -> list[ConflictPreviewResult]:
     rule_service: RuleService = services["rules"]  # type: ignore[assignment]
-    conflicts: list[ConflictEntry] = []
+    results: list[ConflictPreviewResult] = []
     if payload.shift is not None:
-        conflicts.extend(rule_service.evaluate_shift(payload.shift))
+        results.append(
+            ConflictPreviewResult(
+                shift=payload.shift,
+                conflicts=rule_service.evaluate_shift(payload.shift),
+            )
+        )
     for assignment in payload.assignments or []:
-        conflicts.extend(rule_service.evaluate_assignment(assignment))
-    return conflicts
+        results.append(
+            ConflictPreviewResult(
+                assignment=assignment,
+                conflicts=rule_service.evaluate_assignment(assignment),
+            )
+        )
+    return results
 
 
 @router.post("/publish", response_model=Publication)
@@ -337,10 +373,10 @@ def publish_planning(
 
 @router.post("/auto-assign/start")
 def start_auto_assign(
-    services: PlanningServicesDep, shift_ids: list[int] | None = None
+    payload: AutoAssignStartRequest, services: PlanningServicesDep
 ) -> dict[str, Any]:
     auto_assign_service: AutoAssignJobService = services["auto_assign"]  # type: ignore[assignment]
-    return auto_assign_service.start_job(shift_ids=shift_ids)
+    return auto_assign_service.start_job(shift_ids=payload.shift_ids)
 
 
 @router.get("/auto-assign/status/{job_id}")
@@ -355,6 +391,12 @@ def get_auto_assign_status(
 @router.get("/audit", response_model=list[dict[str, Any]])
 def list_audit_trail(
     services: PlanningServicesDep,
+    from_ts: datetime | None = Query(default=None),
+    to_ts: datetime | None = Query(default=None),
+    entity: str | None = Query(default=None),
+    entity_id: int | None = Query(default=None),
 ) -> list[dict[str, Any]]:
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
-    return audit_service.list_changes()
+    return audit_service.list_changes(
+        from_ts=from_ts, to_ts=to_ts, entity_type=entity, entity_id=entity_id
+    )
