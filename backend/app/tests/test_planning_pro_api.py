@@ -1,4 +1,5 @@
 from datetime import UTC, datetime, timedelta
+from uuid import uuid4
 
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
@@ -24,7 +25,7 @@ def _setup_org_role_site(
 def _create_collaborator(
     session: Session, org: db_models.Organization, role: db_models.Role
 ) -> db_models.Collaborator:
-    user = db_models.User(email="alice@example.com", full_name="Alice")
+    user = db_models.User(email=f"alice-{uuid4().hex[:6]}@example.com", full_name="Alice")
     session.add(user)
     session.flush()
     collaborator = db_models.Collaborator(
@@ -134,7 +135,8 @@ def test_double_booking_detected_in_assignment_conflicts(
 
 def test_shift_status_validation(client: TestClient, session: Session) -> None:
     _, role, site = _setup_org_role_site(session)
-    mission = _create_mission(session, site.id, role.id, datetime.now(UTC))
+    mission_start = datetime.now(UTC)
+    mission = _create_mission(session, site.id, role.id, mission_start)
 
     invalid_shift = client.post(
         "/api/v1/planning/shifts",
@@ -164,3 +166,128 @@ def test_publish_creates_audit_entry(client: TestClient, session: Session) -> No
     audit = client.get("/api/v1/planning/audit")
     assert audit.status_code == 200
     assert any(entry["action"] == "publish_planning" for entry in audit.json())
+
+
+def test_capacity_conflict_detected(client: TestClient, session: Session) -> None:
+    org, role, site = _setup_org_role_site(session)
+    collaborator_one = _create_collaborator(session, org, role)
+    collaborator_two = _create_collaborator(session, org, role)
+    mission_start = datetime.now(UTC)
+    mission = _create_mission(session, site.id, role.id, mission_start)
+
+    shift_response = client.post(
+        "/api/v1/planning/shifts",
+        json={
+            "mission_id": mission.id,
+            "template_id": None,
+            "site_id": site.id,
+            "role_id": role.id,
+            "team_id": None,
+            "start_utc": mission_start.isoformat(),
+            "end_utc": (mission_start + timedelta(hours=2)).isoformat(),
+            "status": "draft",
+            "source": "manual",
+            "capacity": 1,
+        },
+    )
+    assert shift_response.status_code == 201
+    shift_id = shift_response.json()["shift"]["id"]
+
+    first_assignment = client.post(
+        "/api/v1/planning/assignments",
+        json={
+            "shift_instance_id": shift_id,
+            "collaborator_id": collaborator_one.id,
+            "role_id": role.id,
+            "status": "confirmed",
+            "source": "manual",
+        },
+    )
+    assert first_assignment.status_code == 201
+
+    second_assignment = client.post(
+        "/api/v1/planning/assignments",
+        json={
+            "shift_instance_id": shift_id,
+            "collaborator_id": collaborator_two.id,
+            "role_id": role.id,
+            "status": "confirmed",
+            "source": "manual",
+        },
+    )
+    assert second_assignment.status_code == 201
+    conflicts = second_assignment.json()["conflicts"]
+    assert any(entry["rule"] == "capacity_exceeded" for entry in conflicts)
+
+
+def test_audit_contains_before_and_after(client: TestClient, session: Session) -> None:
+    org, role, site = _setup_org_role_site(session)
+    mission_start = datetime.now(UTC)
+    mission = _create_mission(session, site.id, role.id, mission_start)
+
+    shift_response = client.post(
+        "/api/v1/planning/shifts",
+        json={
+            "mission_id": mission.id,
+            "template_id": None,
+            "site_id": site.id,
+            "role_id": role.id,
+            "team_id": None,
+            "start_utc": mission_start.isoformat(),
+            "end_utc": (mission_start + timedelta(hours=2)).isoformat(),
+            "status": "draft",
+            "source": "manual",
+            "capacity": 1,
+        },
+    )
+    assert shift_response.status_code == 201
+    shift_id = shift_response.json()["shift"]["id"]
+
+    update_response = client.put(
+        f"/api/v1/planning/shifts/{shift_id}", json={"status": "published"}
+    )
+    assert update_response.status_code == 200
+
+    audit = client.get(
+        "/api/v1/planning/audit",
+        params={"entity": "shift_instance", "entity_id": shift_id},
+    )
+    assert audit.status_code == 200
+    payloads = [entry["payload"] for entry in audit.json() if entry["action"] == "update_shift"]
+    assert payloads
+    assert payloads[0]["before"]["status"] == "draft"
+    assert payloads[0]["after"]["status"] == "published"
+
+
+def test_auto_assign_job_status(client: TestClient, session: Session) -> None:
+    org, role, site = _setup_org_role_site(session)
+    mission_start = datetime.now(UTC)
+    mission = _create_mission(session, site.id, role.id, mission_start)
+
+    shift_response = client.post(
+        "/api/v1/planning/shifts",
+        json={
+            "mission_id": mission.id,
+            "template_id": None,
+            "site_id": site.id,
+            "role_id": role.id,
+            "team_id": None,
+            "start_utc": mission_start.isoformat(),
+            "end_utc": (mission_start + timedelta(hours=2)).isoformat(),
+            "status": "draft",
+            "source": "manual",
+            "capacity": 1,
+        },
+    )
+    assert shift_response.status_code == 201
+
+    job_start = client.post("/api/v1/planning/auto-assign/start", json={})
+    assert job_start.status_code == 200
+    job_body = job_start.json()
+    assert job_body["job_id"]
+
+    status_response = client.get(f"/api/v1/planning/auto-assign/status/{job_body['job_id']}")
+    assert status_response.status_code == 200
+    status_payload = status_response.json()
+    assert status_payload["assignments_created"] >= 0
+    assert status_payload["status"] == "completed"

@@ -31,3 +31,4 @@
 2026-01-11 | Phase 5.3 | Planning PRO persistant | Raccordement des services Planning PRO à SQLAlchemy/PostgreSQL (sessions injectées), migrations Alembic alignées et tests API portés sur une base relationnelle avec fixture SQLite.
 2026-01-12 | Phase 5.3 | Robustesse env docker-compose | Ajout de valeurs par défaut pour les variables backend dans `docker-compose.yml` et documentation associée afin d'éviter les erreurs de connexion DB lorsque les variables ne sont pas exportées.
 2026-01-13 | Phase 5.3 | Cadrage Step 03 Planning PRO | Restructuration de `docs/roadmap/phase5/step-03.md` avec objectifs, livrables backend/frontend, critères d'acceptation et commandes de tests pour l'architecture Planning PRO connectée.
+2026-01-14 | Phase 5.3 | Planning PRO API wiring | Connected planning endpoints, conflict checks, audit before/after, auto-assign job skeleton, and Timeline V2 hooked to the API.

@@ -124,3 +124,8 @@ Wireframe ASCII :
 ## 9. Roadmap UX/UI
 - **MVP visuel** : vues Planning multi-vues (jour/semaine/mois), fiche mission complète, drag & drop basique, filtres essentiels, alertes de conflit, vue mobile personnelle.
 - **V2+** : thèmes personnalisables, animation fine des déplacements, vues Gantt consolidées multi-projets, collaboration temps réel (curseurs partagés), exports imprimables stylés, personnalisation avancée des couleurs/avatars.
+
+## 10. Planning PRO timeline v2 connectivity (Step 03)
+- Timeline V2 now calls `/api/v1/planning/shifts` and `/api/v1/planning/rules` to render live shifts, assignments, and conflict badges.
+- Auto-assign is triggered from the UI via `POST /api/v1/planning/auto-assign/start` and polled with `/api/v1/planning/auto-assign/status/{job_id}`, refreshing the view when jobs complete.
+- Next UX items: inline editors for shift and assignment updates plus a conflict detail panel tied to audit entries.

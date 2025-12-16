@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import hashlib
 from collections.abc import Iterable
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from fastapi.encoders import jsonable_encoder
@@ -40,6 +41,10 @@ def _overlaps(
 
 def _ensure_timezone(value: datetime) -> datetime:
     return value if value.tzinfo is not None else value.replace(tzinfo=UTC)
+
+
+def _timestamp() -> datetime:
+    return datetime.now(UTC)
 
 
 def _to_shift_template(model: db_models.ShiftTemplate) -> ShiftTemplate:
@@ -159,6 +164,10 @@ class ShiftTemplateService:
         self._session.delete(template)
         self._session.commit()
 
+    def get_template_state(self, template_id: int) -> ShiftTemplate:
+        template = self._get_template(template_id)
+        return _to_shift_template(template)
+
     def _get_template(self, template_id: int) -> db_models.ShiftTemplate:
         template = self._session.get(db_models.ShiftTemplate, template_id)
         if template is None:
@@ -249,6 +258,10 @@ class ShiftInstanceService:
         ).delete()
         self._session.delete(instance)
         self._session.commit()
+
+    def get_instance_state(self, instance_id: int) -> ShiftInstance:
+        instance = self._get_instance(instance_id)
+        return _to_shift_instance(instance)
 
     def _get_instance(self, instance_id: int) -> db_models.ShiftInstance:
         instance = self._session.get(db_models.ShiftInstance, instance_id)
@@ -348,6 +361,10 @@ class AssignmentService:
         assignment = self._get_assignment(assignment_id)
         self._session.delete(assignment)
         self._session.commit()
+
+    def get_assignment_state(self, assignment_id: int) -> Assignment:
+        assignment = self._get_assignment(assignment_id)
+        return _to_assignment(assignment)
 
     def bulk_upsert(self, payloads: Iterable[AssignmentCreate]) -> list[Assignment]:
         created: list[Assignment] = []
@@ -486,6 +503,8 @@ class RuleService:
         shift_instance = shift or (_to_shift_instance(db_shift) if db_shift else None)
         if shift_instance is None:
             return conflicts
+        collaborator = self._session.get(db_models.Collaborator, assignment.collaborator_id)
+        assignment_id = getattr(assignment, "id", None)
         for other in self._session.scalars(select(db_models.Assignment)).all():
             if getattr(other, "id", None) == getattr(assignment, "id", None):
                 continue
@@ -505,6 +524,20 @@ class RuleService:
                         type="hard",
                         rule="double_booking",
                         details={"other_shift_id": other_shift.id},
+                    )
+                )
+            other_start = _ensure_timezone(other_shift.start_utc)
+            other_end = _ensure_timezone(other_shift.end_utc)
+            if shift_instance.start_utc >= other_end:
+                rest_gap = shift_instance.start_utc - other_end
+            else:
+                rest_gap = other_start - shift_instance.end_utc
+            if rest_gap < timedelta(hours=1):
+                conflicts.append(
+                    ConflictEntry(
+                        type="hard",
+                        rule="min_rest",
+                        details={"minutes_gap": int(rest_gap.total_seconds() // 60)},
                     )
                 )
         availabilities = self._session.scalars(
@@ -535,6 +568,38 @@ class RuleService:
                             details={"reason": availability.reason},
                         )
                     )
+        if collaborator and collaborator.primary_role_id != assignment.role_id:
+            conflicts.append(
+                ConflictEntry(
+                    type="hard",
+                    rule="missing_skill",
+                    details={"expected_role_id": collaborator.primary_role_id},
+                )
+            )
+        assignment_count = (
+            self._session.query(db_models.Assignment)
+            .filter(db_models.Assignment.shift_instance_id == shift_instance.id)
+            .count()
+        )
+        created_count = int(assignment_count)
+        if assignment_id is None or not self._session.get(db_models.Assignment, assignment_id):
+            created_count += 1
+        if created_count > shift_instance.capacity:
+            conflicts.append(
+                ConflictEntry(
+                    type="hard",
+                    rule="capacity_exceeded",
+                    details={"capacity": shift_instance.capacity, "attempted": created_count},
+                )
+            )
+        elif created_count == shift_instance.capacity:
+            conflicts.append(
+                ConflictEntry(
+                    type="soft",
+                    rule="capacity_full",
+                    details={"capacity": shift_instance.capacity},
+                )
+            )
         return conflicts
 
     def _seed_rules(self) -> None:
@@ -569,15 +634,22 @@ class AuditService:
         entity_type: str,
         entity_id: int,
         action: str,
-        payload: dict[str, Any],
+        before: dict[str, Any] | None = None,
+        after: dict[str, Any] | None = None,
+        payload: dict[str, Any] | None = None,
     ) -> None:
+        entry_payload = {
+            "before": before,
+            "after": after,
+            "payload": payload or {},
+        }
         entry = db_models.PlanningChange(
             organization_id=organization_id,
             actor_user_id=actor_user_id,
             entity_type=entity_type,
             entity_id=entity_id,
             action=action,
-            payload=jsonable_encoder(payload),
+            payload=jsonable_encoder(entry_payload),
         )
         self._session.add(entry)
         self._session.commit()
@@ -586,8 +658,24 @@ class AuditService:
             extra={"entity_type": entity_type, "entity_id": entity_id},
         )
 
-    def list_changes(self) -> list[dict[str, Any]]:
-        changes = self._session.scalars(select(db_models.PlanningChange)).all()
+    def list_changes(
+        self,
+        *,
+        from_ts: datetime | None = None,
+        to_ts: datetime | None = None,
+        entity_type: str | None = None,
+        entity_id: int | None = None,
+    ) -> list[dict[str, Any]]:
+        query = select(db_models.PlanningChange)
+        if from_ts is not None:
+            query = query.where(db_models.PlanningChange.created_at >= from_ts)
+        if to_ts is not None:
+            query = query.where(db_models.PlanningChange.created_at <= to_ts)
+        if entity_type is not None:
+            query = query.where(db_models.PlanningChange.entity_type == entity_type)
+        if entity_id is not None:
+            query = query.where(db_models.PlanningChange.entity_id == entity_id)
+        changes = self._session.scalars(query).all()
         return [
             {
                 "organization_id": change.organization_id,
@@ -625,7 +713,7 @@ class PublicationService:
         if publication is None:
             raise NotFoundError("Publication not found")
         publication.status = "published"
-        publication.published_at = datetime.now(UTC)
+        publication.published_at = _timestamp()
         self._session.commit()
         self._session.refresh(publication)
         self._audit_service.log_change(
@@ -634,7 +722,8 @@ class PublicationService:
             entity_type="publication",
             entity_id=publication_id,
             action="publish_planning",
-            payload={"publication_id": publication_id},
+            before=None,
+            after={"status": publication.status, "publication_id": publication_id},
         )
         return _to_publication(publication)
 
@@ -660,15 +749,20 @@ class PublicationService:
 
 
 class AutoAssignJobService:
+    _job_store: dict[str, dict[str, Any]] = {}
+
     def __init__(
         self, session: Session, assignment_service: AssignmentService
     ) -> None:
         self._session = session
         self._assignment_service = assignment_service
-        self._jobs: dict[str, dict[str, Any]] = {}
 
     def start_job(self, *, shift_ids: list[int] | None = None) -> dict[str, Any]:
-        job_id = f"job-{int(datetime.now(UTC).timestamp())}"
+        key_source = ",".join(str(value) for value in sorted(shift_ids or [])) or "all"
+        job_hash = hashlib.md5(key_source.encode(), usedforsecurity=False).hexdigest()[:10]
+        job_id = f"job-{job_hash}"
+        if job_id in AutoAssignJobService._job_store:
+            return AutoAssignJobService._job_store[job_id]
         created_assignments: list[dict[str, Any]] = []
         targets = (
             self._session.scalars(
@@ -699,16 +793,18 @@ class AutoAssignJobService:
         job_payload: dict[str, Any] = {
             "job_id": job_id,
             "status": "completed",
+            "started_at": _timestamp(),
+            "completed_at": _timestamp(),
             "assignments_created": len(created_assignments),
             "conflicts": [
                 conflict for item in created_assignments for conflict in item["conflicts"]
             ],
         }
-        self._jobs[job_id] = job_payload
+        AutoAssignJobService._job_store[job_id] = job_payload
         return job_payload
 
     def get_status(self, job_id: str) -> dict[str, Any]:
-        job = self._jobs.get(job_id)
+        job = AutoAssignJobService._job_store.get(job_id)
         if job is None:
             raise NotFoundError("Job not found")
         return job

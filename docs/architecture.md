@@ -83,15 +83,15 @@
 ```
 
 ### Planning PRO API (Step 03)
-- Endpoints FastAPI `/api/v1/planning/*` exposés pour les templates, instances, assignments, disponibilités, règles, publication et auto-assign (start/status).
-- Les routes délèguent la logique aux services Planning PRO (validation hard/soft, détection de double booking, disponibilité, audit `planning_change`) instanciés par dépendance `get_session` (SQLAlchemy session) ; audit/persistence passent par PostgreSQL avec migrations Alembic.
-- Les réponses d écriture (`POST`/`PUT`) incluent l entité et une liste `conflicts` séparant hard vs soft.
+- FastAPI endpoints `/api/v1/planning/*` cover templates, instances, assignments, availability, rules, publish, and auto-assign start/status.
+- Routers delegate to Planning PRO services created per SQLAlchemy session; services enforce validation (status, time order, role alignment, double booking, min rest, leave overlap, missing skill, capacity) and log `planning_change` entries with before/after payloads.
+- Write responses (`POST`/`PUT`) return the entity plus a `conflicts` array that separates hard vs soft items.
 
-### Flux UI ➜ API ➜ DB (Timeline V2 connectée)
-1. La page Planning PRO (React Query) appelle `GET /api/v1/planning/shifts` et `GET /api/v1/planning/rules` pour afficher les shifts réels, assignments et conflits (badges hard/soft).
-2. Les créations/modifications déclenchent `POST/PUT /api/v1/planning/shifts|assignments`, qui appliquent les validations métier, retournent les conflits détectés et loggent `planning_change`.
-3. La publication utilise `POST /api/v1/planning/publish` : un enregistrement `publication` est créé puis marqué `published`, avec audit associé.
-4. Les jobs d auto-assign sont initiés via `/api/v1/planning/auto-assign/start` et suivis via `/auto-assign/status/{job_id}` pour préparer les futures propositions d assignments.
+### UI -> API -> DB flow (Timeline V2 connected)
+1. The Planning PRO page (React Query) calls `GET /api/v1/planning/shifts` and `GET /api/v1/planning/rules` to render live shifts, assignments, and conflict badges.
+2. Creations and updates go through `POST/PUT /api/v1/planning/shifts|assignments`, apply domain validation, return detected conflicts, and log `planning_change` entries.
+3. Publication uses `POST /api/v1/planning/publish`, which creates a `publication`, marks it `published`, and records audit data.
+4. Auto-assign jobs start at `/api/v1/planning/auto-assign/start` and are polled via `/auto-assign/status/{job_id}`; clients refresh the timeline once jobs complete.
 
 ## Observabilité & Logging
 - Logging JSON console par service, niveau configurable via `.env`.

@@ -81,9 +81,9 @@ describe("PlanningProPage", () => {
   it("renders real shifts and conflicts from the API", async () => {
     createWrapper(<PlanningProPage />);
 
-    expect(await screen.findByText(/Timeline avancée connectée/)).toBeInTheDocument();
+    expect(await screen.findByText(/Connected timeline/)).toBeInTheDocument();
     await waitFor(() => expect(screen.getByText(/Site 2/)).toBeInTheDocument());
-    expect(screen.getByText(/Collab 5 · proposed/)).toBeInTheDocument();
+    expect(screen.getByText(/Collab 5 - proposed/)).toBeInTheDocument();
     expect(screen.getByText(/availability_partial/)).toBeInTheDocument();
   });
 });
