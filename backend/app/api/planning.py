@@ -190,6 +190,25 @@ def create_shift_instance(
     return ShiftWriteResponse(shift=shift_view.shift, conflicts=shift_view.conflicts)
 
 
+@router.get("/shift-instances", response_model=list[ShiftWithAssignments])
+def filter_shift_instances(
+    services: PlanningServicesDep,
+    start: Annotated[datetime | None, Query()] = None,
+    end: Annotated[datetime | None, Query()] = None,
+    place_ids: Annotated[list[int] | None, Query(alias="place_ids")] = None,
+    person_ids: Annotated[list[int] | None, Query(alias="person_ids")] = None,
+    status: Annotated[list[str] | None, Query(alias="status")] = None,
+) -> list[ShiftWithAssignments]:
+    instance_service: ShiftInstanceService = services["instances"]  # type: ignore[assignment]
+    return instance_service.list_instances(
+        start=start,
+        end=end,
+        site_ids=place_ids,
+        collaborator_ids=person_ids,
+        statuses=status,
+    )
+
+
 @router.put("/shifts/{shift_id}", response_model=ShiftWriteResponse)
 def update_shift_instance(
     shift_id: int,
@@ -210,6 +229,15 @@ def update_shift_instance(
         after=shift_view.shift.model_dump(),
     )
     return ShiftWriteResponse(shift=shift_view.shift, conflicts=shift_view.conflicts)
+
+
+@router.put("/shift-instances/{shift_id}", response_model=ShiftWriteResponse)
+def update_shift_instance_alias(
+    shift_id: int,
+    payload: ShiftInstanceUpdate,
+    services: PlanningServicesDep,
+) -> ShiftWriteResponse:
+    return update_shift_instance(shift_id, payload, services)
 
 
 @router.delete("/shifts/{shift_id}", status_code=status.HTTP_204_NO_CONTENT)

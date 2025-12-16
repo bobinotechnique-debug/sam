@@ -133,6 +133,67 @@ def test_double_booking_detected_in_assignment_conflicts(
     )
 
 
+def test_shift_instances_endpoint_filters(client: TestClient, session: Session) -> None:
+    org, role, site = _setup_org_role_site(session)
+    collaborator = _create_collaborator(session, org, role)
+    other_site = db_models.Site(name="Branch", organization_id=org.id, address="", timezone="UTC")
+    session.add(other_site)
+    session.commit()
+    session.refresh(other_site)
+
+    window_start = datetime.now(UTC)
+    primary_mission = _create_mission(session, site.id, role.id, window_start)
+    _create_mission(session, other_site.id, role.id, window_start + timedelta(days=2))
+
+    shift_response = client.post(
+        "/api/v1/planning/shifts",
+        json={
+            "mission_id": primary_mission.id,
+            "template_id": None,
+            "site_id": site.id,
+            "role_id": role.id,
+            "team_id": None,
+            "start_utc": window_start.isoformat(),
+            "end_utc": (window_start + timedelta(hours=2)).isoformat(),
+            "status": "draft",
+            "source": "manual",
+            "capacity": 1,
+        },
+    )
+    assert shift_response.status_code == 201
+    shift_id = shift_response.json()["shift"]["id"]
+
+    assignment = client.post(
+        "/api/v1/planning/assignments",
+        json={
+            "shift_instance_id": shift_id,
+            "collaborator_id": collaborator.id,
+            "role_id": role.id,
+            "status": "confirmed",
+            "source": "manual",
+        },
+    )
+    assert assignment.status_code == 201
+
+    response = client.get(
+        "/api/v1/planning/shift-instances",
+        params={
+            "start": window_start.isoformat(),
+            "end": (window_start + timedelta(hours=3)).isoformat(),
+            "place_ids": [site.id],
+            "person_ids": [collaborator.id],
+            "status": ["draft"],
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert len(payload) == 1
+    assert payload[0]["shift"]["id"] == shift_id
+    assert payload[0]["assignments"]
+    assert payload[0]["assignments"][0]["collaborator_id"] == collaborator.id
+
+
 def test_shift_status_validation(client: TestClient, session: Session) -> None:
     _, role, site = _setup_org_role_site(session)
     mission_start = datetime.now(UTC)
