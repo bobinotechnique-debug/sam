@@ -27,3 +27,4 @@
 2025-12-31 | Phase 5.2 | specification Planning PRO | Formalisation du modèle de données cible, interactions UI v2, règles de conflits/HR et auto-assign v1 dans `docs/roadmap/phase5/step-02.md`.
 2026-01-05 | Phase 5.2 | alignement specs planning PRO | Mise à jour des spécifications fonctionnelles/techniques pour intégrer le modèle Planning PRO (templates, instances, règles RH/conflits, auto-assign) et rappeler les endpoints/observabilité cibles.
 2026-01-07 | Phase 5.2 | Planning PRO foundations | Implémentation des modèles SQLAlchemy + migration, squelettes services/APIs, types front et page Planning PRO V2 ; docs architecture/blueprint alignées.
+2026-01-10 | Phase 5 | analyse repo et cadrage next steps | Audit du code (planning PRO en mémoire, timeline V2 côté front), mise à jour README/roadmap, ajout des notes d'analyse et du plan d'étapes suivant.
