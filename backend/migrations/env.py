@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from logging.config import fileConfig
 from pathlib import Path
 import sys
@@ -15,6 +16,7 @@ from app.db.base import Base  # noqa: E402
 from app.db.models import planning  # noqa: F401, E402
 
 config = context.config
+database_url = os.getenv("DATABASE_URL")
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
@@ -22,8 +24,14 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 
+def _get_url() -> str:
+    if database_url:
+        return database_url
+    return config.get_main_option("sqlalchemy.url")
+
+
 def run_migrations_offline() -> None:
-    url = config.get_main_option("sqlalchemy.url")
+    url = _get_url()
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -37,7 +45,7 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        {"sqlalchemy.url": _get_url()},
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )

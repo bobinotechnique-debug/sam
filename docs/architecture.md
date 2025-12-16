@@ -75,16 +75,16 @@
      └─ RuleService + AuditService + PublicationService
        |
        v
-   [DB]
+   [DB - PostgreSQL via SQLAlchemy/Alembic]
      ├─ shift_templates / shift_instances / assignments
      ├─ user_availabilities / leaves / blackouts
-     ├─ hr_rules / conflict_rules
+     ├─ hr_rules / conflict_rules (seed org=1 par défaut)
     └─ planning_changes / publications / notification_events
 ```
 
 ### Planning PRO API (Step 03)
 - Endpoints FastAPI `/api/v1/planning/*` exposés pour les templates, instances, assignments, disponibilités, règles, publication et auto-assign (start/status).
-- Les routes délèguent la logique aux services Planning PRO (validation hard/soft, détection de double booking, disponibilité, audit `planning_change`).
+- Les routes délèguent la logique aux services Planning PRO (validation hard/soft, détection de double booking, disponibilité, audit `planning_change`) instanciés par dépendance `get_session` (SQLAlchemy session) ; audit/persistence passent par PostgreSQL avec migrations Alembic.
 - Les réponses d écriture (`POST`/`PUT`) incluent l entité et une liste `conflicts` séparant hard vs soft.
 
 ### Flux UI ➜ API ➜ DB (Timeline V2 connectée)
