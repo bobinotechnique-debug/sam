@@ -46,6 +46,10 @@ Configuration is loaded from environment variables (see `.env.example`). Key var
 - `SECRET_KEY` and `ACCESS_TOKEN_EXPIRE_MINUTES` for authentication.
 - `PROJECT_NAME` for API metadata.
 
+When running via `docker-compose`, default values matching `.env.example` are baked into the service definition so the backend can
+start even if you haven't exported local environment variables. Override them explicitly in your shell or `.env` file as needed
+for your setup.
+
 ## Project Layout
 - `app/main.py` — application factory and entrypoint
 - `app/api/` — routers and request handling

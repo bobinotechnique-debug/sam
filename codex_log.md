@@ -29,3 +29,4 @@
 2026-01-07 | Phase 5.2 | Planning PRO foundations | Implémentation des modèles SQLAlchemy + migration, squelettes services/APIs, types front et page Planning PRO V2 ; docs architecture/blueprint alignées.
 2026-01-10 | Phase 5 | analyse repo et cadrage next steps | Audit du code (planning PRO en mémoire, timeline V2 côté front), mise à jour README/roadmap, ajout des notes d'analyse et du plan d'étapes suivant.
 2026-01-11 | Phase 5.3 | Planning PRO persistant | Raccordement des services Planning PRO à SQLAlchemy/PostgreSQL (sessions injectées), migrations Alembic alignées et tests API portés sur une base relationnelle avec fixture SQLite.
+2026-01-12 | Phase 5.3 | Robustesse env docker-compose | Ajout de valeurs par défaut pour les variables backend dans `docker-compose.yml` et documentation associée afin d'éviter les erreurs de connexion DB lorsque les variables ne sont pas exportées.
