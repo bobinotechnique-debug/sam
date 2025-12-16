@@ -4,10 +4,9 @@ from collections.abc import Iterable
 from datetime import UTC, datetime
 from typing import Any
 
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from fastapi.encoders import jsonable_encoder
 
 from app.core.logging import logger
 from app.db.models import planning as db_models
@@ -210,7 +209,11 @@ class ShiftInstanceService:
         self._session.refresh(instance)
         conflicts = self._rule_service.evaluate_shift(_to_shift_instance(instance))
         logger.info("Shift instance created", extra={"shift_instance_id": instance.id})
-        return ShiftWithAssignments(shift=_to_shift_instance(instance), assignments=[], conflicts=conflicts)
+        return ShiftWithAssignments(
+            shift=_to_shift_instance(instance),
+            assignments=[],
+            conflicts=conflicts,
+        )
 
     def update_instance(
         self, instance_id: int, payload: ShiftInstanceUpdate

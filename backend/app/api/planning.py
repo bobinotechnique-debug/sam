@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Query, status
 from pydantic import BaseModel
@@ -49,7 +49,10 @@ class PublishRequest(BaseModel):
     message: str | None = None
 
 
-def get_planning_services(session: Session = Depends(get_session)) -> dict[str, object]:
+SessionDep = Annotated[Session, Depends(get_session)]
+
+
+def get_planning_services(session: SessionDep) -> dict[str, object]:
     rule_service = RuleService(session)
     template_service = ShiftTemplateService(session)
     instance_service = ShiftInstanceService(session, rule_service)
@@ -70,10 +73,12 @@ def get_planning_services(session: Session = Depends(get_session)) -> dict[str, 
     }
 
 
+PlanningServicesDep = Annotated[dict[str, object], Depends(get_planning_services)]
+
+
 @router.get("/shift-templates", response_model=list[ShiftTemplate])
 def list_shift_templates(
-    mission_id: int | None = Query(default=None),
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep, mission_id: int | None = Query(default=None)
 ) -> list[ShiftTemplate]:
     template_service: ShiftTemplateService = services["templates"]  # type: ignore[assignment]
     return template_service.list_templates(mission_id=mission_id)
@@ -86,7 +91,7 @@ def list_shift_templates(
 )
 def create_shift_template(
     payload: ShiftTemplateCreate,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> ShiftTemplate:
     template_service: ShiftTemplateService = services["templates"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
@@ -106,7 +111,7 @@ def create_shift_template(
 def update_shift_template(
     template_id: int,
     payload: ShiftTemplateUpdate,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> ShiftTemplate:
     template_service: ShiftTemplateService = services["templates"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
@@ -125,7 +130,7 @@ def update_shift_template(
 @router.delete("/shift-templates/{template_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_shift_template(
     template_id: int,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> None:
     template_service: ShiftTemplateService = services["templates"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
@@ -142,8 +147,7 @@ def delete_shift_template(
 
 @router.get("/shifts", response_model=list[ShiftWithAssignments])
 def list_shift_instances(
-    mission_id: int | None = Query(default=None),
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep, mission_id: int | None = Query(default=None)
 ) -> list[ShiftWithAssignments]:
     instance_service: ShiftInstanceService = services["instances"]  # type: ignore[assignment]
     return instance_service.list_instances(mission_id=mission_id)
@@ -152,7 +156,7 @@ def list_shift_instances(
 @router.post("/shifts", response_model=ShiftWriteResponse, status_code=status.HTTP_201_CREATED)
 def create_shift_instance(
     payload: ShiftInstanceCreate,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> ShiftWriteResponse:
     instance_service: ShiftInstanceService = services["instances"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
@@ -172,7 +176,7 @@ def create_shift_instance(
 def update_shift_instance(
     shift_id: int,
     payload: ShiftInstanceUpdate,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> ShiftWriteResponse:
     instance_service: ShiftInstanceService = services["instances"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
@@ -191,7 +195,7 @@ def update_shift_instance(
 @router.delete("/shifts/{shift_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_shift_instance(
     shift_id: int,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> None:
     instance_service: ShiftInstanceService = services["instances"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
@@ -208,8 +212,7 @@ def delete_shift_instance(
 
 @router.get("/assignments", response_model=list[Assignment])
 def list_assignments(
-    instance_id: int | None = Query(default=None),
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep, instance_id: int | None = Query(default=None)
 ) -> list[Assignment]:
     assignment_service: AssignmentService = services["assignments"]  # type: ignore[assignment]
     return assignment_service.list_assignments(instance_id=instance_id)
@@ -222,7 +225,7 @@ def list_assignments(
 )
 def create_assignment(
     payload: AssignmentCreate,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> AssignmentWriteResponse:
     assignment_service: AssignmentService = services["assignments"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
@@ -242,7 +245,7 @@ def create_assignment(
 def update_assignment(
     assignment_id: int,
     payload: AssignmentUpdate,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> AssignmentWriteResponse:
     assignment_service: AssignmentService = services["assignments"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
@@ -261,7 +264,7 @@ def update_assignment(
 @router.delete("/assignments/{assignment_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_assignment(
     assignment_id: int,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> None:
     assignment_service: AssignmentService = services["assignments"]  # type: ignore[assignment]
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
@@ -278,8 +281,7 @@ def delete_assignment(
 
 @router.get("/availability", response_model=list[UserAvailability])
 def list_availability(
-    collaborator_id: int | None = Query(default=None),
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep, collaborator_id: int | None = Query(default=None)
 ) -> list[UserAvailability]:
     availability_service: AvailabilityService = services["availability"]  # type: ignore[assignment]
     return availability_service.list_availability(collaborator_id=collaborator_id)
@@ -292,7 +294,7 @@ def list_availability(
 )
 def create_availability(
     payload: UserAvailabilityCreate,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> UserAvailability:
     availability_service: AvailabilityService = services["availability"]  # type: ignore[assignment]
     return availability_service.record_availability(payload)
@@ -300,8 +302,7 @@ def create_availability(
 
 @router.get("/rules")
 def list_rules(
-    organization_id: int = Query(default=1),
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep, organization_id: int = Query(default=1)
 ) -> dict[str, list[HrRule] | list[ConflictRule]]:
     rule_service: RuleService = services["rules"]  # type: ignore[assignment]
     hr_rules = rule_service.list_hr_rules(organization_id)
@@ -312,7 +313,7 @@ def list_rules(
 @router.post("/conflicts/preview", response_model=list[ConflictEntry])
 def preview_conflicts(
     payload: ConflictPreviewPayload,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> list[ConflictEntry]:
     rule_service: RuleService = services["rules"]  # type: ignore[assignment]
     conflicts: list[ConflictEntry] = []
@@ -326,7 +327,7 @@ def preview_conflicts(
 @router.post("/publish", response_model=Publication)
 def publish_planning(
     payload: PublishRequest,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> Publication:
     publication_service: PublicationService = services["publication"]  # type: ignore[assignment]
     publication = publication_service.prepare_draft(organization_id=1, message=payload.message)
@@ -336,8 +337,7 @@ def publish_planning(
 
 @router.post("/auto-assign/start")
 def start_auto_assign(
-    shift_ids: list[int] | None = None,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep, shift_ids: list[int] | None = None
 ) -> dict[str, Any]:
     auto_assign_service: AutoAssignJobService = services["auto_assign"]  # type: ignore[assignment]
     return auto_assign_service.start_job(shift_ids=shift_ids)
@@ -346,7 +346,7 @@ def start_auto_assign(
 @router.get("/auto-assign/status/{job_id}")
 def get_auto_assign_status(
     job_id: str,
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> dict[str, Any]:
     auto_assign_service: AutoAssignJobService = services["auto_assign"]  # type: ignore[assignment]
     return auto_assign_service.get_status(job_id)
@@ -354,7 +354,7 @@ def get_auto_assign_status(
 
 @router.get("/audit", response_model=list[dict[str, Any]])
 def list_audit_trail(
-    services: dict[str, object] = Depends(get_planning_services),
+    services: PlanningServicesDep,
 ) -> list[dict[str, Any]]:
     audit_service: AuditService = services["audit"]  # type: ignore[assignment]
     return audit_service.list_changes()

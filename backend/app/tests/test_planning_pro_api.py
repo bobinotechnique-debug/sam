@@ -1,5 +1,4 @@
 from datetime import UTC, datetime, timedelta
-from typing import Any
 
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
@@ -57,15 +56,6 @@ def _create_mission(
     session.commit()
     session.refresh(mission)
     return mission
-
-
-from datetime import UTC, datetime, timedelta
-from typing import Any, cast
-
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
-
-from app.db.models import planning as db_models
 
 
 def test_double_booking_detected_in_assignment_conflicts(
